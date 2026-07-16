@@ -542,8 +542,8 @@ TextureImporter:
       name: TX Tileset Wall_8
       rect:
         serializedVersion: 2
-        x: 32
-        y: 416
+        x: 288
+        y: 448
         width: 32
         height: 32
       alignment: 0
@@ -568,8 +568,8 @@ TextureImporter:
       name: TX Tileset Wall_9
       rect:
         serializedVersion: 2
-        x: 96
-        y: 416
+        x: 320
+        y: 448
         width: 32
         height: 32
       alignment: 0
@@ -594,8 +594,8 @@ TextureImporter:
       name: TX Tileset Wall_10
       rect:
         serializedVersion: 2
-        x: 128
-        y: 416
+        x: 384
+        y: 448
         width: 32
         height: 32
       alignment: 0
@@ -620,8 +620,8 @@ TextureImporter:
       name: TX Tileset Wall_11
       rect:
         serializedVersion: 2
-        x: 160
-        y: 416
+        x: 416
+        y: 448
         width: 32
         height: 32
       alignment: 0
@@ -642,8 +642,8 @@ TextureImporter:
       name: TX Tileset Wall_12
       rect:
         serializedVersion: 2
-        x: 192
-        y: 416
+        x: 448
+        y: 448
         width: 32
         height: 32
       alignment: 0
@@ -664,7 +664,7 @@ TextureImporter:
       name: TX Tileset Wall_13
       rect:
         serializedVersion: 2
-        x: 224
+        x: 32
         y: 416
         width: 32
         height: 32
@@ -686,7 +686,7 @@ TextureImporter:
       name: TX Tileset Wall_14
       rect:
         serializedVersion: 2
-        x: 256
+        x: 96
         y: 416
         width: 32
         height: 32
@@ -712,8 +712,8 @@ TextureImporter:
       name: TX Tileset Wall_15
       rect:
         serializedVersion: 2
-        x: 32
-        y: 384
+        x: 128
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -734,8 +734,8 @@ TextureImporter:
       name: TX Tileset Wall_16
       rect:
         serializedVersion: 2
-        x: 64
-        y: 384
+        x: 160
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -756,8 +756,8 @@ TextureImporter:
       name: TX Tileset Wall_17
       rect:
         serializedVersion: 2
-        x: 96
-        y: 384
+        x: 192
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -778,8 +778,8 @@ TextureImporter:
       name: TX Tileset Wall_18
       rect:
         serializedVersion: 2
-        x: 128
-        y: 352
+        x: 224
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -804,8 +804,8 @@ TextureImporter:
       name: TX Tileset Wall_19
       rect:
         serializedVersion: 2
-        x: 160
-        y: 352
+        x: 256
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -830,8 +830,8 @@ TextureImporter:
       name: TX Tileset Wall_20
       rect:
         serializedVersion: 2
-        x: 192
-        y: 352
+        x: 288
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -856,8 +856,8 @@ TextureImporter:
       name: TX Tileset Wall_21
       rect:
         serializedVersion: 2
-        x: 224
-        y: 352
+        x: 320
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -882,8 +882,8 @@ TextureImporter:
       name: TX Tileset Wall_22
       rect:
         serializedVersion: 2
-        x: 256
-        y: 352
+        x: 384
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -908,8 +908,8 @@ TextureImporter:
       name: TX Tileset Wall_23
       rect:
         serializedVersion: 2
-        x: 32
-        y: 352
+        x: 416
+        y: 416
         width: 32
         height: 32
       alignment: 0
@@ -930,8 +930,8 @@ TextureImporter:
       name: TX Tileset Wall_24
       rect:
         serializedVersion: 2
-        x: 64
-        y: 352
+        x: 32
+        y: 384
         width: 32
         height: 32
       alignment: 0
@@ -952,8 +952,8 @@ TextureImporter:
       name: TX Tileset Wall_25
       rect:
         serializedVersion: 2
-        x: 96
-        y: 352
+        x: 64
+        y: 384
         width: 32
         height: 32
       alignment: 0
@@ -974,7 +974,7 @@ TextureImporter:
       name: TX Tileset Wall_26
       rect:
         serializedVersion: 2
-        x: 128
+        x: 96
         y: 384
         width: 32
         height: 32
@@ -1000,7 +1000,7 @@ TextureImporter:
       name: TX Tileset Wall_27
       rect:
         serializedVersion: 2
-        x: 256
+        x: 128
         y: 384
         width: 32
         height: 32
@@ -1026,8 +1026,8 @@ TextureImporter:
       name: TX Tileset Wall_28
       rect:
         serializedVersion: 2
-        x: 32
-        y: 288
+        x: 256
+        y: 384
         width: 32
         height: 32
       alignment: 0
@@ -1048,8 +1048,8 @@ TextureImporter:
       name: TX Tileset Wall_29
       rect:
         serializedVersion: 2
-        x: 64
-        y: 288
+        x: 288
+        y: 384
         width: 32
         height: 32
       alignment: 0
@@ -1070,8 +1070,8 @@ TextureImporter:
       name: TX Tileset Wall_30
       rect:
         serializedVersion: 2
-        x: 96
-        y: 288
+        x: 320
+        y: 384
         width: 32
         height: 32
       alignment: 0
@@ -1092,8 +1092,8 @@ TextureImporter:
       name: TX Tileset Wall_31
       rect:
         serializedVersion: 2
-        x: 128
-        y: 288
+        x: 384
+        y: 384
         width: 32
         height: 32
       alignment: 0
@@ -1114,8 +1114,8 @@ TextureImporter:
       name: TX Tileset Wall_32
       rect:
         serializedVersion: 2
-        x: 32
-        y: 256
+        x: 416
+        y: 384
         width: 32
         height: 32
       alignment: 0
@@ -1136,8 +1136,8 @@ TextureImporter:
       name: TX Tileset Wall_33
       rect:
         serializedVersion: 2
-        x: 64
-        y: 256
+        x: 32
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1158,8 +1158,8 @@ TextureImporter:
       name: TX Tileset Wall_34
       rect:
         serializedVersion: 2
-        x: 96
-        y: 256
+        x: 64
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1180,8 +1180,8 @@ TextureImporter:
       name: TX Tileset Wall_35
       rect:
         serializedVersion: 2
-        x: 128
-        y: 256
+        x: 96
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1202,8 +1202,8 @@ TextureImporter:
       name: TX Tileset Wall_36
       rect:
         serializedVersion: 2
-        x: 32
-        y: 192
+        x: 128
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1224,8 +1224,8 @@ TextureImporter:
       name: TX Tileset Wall_37
       rect:
         serializedVersion: 2
-        x: 32
-        y: 160
+        x: 160
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1246,8 +1246,8 @@ TextureImporter:
       name: TX Tileset Wall_38
       rect:
         serializedVersion: 2
-        x: 64
-        y: 192
+        x: 192
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1268,8 +1268,8 @@ TextureImporter:
       name: TX Tileset Wall_39
       rect:
         serializedVersion: 2
-        x: 64
-        y: 160
+        x: 224
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1290,8 +1290,8 @@ TextureImporter:
       name: TX Tileset Wall_40
       rect:
         serializedVersion: 2
-        x: 128
-        y: 192
+        x: 256
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1312,8 +1312,8 @@ TextureImporter:
       name: TX Tileset Wall_41
       rect:
         serializedVersion: 2
-        x: 128
-        y: 160
+        x: 384
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1334,8 +1334,8 @@ TextureImporter:
       name: TX Tileset Wall_42
       rect:
         serializedVersion: 2
-        x: 160
-        y: 192
+        x: 416
+        y: 352
         width: 32
         height: 32
       alignment: 0
@@ -1356,8 +1356,8 @@ TextureImporter:
       name: TX Tileset Wall_43
       rect:
         serializedVersion: 2
-        x: 160
-        y: 160
+        x: 32
+        y: 288
         width: 32
         height: 32
       alignment: 0
@@ -1378,8 +1378,8 @@ TextureImporter:
       name: TX Tileset Wall_44
       rect:
         serializedVersion: 2
-        x: 288
-        y: 448
+        x: 64
+        y: 288
         width: 32
         height: 32
       alignment: 0
@@ -1404,8 +1404,8 @@ TextureImporter:
       name: TX Tileset Wall_45
       rect:
         serializedVersion: 2
-        x: 288
-        y: 416
+        x: 96
+        y: 288
         width: 32
         height: 32
       alignment: 0
@@ -1430,8 +1430,8 @@ TextureImporter:
       name: TX Tileset Wall_46
       rect:
         serializedVersion: 2
-        x: 288
-        y: 384
+        x: 128
+        y: 288
         width: 32
         height: 32
       alignment: 0
@@ -1456,8 +1456,8 @@ TextureImporter:
       name: TX Tileset Wall_47
       rect:
         serializedVersion: 2
-        x: 320
-        y: 448
+        x: 192
+        y: 288
         width: 32
         height: 32
       alignment: 0
@@ -1482,8 +1482,8 @@ TextureImporter:
       name: TX Tileset Wall_48
       rect:
         serializedVersion: 2
-        x: 320
-        y: 416
+        x: 32
+        y: 256
         width: 32
         height: 32
       alignment: 0
@@ -1508,8 +1508,8 @@ TextureImporter:
       name: TX Tileset Wall_49
       rect:
         serializedVersion: 2
-        x: 320
-        y: 384
+        x: 64
+        y: 256
         width: 32
         height: 32
       alignment: 0
@@ -1534,8 +1534,8 @@ TextureImporter:
       name: TX Tileset Wall_50
       rect:
         serializedVersion: 2
-        x: 384
-        y: 448
+        x: 96
+        y: 256
         width: 32
         height: 32
       alignment: 0
@@ -1560,8 +1560,8 @@ TextureImporter:
       name: TX Tileset Wall_51
       rect:
         serializedVersion: 2
-        x: 416
-        y: 448
+        x: 128
+        y: 256
         width: 32
         height: 32
       alignment: 0
@@ -1586,8 +1586,8 @@ TextureImporter:
       name: TX Tileset Wall_52
       rect:
         serializedVersion: 2
-        x: 448
-        y: 448
+        x: 192
+        y: 256
         width: 32
         height: 32
       alignment: 0
@@ -1612,8 +1612,8 @@ TextureImporter:
       name: TX Tileset Wall_53
       rect:
         serializedVersion: 2
-        x: 384
-        y: 416
+        x: 32
+        y: 192
         width: 32
         height: 32
       alignment: 0
@@ -1640,8 +1640,8 @@ TextureImporter:
       name: TX Tileset Wall_54
       rect:
         serializedVersion: 2
-        x: 416
-        y: 416
+        x: 64
+        y: 192
         width: 32
         height: 32
       alignment: 0
@@ -1668,8 +1668,8 @@ TextureImporter:
       name: TX Tileset Wall_55
       rect:
         serializedVersion: 2
-        x: 192
-        y: 288
+        x: 128
+        y: 192
         width: 32
         height: 32
       alignment: 0
@@ -1690,8 +1690,8 @@ TextureImporter:
       name: TX Tileset Wall_56
       rect:
         serializedVersion: 2
-        x: 192
-        y: 256
+        x: 160
+        y: 192
         width: 32
         height: 32
       alignment: 0
@@ -1712,8 +1712,8 @@ TextureImporter:
       name: TX Tileset Wall_57
       rect:
         serializedVersion: 2
-        x: 384
-        y: 384
+        x: 32
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -1734,8 +1734,8 @@ TextureImporter:
       name: TX Tileset Wall_58
       rect:
         serializedVersion: 2
-        x: 416
-        y: 384
+        x: 64
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -1756,8 +1756,8 @@ TextureImporter:
       name: TX Tileset Wall_59
       rect:
         serializedVersion: 2
-        x: 384
-        y: 352
+        x: 128
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -1778,8 +1778,8 @@ TextureImporter:
       name: TX Tileset Wall_60
       rect:
         serializedVersion: 2
-        x: 416
-        y: 352
+        x: 160
+        y: 160
         width: 32
         height: 32
       alignment: 0
@@ -1808,7 +1808,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       TX Tileset Wall_0: 21300000
       TX Tileset Wall_1: 21300002
