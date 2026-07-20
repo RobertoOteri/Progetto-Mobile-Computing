@@ -1,25 +1,16 @@
 fileFormatVersion: 2
-guid: a297b6d5804daaf4da9852f0b63ca4fa
+guid: a3991a938ef2bd94ea0b751618abd3e6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9153557497979434003
-    second: rat-death_0
+      213: 5898135996319315825
+    second: Medieval Jar Heart_0
   - first:
-      213: -1950670873418907786
-    second: rat-death_1
+      213: -6915699130593825127
+    second: Medieval Jar Heart_1
   - first:
-      213: 509030082206802883
-    second: rat-death_2
-  - first:
-      213: -3280853365089037962
-    second: rat-death_3
-  - first:
-      213: -7374815061640450194
-    second: rat-death_4
-  - first:
-      213: 2154126136119794554
-    second: rat-death_5
+      213: -7076155456318409259
+    second: Medieval Jar Heart_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +43,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -112,7 +103,20 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -128,13 +132,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rat-death_0
+      name: Medieval Jar Heart_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 70
-        height: 70
+        width: 24
+        height: 33
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -143,20 +147,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3147d2afb08f70f70800000000000000
-      internalID: 9153557497979434003
+      spriteID: 177be8160736ad150800000000000000
+      internalID: 5898135996319315825
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rat-death_1
+      name: Medieval Jar Heart_1
       rect:
         serializedVersion: 2
-        x: 70
+        x: 25
         y: 0
-        width: 70
-        height: 70
+        width: 24
+        height: 33
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -165,20 +169,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 67f3a2cfc23dde4e0800000000000000
-      internalID: -1950670873418907786
+      spriteID: 99e2a7b18408600a0800000000000000
+      internalID: -6915699130593825127
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rat-death_2
+      name: Medieval Jar Heart_2
       rect:
         serializedVersion: 2
-        x: 140
-        y: 0
-        width: 70
-        height: 70
+        x: 50
+        y: 1
+        width: 24
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,74 +191,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3c3aceda920701700800000000000000
-      internalID: 509030082206802883
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rat-death_3
-      rect:
-        serializedVersion: 2
-        x: 210
-        y: 0
-        width: 70
-        height: 70
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 67119b54f311872d0800000000000000
-      internalID: -3280853365089037962
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rat-death_4
-      rect:
-        serializedVersion: 2
-        x: 280
-        y: 0
-        width: 70
-        height: 70
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e6f68be56c467a990800000000000000
-      internalID: -7374815061640450194
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rat-death_5
-      rect:
-        serializedVersion: 2
-        x: 350
-        y: 0
-        width: 70
-        height: 70
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a7b1ec8ce4ef4ed10800000000000000
-      internalID: 2154126136119794554
+      spriteID: 5d5f2b28a127ccd90800000000000000
+      internalID: -7076155456318409259
       vertices: []
       indices: 
       edges: []
@@ -263,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6cfe45fa8ffb10f468f81e12afd5240b
+    spriteID: 63fcf84cab4e5ed4ba2cff300a607b42
     internalID: 0
     vertices: []
     indices: 
@@ -273,23 +211,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":70.0,"y":70.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      rat-death_0: 9153557497979434003
-      rat-death_1: -1950670873418907786
-      rat-death_2: 509030082206802883
-      rat-death_3: -3280853365089037962
-      rat-death_4: -7374815061640450194
-      rat-death_5: 2154126136119794554
+      Medieval Jar Heart_0: 5898135996319315825
+      Medieval Jar Heart_1: -6915699130593825127
+      Medieval Jar Heart_2: -7076155456318409259
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 379160
-  packageName: Monsters_Creatures_Fantasy 2
-  packageVersion: 1.0
-  assetPath: Assets/Monsters Creatures Fantasy 2/Sprites/Rat/rat-death.png
-  uploadId: 914690

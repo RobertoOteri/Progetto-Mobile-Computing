@@ -1,25 +1,38 @@
 fileFormatVersion: 2
-guid: a297b6d5804daaf4da9852f0b63ca4fa
+guid: 1bedbc2da85209842ab93a4e0e5d322f
+AssetOrigin:
+  serializedVersion: 1
+  productId: 379160
+  packageName: Monsters_Creatures_Fantasy 2
+  packageVersion: 1.0
+  assetPath: Assets/Monsters Creatures Fantasy 2/Sprites/Rat/run.png
+  uploadId: 914690
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9153557497979434003
-    second: rat-death_0
+      213: -1882347247711912902
+    second: run_0
   - first:
-      213: -1950670873418907786
-    second: rat-death_1
+      213: 7439426567979852956
+    second: run_1
   - first:
-      213: 509030082206802883
-    second: rat-death_2
+      213: -2673560216460186399
+    second: run_2
   - first:
-      213: -3280853365089037962
-    second: rat-death_3
+      213: -5822559823783948592
+    second: run_3
   - first:
-      213: -7374815061640450194
-    second: rat-death_4
+      213: -4997308686002322044
+    second: run_4
   - first:
-      213: 2154126136119794554
-    second: rat-death_5
+      213: -7808277857516635856
+    second: run_5
+  - first:
+      213: 2102408166121253023
+    second: run_6
+  - first:
+      213: -828024806730890176
+    second: run_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -124,11 +137,37 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rat-death_0
+      name: run_0
       rect:
         serializedVersion: 2
         x: 0
@@ -143,14 +182,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3147d2afb08f70f70800000000000000
-      internalID: 9153557497979434003
+      spriteID: a3c723cb62f80e5e0800000000000000
+      internalID: -1882347247711912902
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rat-death_1
+      name: run_1
       rect:
         serializedVersion: 2
         x: 70
@@ -165,14 +204,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 67f3a2cfc23dde4e0800000000000000
-      internalID: -1950670873418907786
+      spriteID: c94ea0d3c072e3760800000000000000
+      internalID: 7439426567979852956
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rat-death_2
+      name: run_2
       rect:
         serializedVersion: 2
         x: 140
@@ -187,14 +226,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3c3aceda920701700800000000000000
-      internalID: 509030082206802883
+      spriteID: 1ec2644f52b95ead0800000000000000
+      internalID: -2673560216460186399
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rat-death_3
+      name: run_3
       rect:
         serializedVersion: 2
         x: 210
@@ -209,14 +248,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 67119b54f311872d0800000000000000
-      internalID: -3280853365089037962
+      spriteID: 0de85e380bc123fa0800000000000000
+      internalID: -5822559823783948592
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rat-death_4
+      name: run_4
       rect:
         serializedVersion: 2
         x: 280
@@ -231,14 +270,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e6f68be56c467a990800000000000000
-      internalID: -7374815061640450194
+      spriteID: 4858bd91a3ef5aab0800000000000000
+      internalID: -4997308686002322044
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rat-death_5
+      name: run_5
       rect:
         serializedVersion: 2
         x: 350
@@ -253,8 +292,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a7b1ec8ce4ef4ed10800000000000000
-      internalID: 2154126136119794554
+      spriteID: 0393c2b98ac63a390800000000000000
+      internalID: -7808277857516635856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: run_6
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 0
+        width: 70
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f98a98a86114d2d10800000000000000
+      internalID: 2102408166121253023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: run_7
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 0
+        width: 70
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 044089943d34284f0800000000000000
+      internalID: -828024806730890176
       vertices: []
       indices: 
       edges: []
@@ -263,7 +346,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6cfe45fa8ffb10f468f81e12afd5240b
+    spriteID: 7ac2fe5dd41665d4a9e5ca0c932c28c4
     internalID: 0
     vertices: []
     indices: 
@@ -273,23 +356,18 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":70.0,"y":70.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":70.0,"y":70.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      rat-death_0: 9153557497979434003
-      rat-death_1: -1950670873418907786
-      rat-death_2: 509030082206802883
-      rat-death_3: -3280853365089037962
-      rat-death_4: -7374815061640450194
-      rat-death_5: 2154126136119794554
+      run_0: -1882347247711912902
+      run_1: 7439426567979852956
+      run_2: -2673560216460186399
+      run_3: -5822559823783948592
+      run_4: -4997308686002322044
+      run_5: -7808277857516635856
+      run_6: 2102408166121253023
+      run_7: -828024806730890176
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 379160
-  packageName: Monsters_Creatures_Fantasy 2
-  packageVersion: 1.0
-  assetPath: Assets/Monsters Creatures Fantasy 2/Sprites/Rat/rat-death.png
-  uploadId: 914690

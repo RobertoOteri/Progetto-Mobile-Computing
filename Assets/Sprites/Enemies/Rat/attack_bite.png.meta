@@ -1,31 +1,50 @@
 fileFormatVersion: 2
-guid: 6490bc9c135aed54ba8db843b2d1b6fb
+guid: eab5a34792d9d4942b93cdc7e6663b0e
+AssetOrigin:
+  serializedVersion: 1
+  productId: 379160
+  packageName: Monsters_Creatures_Fantasy 2
+  packageVersion: 1.0
+  assetPath: Assets/Monsters Creatures Fantasy 2/Sprites/Rat/attack_bite.png
+  uploadId: 914690
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1882347247711912902
-    second: run_0
+      213: -3660337718397525389
+    second: attack_bite_0
   - first:
-      213: 7439426567979852956
-    second: run_1
+      213: 2591778900972152968
+    second: attack_bite_1
   - first:
-      213: -2673560216460186399
-    second: run_2
+      213: -4935829826945031917
+    second: attack_bite_2
   - first:
-      213: -5822559823783948592
-    second: run_3
+      213: -6538923972316792016
+    second: attack_bite_3
   - first:
-      213: -4997308686002322044
-    second: run_4
+      213: 4256614086351038501
+    second: attack_bite_4
   - first:
-      213: -7808277857516635856
-    second: run_5
+      213: 6678146037622112100
+    second: attack_bite_5
   - first:
-      213: 2102408166121253023
-    second: run_6
+      213: -370905007996645351
+    second: attack_bite_6
   - first:
-      213: -828024806730890176
-    second: run_7
+      213: -3695961973125446166
+    second: attack_bite_7
+  - first:
+      213: 679081695457712378
+    second: attack_bite_8
+  - first:
+      213: 8674729504705624623
+    second: attack_bite_9
+  - first:
+      213: -4359423781326089219
+    second: attack_bite_10
+  - first:
+      213: -4806425183443704193
+    second: attack_bite_11
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -130,11 +149,37 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: run_0
+      name: attack_bite_0
       rect:
         serializedVersion: 2
         x: 0
@@ -149,14 +194,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a3c723cb62f80e5e0800000000000000
-      internalID: -1882347247711912902
+      spriteID: 372a3f80d3ed33dc0800000000000000
+      internalID: -3660337718397525389
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: run_1
+      name: attack_bite_1
       rect:
         serializedVersion: 2
         x: 70
@@ -171,14 +216,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c94ea0d3c072e3760800000000000000
-      internalID: 7439426567979852956
+      spriteID: 8882cc8bd29d7f320800000000000000
+      internalID: 2591778900972152968
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: run_2
+      name: attack_bite_2
       rect:
         serializedVersion: 2
         x: 140
@@ -193,14 +238,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1ec2644f52b95ead0800000000000000
-      internalID: -2673560216460186399
+      spriteID: 311e92d6ce8608bb0800000000000000
+      internalID: -4935829826945031917
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: run_3
+      name: attack_bite_3
       rect:
         serializedVersion: 2
         x: 210
@@ -215,14 +260,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0de85e380bc123fa0800000000000000
-      internalID: -5822559823783948592
+      spriteID: 03b75c8ba431145a0800000000000000
+      internalID: -6538923972316792016
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: run_4
+      name: attack_bite_4
       rect:
         serializedVersion: 2
         x: 280
@@ -237,14 +282,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4858bd91a3ef5aab0800000000000000
-      internalID: -4997308686002322044
+      spriteID: 528a0e285f7821b30800000000000000
+      internalID: 4256614086351038501
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: run_5
+      name: attack_bite_5
       rect:
         serializedVersion: 2
         x: 350
@@ -259,14 +304,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0393c2b98ac63a390800000000000000
-      internalID: -7808277857516635856
+      spriteID: 46ff5aa507a8dac50800000000000000
+      internalID: 6678146037622112100
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: run_6
+      name: attack_bite_6
       rect:
         serializedVersion: 2
         x: 420
@@ -281,14 +326,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f98a98a86114d2d10800000000000000
-      internalID: 2102408166121253023
+      spriteID: 91052f04cd74adaf0800000000000000
+      internalID: -370905007996645351
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: run_7
+      name: attack_bite_7
       rect:
         serializedVersion: 2
         x: 490
@@ -303,8 +348,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 044089943d34284f0800000000000000
-      internalID: -828024806730890176
+      spriteID: ae58180ea2e45bcc0800000000000000
+      internalID: -3695961973125446166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_bite_8
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 0
+        width: 70
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af81a3f34359c6900800000000000000
+      internalID: 679081695457712378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_bite_9
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 0
+        width: 70
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2a349a1684d26870800000000000000
+      internalID: 8674729504705624623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_bite_10
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 0
+        width: 70
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df31ba80b273083c0800000000000000
+      internalID: -4359423781326089219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_bite_11
+      rect:
+        serializedVersion: 2
+        x: 770
+        y: 0
+        width: 70
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f76a85dd2c52c4db0800000000000000
+      internalID: -4806425183443704193
       vertices: []
       indices: 
       edges: []
@@ -313,7 +446,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 7ac2fe5dd41665d4a9e5ca0c932c28c4
+    spriteID: e542864b19b8e6b4d8c21df82071245c
     internalID: 0
     vertices: []
     indices: 
@@ -323,25 +456,22 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":70.0,"y":70.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":12.0,"y":1.0},"gridSpriteSize":{"x":70.0,"y":70.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      run_0: -1882347247711912902
-      run_1: 7439426567979852956
-      run_2: -2673560216460186399
-      run_3: -5822559823783948592
-      run_4: -4997308686002322044
-      run_5: -7808277857516635856
-      run_6: 2102408166121253023
-      run_7: -828024806730890176
+      attack_bite_0: -3660337718397525389
+      attack_bite_1: 2591778900972152968
+      attack_bite_10: -4359423781326089219
+      attack_bite_11: -4806425183443704193
+      attack_bite_2: -4935829826945031917
+      attack_bite_3: -6538923972316792016
+      attack_bite_4: 4256614086351038501
+      attack_bite_5: 6678146037622112100
+      attack_bite_6: -370905007996645351
+      attack_bite_7: -3695961973125446166
+      attack_bite_8: 679081695457712378
+      attack_bite_9: 8674729504705624623
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 379160
-  packageName: Monsters_Creatures_Fantasy 2
-  packageVersion: 1.0
-  assetPath: Assets/Monsters Creatures Fantasy 2/Sprites/Rat/run.png
-  uploadId: 914690
