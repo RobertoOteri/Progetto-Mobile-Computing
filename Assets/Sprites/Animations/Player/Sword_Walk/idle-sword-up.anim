@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: idle-sword-down
+  m_Name: idle-sword-up
   serializedVersion: 8
   m_Legacy: 0
   m_Compressed: 0
@@ -21,18 +21,9 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: c90ffa27c5ba4f60bca5da70c6c6ee01, type: 3}
+      value: {fileID: 21300000, guid: 3ceac82a78c149419227f3f9b5b92698, type: 3}
     attribute: m_Sprite
     path: 
-    classID: 212
-    script: {fileID: 0}
-    flags: 2
-  - serializedVersion: 2
-    curve:
-    - time: 0
-      value: {fileID: 21300000, guid: 70fd780cb67c417682dd9a96ac50fad2, type: 3}
-    attribute: m_Sprite
-    path: Head
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -53,19 +44,8 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
       metaData: 0
-    - serializedVersion: 2
-      path: 130111906
-      attribute: 0
-      script: {fileID: 0}
-      typeID: 212
-      customType: 23
-      isPPtrCurve: 1
-      isIntCurve: 0
-      isSerializeReferenceCurve: 0
-      metaData: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: c90ffa27c5ba4f60bca5da70c6c6ee01, type: 3}
-    - {fileID: 21300000, guid: 70fd780cb67c417682dd9a96ac50fad2, type: 3}
+    - {fileID: 21300000, guid: 3ceac82a78c149419227f3f9b5b92698, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

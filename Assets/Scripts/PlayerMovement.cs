@@ -10,36 +10,70 @@ public class PlayerMovement : MonoBehaviour
     public Animator anim;
 
     private bool isKnockedBack;
- 
+    
+    public Player_Combat player_Combat;
 
-    // FixedUpdate is called 50 per frame
+    // --- MEMORIA DIREZIONE ---
+    private float lastVertical = 0f;
+    private float lastHorizontal = 1f; // Di default guarda a destra
+
+
+    private void Update()
+    {
+        // Aggiorniamo la memoria ogni volta che premi un tasto direzionale
+        float rawH = Input.GetAxisRaw("Horizontal");
+        float rawV = Input.GetAxisRaw("Vertical");
+
+        if (rawH != 0 || rawV != 0)
+        {
+            lastHorizontal = rawH;
+            lastVertical = rawV;
+        }
+
+        if (Input.GetButtonDown("Slash"))
+        {
+            float v = Input.GetAxisRaw("Vertical");
+            float h = Input.GetAxisRaw("Horizontal");
+
+            // Passiamo gli input attuali + la memoria (lastV e lastH)
+            if (player_Combat != null)
+            {
+                player_Combat.Attack(v, h, lastVertical, lastHorizontal);
+            }
+        }
+    }
+
     void FixedUpdate()
     {
-        if(isKnockedBack == false)
+        if (isKnockedBack == false)
         {
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
 
-            if((horizontal > 0 && transform.localScale.x > 0) ||
-            (horizontal < 0 && transform.localScale.x < 0))
+            // Giriamo lo sprite se necessario
+            if ((horizontal > 0 && transform.localScale.x > 0) ||
+                (horizontal < 0 && transform.localScale.x < 0))
             {
                 Flip();
             }
 
-            if (horizontal != 0)
+            // AGGIORNA L'ANIMATOR SOLO SE NON STAI ATTACCANDO
+            if (anim != null && !anim.GetBool("isAttacking"))
             {
-                anim.SetFloat("horizontal", horizontal);
-                anim.SetFloat("vertical", 0);
-            }
-            else
-            {
-                anim.SetFloat("horizontal", horizontal);
-                anim.SetFloat("vertical", vertical);
+                if (horizontal != 0)
+                {
+                    anim.SetFloat("horizontal", horizontal);
+                    anim.SetFloat("vertical", 0);
+                }
+                else
+                {
+                    anim.SetFloat("horizontal", horizontal);
+                    anim.SetFloat("vertical", vertical);
+                }
             }
 
             rb.linearVelocity = new Vector2(horizontal, vertical) * speed; 
         }
-
     }
 
     void Flip()
