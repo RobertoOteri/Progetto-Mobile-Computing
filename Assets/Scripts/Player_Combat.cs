@@ -1,7 +1,15 @@
 using UnityEngine;
 
 public class Player_Combat : MonoBehaviour
-{
+{   
+    public Transform attackPoint;
+    public float weaponRange = 1;
+    public float knockbackForce = 25;
+    public float knockbackTime = .15f;
+    public float stunTime = .3f;
+    public LayerMask enemyLayer;
+    public int damage = 1;
+
     public Animator anim;
 
     [Header("Oggetti Figli nel Player")]
@@ -38,11 +46,32 @@ public class Player_Combat : MonoBehaviour
             horiz = targetH < 0 ? -1f : 1f;
         }
 
+        if (attackPoint != null){
+        float offset = 0.8f; // Distanza dell'attacco dal centro del personaggio
+
+        if (vert > 0)      attackPoint.localPosition = new Vector3(0f, offset, 0f);  // Guarda in alto
+        else if (vert < 0) attackPoint.localPosition = new Vector3(0f, -offset, 0f); // Guarda in basso
+        else if (horiz > 0) attackPoint.localPosition = new Vector3(offset, 0f, 0f);  // Guarda a destra
+        else if (horiz < 0) attackPoint.localPosition = new Vector3(-offset, 0f, 0f); // Guarda a sinistra
+        }
+
         anim.SetFloat("vertical", vert);
         anim.SetFloat("horizontal", horiz);
         anim.SetBool("hasSword", hasSword);
         anim.SetBool("hasHammer", hasHammer);
         anim.SetBool("isAttacking", true);
+
+
+    }
+
+    public void DealDamage()
+    {
+        Collider2D[] enemies = Physics2D.OverlapCircleAll(attackPoint.position,weaponRange,enemyLayer);
+        if(enemies.Length > 0){
+
+            enemies[0].GetComponent<Enemy_Health>().ChangeHealth(-damage);
+            enemies[0].GetComponent<Enemy_Knockback>().Knockback(transform, knockbackForce, knockbackTime, stunTime);
+        }
     }
 
     public void FinishAttack()
@@ -51,6 +80,12 @@ public class Player_Combat : MonoBehaviour
         {
             anim.SetBool("isAttacking", false);
         }
+    }
+
+    private void onDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position,weaponRange);
     }
 
     public void EquipSword()
