@@ -1,12 +1,12 @@
 fileFormatVersion: 2
-guid: 19726adb5eda4aa483673b5a4e35b959
+guid: 42cb8c461a504708ba1d2a179e775ab7
 AssetOrigin:
   serializedVersion: 1
   productId: 182650
   packageName: 2D Character - Astronaut
   packageVersion: 2.0
   assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Astronaut/Variant
-    A/Sprites/Character/sword_idle/side-overlay/01.png
+    A/Sprites/Character/rifle_walk/up/14.png
   uploadId: 624117
 TextureImporter:
   internalIDToNameTable: []
