@@ -46,7 +46,7 @@ public class Enemy_Movement : MonoBehaviour
         }
     }
 
-    void Chase()
+    protected virtual void Chase()
     {
         if (player == null) return;
 

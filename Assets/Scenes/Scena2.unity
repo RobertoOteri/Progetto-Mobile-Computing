@@ -208894,7 +208894,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 21
+  m_SortingOrder: 18
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: ae9cb2950fa24cb8a4b8fb439b8e5aac, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -208916,8 +208916,8 @@ Transform:
   m_GameObject: {fileID: 2073491714}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.17, y: -0.18, z: 0}
-  m_LocalScale: {x: 0.9262808, y: 0.8635284, z: 1}
+  m_LocalPosition: {x: -0.38, y: -0.21, z: 0}
+  m_LocalScale: {x: 0.8632937, y: 0.7491109, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 545743935}
@@ -209059,6 +209059,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 363359036007406728, guid: abbeb75738875874fbb3611d8f519039,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3500456153533261712, guid: abbeb75738875874fbb3611d8f519039,
         type: 3}
       propertyPath: m_Name
@@ -209244,6 +209249,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3983192157500650621, guid: 573ad725fe2575a4a9a870c8df7000e1,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4340369853583597435, guid: 573ad725fe2575a4a9a870c8df7000e1,
         type: 3}

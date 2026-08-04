@@ -21,11 +21,8 @@ public class Mimic_Movement : Enemy_Movement
 
     protected override void CheckForPlayer()
     {
-        if (enemyState == EnemyState.Knockback)
-        {
-            return;
-        }
-        
+        if (enemyState == EnemyState.Knockback) return;
+
         if (isTransforming)
         {
             rb.linearVelocity = Vector2.zero;
@@ -39,7 +36,7 @@ public class Mimic_Movement : Enemy_Movement
             if (hits.Length > 0)
             {
                 player = hits[0].transform;
-                
+
                 if ((player.position.x > transform.position.x && facingDirection == -1) || 
                     (player.position.x < transform.position.x && facingDirection == 1))
                 {
@@ -54,6 +51,17 @@ public class Mimic_Movement : Enemy_Movement
         base.CheckForPlayer();
     }
 
+    protected override void Chase()
+    {
+        if (isSleeping || isTransforming)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
+        base.Chase();
+    }
+
     private void StartTransformation()
     {
         isSleeping = false;
@@ -62,6 +70,10 @@ public class Mimic_Movement : Enemy_Movement
         rb.linearVelocity = Vector2.zero;
 
         anim.SetBool("IsSleeping", false);
+        anim.SetBool("IsIdle", false);
+        anim.SetBool("IsChasing", false);
+        anim.SetBool("IsAttacking", false);
+        
         anim.SetBool("IsOpening", true);
     }
 
@@ -86,6 +98,5 @@ public class Mimic_Movement : Enemy_Movement
         isTransforming = false; 
         anim.SetBool("IsOpening", false);
 
-        ChangeState(EnemyState.Idle);
     }
 }
