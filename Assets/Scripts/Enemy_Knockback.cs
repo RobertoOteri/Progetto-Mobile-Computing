@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Enemy_Knockback : MonoBehaviour
 {
@@ -15,16 +14,23 @@ public class Enemy_Knockback : MonoBehaviour
 
     public void Knockback(Transform playerTransform, float knockbackForce, float knockbackTime, float stunTime)
     {
+        StopAllCoroutines();
+
         enemy_Movement.ChangeState(EnemyState.Knockback);
-        StartCoroutine(StunTimer(knockbackTime, stunTime));
+
+        rb.linearVelocity = Vector2.zero;
+
         Vector2 direction = (transform.position - playerTransform.position).normalized;
         rb.linearVelocity = direction * knockbackForce;
 
+        StartCoroutine(StunTimer(knockbackTime, stunTime));
     }
+
     IEnumerator StunTimer(float knockbackTime, float stunTime)
     {
         yield return new WaitForSeconds(knockbackTime);
         rb.linearVelocity = Vector2.zero;
+
         yield return new WaitForSeconds(stunTime);
         enemy_Movement.ChangeState(EnemyState.Idle);
     }
