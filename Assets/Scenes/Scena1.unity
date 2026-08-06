@@ -21229,6 +21229,7 @@ MonoBehaviour:
   rb: {fileID: 1795376246}
   anim: {fileID: 1795376250}
   player_Combat: {fileID: 1795376253}
+  player_Rifle: {fileID: 0}
 --- !u!50 &1795376246
 Rigidbody2D:
   serializedVersion: 5
@@ -21489,7 +21490,8 @@ MonoBehaviour:
     type: 3}
   flashDuration: 0.1
   flashRotationOffset: 180
-  shootCooldown: 0.3
+  shootCooldown: 0.18
+  shootStopDuration: 0.2
 --- !u!1 &1810903803
 GameObject:
   m_ObjectHideFlags: 0

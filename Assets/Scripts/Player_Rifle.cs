@@ -11,14 +11,22 @@ public class Player_Rifle : MonoBehaviour
     public GameObject rifleBulletPrefab;
 
     [Header("Effetto Fiammata (Muzzle Flash)")]
-    public GameObject muzzleFlashPrefab; // Trascina qui MuzzleFlash_rifle
-    public float flashDuration = 0.05f;   // Durata fiammata
-    public float flashRotationOffset = 0f; // Offset in gradi per correggere la rotazione (es. 180 se è al contrario)
+    public GameObject muzzleFlashPrefab;
+    public float flashDuration = 0.05f;
+    public float flashRotationOffset = 0f;
 
     private Vector2 aimDirection = Vector2.right;
 
     public float shootCooldown = .5f;
     private float shootTimer;
+
+    [Header("Blocco Movimento Sparo")]
+    public float shootStopDuration = 0.2f; // Per quanti secondi il player rimane fermo quando spara
+    private float stopTimer;
+
+    // Proprietà pubbliche per leggere lo stato dall'esterno
+    public bool IsShooting => stopTimer > 0;
+    public Vector2 AimDirection => aimDirection; // <-- RIGA AGGIUNTA QUI
 
     private Player_Combat combat;
 
@@ -29,14 +37,23 @@ public class Player_Rifle : MonoBehaviour
 
     void Update()
     {
-        // Se il player NON ha il fucile equipaggiato, blocca lo sparo
-        if (combat != null && !combat.hasRifle) return;
+        // Gestione timer per il blocco movimento
+        if (stopTimer > 0)
+        {
+            stopTimer -= Time.deltaTime;
+        }
 
         shootTimer -= Time.deltaTime;
 
+        // Se il player NON ha il fucile equipaggiato, blocca la mira e lo sparo
+        if (combat != null && !combat.hasRifle) return;
+
         HandleAiming();
 
-        if (Input.GetButtonDown("Rifle_Shoot") && shootTimer <= 0)
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetButton("Rifle_Shoot") && shootTimer <= 0 && h == 0 && v == 0)
         {
             Shoot(); 
         }
@@ -47,24 +64,29 @@ public class Player_Rifle : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
+        // Snap a sole 4 Direzioni Cardinali (Niente Diagonali)
         if (horizontal != 0 || vertical != 0)
         {
-            aimDirection = new Vector2(horizontal, vertical).normalized;
+            if (Mathf.Abs(horizontal) >= Mathf.Abs(vertical))
+            {
+                aimDirection = new Vector2(Mathf.Sign(horizontal), 0f); // Solo Destra (+1) o Sinistra (-1)
+            }
+            else
+            {
+                aimDirection = new Vector2(0f, Mathf.Sign(vertical)); // Solo Su (+1) o Giù (-1)
+            }
         }
     }
 
     private Transform GetActiveLaunchPoint()
     {
-        if (Mathf.Abs(aimDirection.y) > Mathf.Abs(aimDirection.x))
+        if (aimDirection.y > 0)
         {
-            if (aimDirection.y > 0)
-            {
-                return launchPointUp != null ? launchPointUp : transform;
-            }
-            else
-            {
-                return launchPointDown != null ? launchPointDown : transform;
-            }
+            return launchPointUp != null ? launchPointUp : transform;
+        }
+        else if (aimDirection.y < 0)
+        {
+            return launchPointDown != null ? launchPointDown : transform;
         }
         else
         {
@@ -77,6 +99,9 @@ public class Player_Rifle : MonoBehaviour
         Transform activePoint = GetActiveLaunchPoint();
 
         if (activePoint == null || rifleBulletPrefab == null) return;
+
+        // Blocca il personaggio per la durata dello sparo
+        stopTimer = shootStopDuration;
 
         // 1. Spawna e orienta il proiettile
         Bullet rifleBullet = Instantiate(rifleBulletPrefab, activePoint.position, Quaternion.identity).GetComponent<Bullet>();
