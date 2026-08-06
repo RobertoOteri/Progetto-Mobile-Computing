@@ -15,10 +15,12 @@ public class Player_Combat : MonoBehaviour
     [Header("Oggetti Figli nel Player")]
     public GameObject swordObject;  
     public GameObject hammerObject; 
+    public GameObject rifleObject;
 
     [Header("Stato Equipaggiamento")]
     public bool hasSword = false;
     public bool hasHammer = false;
+    public bool hasRifle = false;
 
     private void Start()
     {
@@ -82,7 +84,7 @@ public class Player_Combat : MonoBehaviour
         }
     }
 
-    private void onDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPoint.position,weaponRange);
@@ -92,14 +94,27 @@ public class Player_Combat : MonoBehaviour
     {
         hasSword = true;
         hasHammer = false;
+        hasRifle = false;
         UpdateWeaponVisibility();
+        UpdateAnimatorBools();
     }
 
     public void EquipHammer()
     {
         hasSword = false;
+        hasRifle = false;
         hasHammer = true;
         UpdateWeaponVisibility();
+        UpdateAnimatorBools();
+    }
+
+    public void EquipRifle()
+    {
+        hasSword = false;
+        hasHammer = false;
+        hasRifle = true;
+        UpdateWeaponVisibility();
+        UpdateAnimatorBools();
     }
 
     // Viene chiamata ogni volta che l'arma viene cambiata oppure all'inizio quando non ha nessun arma
@@ -107,5 +122,15 @@ public class Player_Combat : MonoBehaviour
     {
         if (swordObject != null) swordObject.SetActive(hasSword);
         if (hammerObject != null) hammerObject.SetActive(hasHammer);
+        if (rifleObject != null) rifleObject.SetActive(hasRifle);
+    }
+
+    private void UpdateAnimatorBools()
+    {
+        if(anim == null) return;
+
+        anim.SetBool("hasSword", hasSword);
+        anim.SetBool("hasHammer", hasHammer);
+        anim.SetBool("hasRifle", hasRifle);
     }
 }

@@ -15,6 +15,9 @@ public class Bullet : MonoBehaviour
 
 
     public LayerMask enemyLayer;
+    public LayerMask obstacleLayer;
+
+    public SpriteRenderer sr;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,6 +39,11 @@ public class Bullet : MonoBehaviour
         {
             collision.gameObject.GetComponent<Enemy_Health>().ChangeHealth(-damage);
             collision.gameObject.GetComponent<Enemy_Knockback>().Knockback(transform, knockbackForce, knockbackTime, stunTime);
+            Destroy(gameObject);
+        }
+        else if ((obstacleLayer.value & (1 << collision.gameObject.layer)) > 0)
+        {
+            Destroy(gameObject);
         }
     }
 

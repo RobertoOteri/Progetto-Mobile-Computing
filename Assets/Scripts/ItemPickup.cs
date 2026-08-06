@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    public enum WeaponType { Sword, Hammer }
+    public enum WeaponType { Sword, Hammer, Rifle }
 
     [Header("Tipo di questa arma")]
     public WeaponType weaponToEquip;
@@ -11,6 +11,7 @@ public class ItemPickup : MonoBehaviour
     [Header("Prefab delle armi da terra")]
     public GameObject swordPickupPrefab;  
     public GameObject hammerPickupPrefab; 
+    public GameObject riflePickupPrefab;
 
     private bool canBePickedUp = true;
 
@@ -39,10 +40,17 @@ public class ItemPickup : MonoBehaviour
                     droppedItem.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f); // Moifica la dimensione dell'item appena viene droppato
                     droppedItem.GetComponent<ItemPickup>().StartCoroutine(droppedItem.GetComponent<ItemPickup>().PickupCooldown());
                 }
+                else if (combat.hasRifle && riflePickupPrefab != null) // Se avevi il fucile, lo droppa a terra
+                {
+                    GameObject droppedItem = Instantiate(riflePickupPrefab, dropPosition, Quaternion.identity);
+                    droppedItem.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+                    droppedItem.GetComponent<ItemPickup>().StartCoroutine(droppedItem.GetComponent<ItemPickup>().PickupCooldown());
+                }
 
                 // Equipaggia la nuova arma
                 if (weaponToEquip == WeaponType.Sword) combat.EquipSword();
                 else if (weaponToEquip == WeaponType.Hammer) combat.EquipHammer();
+                else if (weaponToEquip == WeaponType.Rifle) combat.EquipRifle();
 
                 // Rimuove l'oggetto raccolto
                 Destroy(gameObject);
