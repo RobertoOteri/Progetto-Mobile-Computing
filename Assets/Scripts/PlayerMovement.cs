@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     
     public Player_Combat player_Combat;
     public Player_Rifle player_Rifle;
+    public Player_Gun player_Gun;
 
     // --- MEMORIA DIREZIONE ---
     private float lastVertical = 0f;
@@ -23,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (player_Combat == null) player_Combat = GetComponent<Player_Combat>();
         if (player_Rifle == null) player_Rifle = GetComponent<Player_Rifle>();
+        if (player_Gun == null) player_Gun = GetComponent<Player_Gun>();
     }
 
     private void Update()
@@ -52,36 +54,40 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isKnockedBack == false)
         {
-            // === GESTIONE SPARO: FORZA IDLE SENZA ATTIVARE LA CAMMINATA ===
-            if (player_Rifle != null && player_Rifle.IsShooting)
+            // === BLOCCO SPARO (Spara con Fucile o Pistola) ===
+            bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
+            bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
+
+            if (isShootingRifle || isShootingGun)
             {
-                rb.linearVelocity = Vector2.zero; // Ferma il movimento fisico
+                rb.linearVelocity = Vector2.zero;
 
                 if (anim != null)
                 {
-                    // Azzera i float per evitare che scattino le transizioni di camminata
                     anim.SetFloat("horizontal", 0);
                     anim.SetFloat("vertical", 0);
 
-                    Vector2 aim = player_Rifle.AimDirection;
+                    Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
 
-                    // Forza la riproduzione dello stato Idle corretto senza passare dalle frecce dell'Animator
+                    string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Up";
+                    string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
+                    string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
+
                     if (aim.y > 0)
                     {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Rifle-Idle-Up"))
-                            anim.Play("Rifle-Idle-Up");
+                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleUp))
+                            anim.Play(idleUp);
                     }
                     else if (aim.y < 0)
                     {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Rifle-Idle-Down"))
-                            anim.Play("Rifle-Idle-Down");
+                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleDown))
+                            anim.Play(idleDown);
                     }
                     else if (aim.x != 0)
                     {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Rifle-Idle-Side"))
-                            anim.Play("Rifle-Idle-Side");
+                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleSide))
+                            anim.Play(idleSide);
 
-                        // Giriamo lo sprite se necessario usando la tua logica di Flip originale
                         if ((aim.x > 0 && transform.localScale.x > 0) || (aim.x < 0 && transform.localScale.x < 0))
                         {
                             Flip();
@@ -91,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
 
-            // === NORMALE MOVIMENTO ===
+            // === NORMALE MOVIMENTO ORIGINALE ===
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
 
