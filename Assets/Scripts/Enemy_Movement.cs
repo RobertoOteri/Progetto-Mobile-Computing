@@ -72,6 +72,20 @@ public class Enemy_Movement : MonoBehaviour
 
         if (hits.Length > 0)
         {
+            // Controlla se il giocatore è morto
+            PlayerHealth playerHealth = hits[0].GetComponent<PlayerHealth>();
+            if (playerHealth != null && playerHealth.IsDead)
+            {
+                player = null;
+                rb.linearVelocity = Vector2.zero;
+                
+                if (enemyState != EnemyState.Idle)
+                {
+                    ChangeState(EnemyState.Idle);
+                }
+                return; // Esce e non esegue l'attacco o l'inseguimento
+            }
+
             player = hits[0].transform;
 
             if (Vector2.Distance(transform.position, player.position) <= attackRange && attackCooldownTimer <= 0)

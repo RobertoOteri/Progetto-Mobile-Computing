@@ -10,6 +10,7 @@ public class PlayerHealth : MonoBehaviour
 
     private Animator anim;
     private bool isDead = false;
+    public bool IsDead => isDead;
 
     private void Start()
     {
@@ -33,27 +34,34 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void Die()
+   private void Die()
     {
         isDead = true;
 
-        // 1. Blocca i movimenti del giocatore
+        // 1. Disattiva il Collider2D così i nemici NON lo vedono/colpiscono più
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            col.enabled = false;
+        }
+
+        // 2. Blocca i movimenti del giocatore
         if (playerMovement != null)
         {
             playerMovement.enabled = false;
         }
 
-        // 2. Azzera la velocità nel Rigidbody per fermare subito l'inerzia
+        // 3. Azzera la velocità
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
         }
 
-        // 3. Attiva il Trigger dell'animazione di morte
+        // 4. Animazione di morte
         if (anim != null)
         {
-            anim.SetTrigger("die"); // Controlla che il Trigger nell'Animator si chiami proprio "die"
+            anim.SetTrigger("die");
         }
     }
 }
