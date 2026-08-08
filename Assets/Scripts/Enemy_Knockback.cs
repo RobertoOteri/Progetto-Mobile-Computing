@@ -12,7 +12,7 @@ public class Enemy_Knockback : MonoBehaviour
         enemy_Movement = GetComponent<Enemy_Movement>();
     }
 
-    public void Knockback(Transform playerTransform, float knockbackForce, float knockbackTime, float stunTime)
+    public void Knockback(Transform forceTransform, float knockbackForce, float knockbackTime, float stunTime)
     {
         StopAllCoroutines();
 

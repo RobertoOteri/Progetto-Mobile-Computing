@@ -12,15 +12,23 @@ public class PlayerMovement : MonoBehaviour
     private bool isKnockedBack;
     
     public Player_Combat player_Combat;
+    public Player_Rifle player_Rifle;
+    public Player_Gun player_Gun;
 
     // --- MEMORIA DIREZIONE ---
     private float lastVertical = 0f;
-    private float lastHorizontal = 1f; // Di default guarda a destra
+    private float lastHorizontal = 1f;
 
+
+    private void Start()
+    {
+        if (player_Combat == null) player_Combat = GetComponent<Player_Combat>();
+        if (player_Rifle == null) player_Rifle = GetComponent<Player_Rifle>();
+        if (player_Gun == null) player_Gun = GetComponent<Player_Gun>();
+    }
 
     private void Update()
     {
-        // Aggiorniamo la memoria ogni volta che premi un tasto direzionale
         float rawH = Input.GetAxisRaw("Horizontal");
         float rawV = Input.GetAxisRaw("Vertical");
 
@@ -35,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
             float v = Input.GetAxisRaw("Vertical");
             float h = Input.GetAxisRaw("Horizontal");
 
-            // Passiamo gli input attuali + la memoria (lastV e lastH)
             if (player_Combat != null)
             {
                 player_Combat.Attack(v, h, lastVertical, lastHorizontal);
@@ -47,17 +54,59 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isKnockedBack == false)
         {
+            // === BLOCCO SPARO (Spara con Fucile o Pistola) ===
+            bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
+            bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
+
+            if (isShootingRifle || isShootingGun)
+            {
+                rb.linearVelocity = Vector2.zero;
+
+                if (anim != null)
+                {
+                    anim.SetFloat("horizontal", 0);
+                    anim.SetFloat("vertical", 0);
+
+                    Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
+
+                    string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Up";
+                    string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
+                    string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
+
+                    if (aim.y > 0)
+                    {
+                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleUp))
+                            anim.Play(idleUp);
+                    }
+                    else if (aim.y < 0)
+                    {
+                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleDown))
+                            anim.Play(idleDown);
+                    }
+                    else if (aim.x != 0)
+                    {
+                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleSide))
+                            anim.Play(idleSide);
+
+                        if ((aim.x > 0 && transform.localScale.x > 0) || (aim.x < 0 && transform.localScale.x < 0))
+                        {
+                            Flip();
+                        }
+                    }
+                }
+                return;
+            }
+
+            // === NORMALE MOVIMENTO ORIGINALE ===
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
 
-            // Giriamo lo sprite se necessario
             if ((horizontal > 0 && transform.localScale.x > 0) ||
                 (horizontal < 0 && transform.localScale.x < 0))
             {
                 Flip();
             }
 
-            // AGGIORNA L'ANIMATOR SOLO SE NON STAI ATTACCANDO
             if (anim != null && !anim.GetBool("isAttacking"))
             {
                 if (horizontal != 0)

@@ -19,11 +19,11 @@ public class HealthDisplay : MonoBehaviour
     public float shakeDuration = 0.2f;
     public float shakeAmount = 5f;
     private int previousHealth;
-    private Vector3[] startPositions; 
+    private Vector2[] startPositions; 
 
     void Start()
     {
-        startPositions = new Vector3[hearts.Length];
+        startPositions = new Vector2[hearts.Length];
         for (int i = 0; i < hearts.Length; i++)
         {
             if (hearts[i] != null)
@@ -92,7 +92,7 @@ public class HealthDisplay : MonoBehaviour
                     float offsetX = Random.Range(-1f, 1f) * shakeAmount;
                     float offsetY = Random.Range(-1f, 1f) * shakeAmount;
 
-                    hearts[i].rectTransform.anchoredPosition = startPositions[i] + new Vector3(offsetX, offsetY, 0);
+                    hearts[i].rectTransform.anchoredPosition = startPositions[i] + new Vector2(offsetX, offsetY);
                 }
             }
 
