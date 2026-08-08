@@ -20,7 +20,7 @@ public class Enemy_Knockback : MonoBehaviour
 
         rb.linearVelocity = Vector2.zero;
 
-        Vector2 direction = (transform.position - playerTransform.position).normalized;
+        Vector2 direction = (transform.position - forceTransform.position).normalized;
         rb.linearVelocity = direction * knockbackForce;
 
         StartCoroutine(StunTimer(knockbackTime, stunTime));
