@@ -22,7 +22,7 @@ public class Bullet : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb.velocity = direction * speed;
+        rb.linearVelocity = direction * speed;
         RotateBullet();
         Destroy(gameObject, lifeSpan);
     }
