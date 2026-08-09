@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 82d8ac6471feab94883f5c837fc42f55
+guid: 2e55386d82224a8478904760763caba6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4351041717220710128
-    second: Cabina Intro_0
+      213: 7331481169779831426
+    second: Cabina Intro (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cabina Intro_0
+      name: Cabina Intro (1)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0f698d59361026c30800000000000000
-      internalID: 4351041717220710128
+      spriteID: 2823132b747aeb560800000000000000
+      internalID: 7331481169779831426
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Cabina Intro_0: 4351041717220710128
+      Cabina Intro (1)_0: 7331481169779831426
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

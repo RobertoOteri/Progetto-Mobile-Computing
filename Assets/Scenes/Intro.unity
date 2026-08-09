@@ -199,8 +199,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 20019bf69e660784e8eeb86c2b4fb729, type: 2}
+  m_sharedMaterial: {fileID: 6105297481108381905, guid: 20019bf69e660784e8eeb86c2b4fb729,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -326,7 +327,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4351041717220710128, guid: 82d8ac6471feab94883f5c837fc42f55,
+  m_Sprite: {fileID: 7331481169779831426, guid: 2e55386d82224a8478904760763caba6,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -580,8 +581,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82898c5ea88ae244ca57fd35ba29a0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpaceZoom
-  zoomSpeed: 0.02
-  maxScale: 2
+  zoomSpeed: 0.025
+  maxScale: 2.5
   loopZoom: 1
 --- !u!1 &673332426
 GameObject:
