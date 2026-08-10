@@ -25,6 +25,15 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth += amount;
 
+        // 🟢 Se il valore è negativo, significa che stiamo subendo un colpo!
+        if (amount < 0)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayHurtSound();
+            }
+        }
+
         // Limita la vita tra 0 e maxHealth
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 

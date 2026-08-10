@@ -258,6 +258,8 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 1048576
+  attackSFX: {fileID: 8300000, guid: 0869359f553fd3042b7a1151af0b5a94, type: 3}
+  attackVolume: 0.051
 --- !u!114 &7754469791034385587
 MonoBehaviour:
   m_ObjectHideFlags: 0

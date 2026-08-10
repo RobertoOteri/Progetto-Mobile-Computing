@@ -13,6 +13,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip attackSFX;
     public AudioClip dieSFX;
     public AudioClip pickupSFX;
+    public AudioClip hurtSFX;
 
     [Header("--- Settings Camminata ---")]
     [SerializeField] private float fadeSpeed = 8f;
@@ -109,6 +110,14 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayHurtSound()
+    {
+        if (hurtSFX != null && sfxSource != null)
+        {
+            PlaySFX(hurtSFX); // Riproduce il suono dell'impatto a volume/pitch standard
+        }
+    }
+
     private System.Collections.IEnumerator PlaySFXWithSettings(AudioClip clip, float volume, float pitch)
     {
         sfxSource.pitch = pitch;
@@ -118,5 +127,13 @@ public class AudioManager : MonoBehaviour
 
         sfxSource.pitch = 1f; // Ripristina il pitch standard a 1
         dieSoundCoroutine = null;
+    }
+    public void PlaySFXWithVolume(AudioClip clip, float volume)
+    {
+        if (clip != null && sfxSource != null)
+        {
+            sfxSource.pitch = 1f; // Mantiene la tonalità corretta
+            sfxSource.PlayOneShot(clip, volume); // Riproduce la clip con il volume specifico passatogli
+        }
     }
 }

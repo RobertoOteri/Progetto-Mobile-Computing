@@ -1451,6 +1451,7 @@ MonoBehaviour:
   attackSFX: {fileID: 0}
   dieSFX: {fileID: 8300000, guid: b8a2c22df6fc15d4b9ee52325b66b65f, type: 3}
   pickupSFX: {fileID: 8300000, guid: 5d4345d2546fbae4e9b2bfa3dd16681e, type: 3}
+  hurtSFX: {fileID: 8300000, guid: 7287da5f4f346c14ca4d0878c23a159c, type: 3}
   fadeSpeed: 4
   walkMaxVolume: 0.3
   walkPitch: 0.6
