@@ -38,6 +38,11 @@ public class PlayerHealth : MonoBehaviour
     {
         isDead = true;
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayDieSound();
+        }
+
         // 1. Disattiva il Collider2D così i nemici NON lo vedono/colpiscono più
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)

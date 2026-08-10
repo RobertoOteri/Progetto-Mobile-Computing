@@ -60,6 +60,11 @@ public class ItemPickup : MonoBehaviour
                 else if (weaponToEquip == WeaponType.Rifle) combat.EquipRifle();
                 else if (weaponToEquip == WeaponType.Gun) combat.EquipGun(); // AGGIUNTO
 
+                if (AudioManager.Instance != null && AudioManager.Instance.pickupSFX != null)
+                {
+                    AudioManager.Instance.PlaySFX(AudioManager.Instance.pickupSFX);
+                }
+                    
                 // Rimuove l'oggetto raccolto
                 Destroy(gameObject);
             }

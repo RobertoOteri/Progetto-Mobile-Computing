@@ -153,3 +153,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthPotion
   healAmount: 2
+  healSFX: {fileID: 8300000, guid: 3c6bf4b33e2d3754d827c0b04a5589f5, type: 3}
