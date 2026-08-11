@@ -19,9 +19,10 @@ public class PlayerMovement : MonoBehaviour
     private float lastVertical = 0f;
     private float lastHorizontal = 1f;
 
-
     private void Start()
     {
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
+        if (anim == null) anim = GetComponent<Animator>();
         if (player_Combat == null) player_Combat = GetComponent<Player_Combat>();
         if (player_Rifle == null) player_Rifle = GetComponent<Player_Rifle>();
         if (player_Gun == null) player_Gun = GetComponent<Player_Gun>();
@@ -122,6 +123,21 @@ public class PlayerMovement : MonoBehaviour
             }
 
             rb.linearVelocity = new Vector2(horizontal, vertical) * speed; 
+        }
+    }
+
+    // --- FUNZIONE PER FERMARE IL MOVIMENTO E L'ANIMAZIONE ---
+    public void StopMovement()
+    {
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        if (anim != null)
+        {
+            anim.SetFloat("horizontal", 0);
+            anim.SetFloat("vertical", 0);
         }
     }
 

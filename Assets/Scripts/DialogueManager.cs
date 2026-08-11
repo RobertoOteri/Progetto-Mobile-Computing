@@ -15,11 +15,14 @@ public class DialogueManager : MonoBehaviour
     public Image portraitImage;
 
     [Header("Impostazioni")]
-    public float textSpeed = 0.03f; // Velocità scrittura lettera per lettera
+    public float textSpeed = 0.03f;
 
     private Queue<string> sentences = new Queue<string>();
     private bool isTyping = false;
     private string currentSentence;
+
+    // Riferimento allo script di movimento del giocatore
+    private PlayerMovement playerMovement;
 
     private void Awake()
     {
@@ -28,17 +31,39 @@ public class DialogueManager : MonoBehaviour
 
     private void Start()
     {
-        // Nasconde la UI all'avvio del gioco
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
+
+        // Trova il giocatore e recupera il suo PlayerMovement
+        FindPlayerComponents();
     }
 
-    // Fuzione per far partire il dialogo
+    private void FindPlayerComponents()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerMovement = player.GetComponent<PlayerMovement>();
+        }
+    }
+
     public void StartDialogue(string speakerName, Sprite portrait, string[] lines)
     {
         dialoguePanel.SetActive(true);
         nameText.text = speakerName;
 
+        // Se non abbiamo ancora il riferimento al Player, proviamo a cercarlo
+        if (playerMovement == null) 
+            FindPlayerComponents();
+
+        // --- BLOCCA IL MOVIMENTO E RESETTA L'ANIMATORE ---
+        if (playerMovement != null)
+        {
+            playerMovement.StopMovement(); // Azzera la fisica e imposta horizontal=0 e vertical=0 sull'Animator
+            playerMovement.enabled = false; // Spegne lo script per bloccare gli input
+        }
+
+        // Gestione immagine ritratto
         if (portrait != null)
         {
             portraitImage.sprite = portrait;
@@ -49,6 +74,7 @@ public class DialogueManager : MonoBehaviour
             portraitImage.gameObject.SetActive(false);
         }
 
+        // Prepara le frasi del dialogo
         sentences.Clear();
         foreach (string line in lines)
         {
@@ -60,7 +86,6 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        // Se sta ancora scrivendo, premi E/Spazio per completare la frase all'istante
         if (isTyping)
         {
             StopAllCoroutines();
@@ -69,7 +94,6 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // Se le frasi sono finite, chiude il dialogo
         if (sentences.Count == 0)
         {
             EndDialogue();
@@ -97,11 +121,16 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         dialoguePanel.SetActive(false);
+
+        // --- SBLOCCA IL GIOCATORE ---
+        if (playerMovement != null)
+        {
+            playerMovement.enabled = true;
+        }
     }
 
     private void Update()
     {
-        // Premi SPAZIO o E per avanzare nel dialogo
         if (dialoguePanel.activeSelf && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.E)))
         {
             DisplayNextSentence();
