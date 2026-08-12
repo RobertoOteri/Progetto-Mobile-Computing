@@ -107,6 +107,11 @@ public class Player_Gun : MonoBehaviour
             gunBullet.direction = aimDirection;
         }
 
+        if (AudioManager.Instance != null && AudioManager.Instance.gunShootSFX != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.gunShootSFX, 0.2f);
+        }
+
         if (muzzleFlashPrefab != null)
         {
             float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg + flashRotationOffset;

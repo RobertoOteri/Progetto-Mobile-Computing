@@ -5,12 +5,20 @@ public class Mimic_Movement : Enemy_Movement
     private bool isSleeping = true;
     private bool isTransforming = false;
 
+    [Header("Audio Mimic")]
+    public AudioSource audioSource;
+    public AudioClip openSound;
+    [Range(0f, 1f)] public float openSoundVolume = 1f;
+
     protected override void Start()
     {
         base.Start();
 
         isSleeping = true;
         isTransforming = false;
+
+        // Se non viene assegnato manuale, prova a prenderlo dallo stesso GameObject
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
         anim.SetBool("IsSleeping", true);
         anim.SetBool("IsOpening", false);
@@ -75,6 +83,16 @@ public class Mimic_Movement : Enemy_Movement
         anim.SetBool("IsAttacking", false);
         
         anim.SetBool("IsOpening", true);
+
+        PlayOpenSound();
+    }
+
+    public void PlayOpenSound()
+    {
+        if (audioSource != null && openSound != null)
+        {
+            audioSource.PlayOneShot(openSound, openSoundVolume);
+        }
     }
 
     public override void ChangeState(EnemyState newState)
@@ -97,6 +115,5 @@ public class Mimic_Movement : Enemy_Movement
     {
         isTransforming = false; 
         anim.SetBool("IsOpening", false);
-
     }
 }

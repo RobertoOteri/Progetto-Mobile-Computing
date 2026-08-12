@@ -110,6 +110,11 @@ public class Player_Rifle : MonoBehaviour
             rifleBullet.direction = aimDirection;
         }
 
+        if (AudioManager.Instance != null && AudioManager.Instance.rifleShootSFX != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.rifleShootSFX, 0.2f); // Modifica 0.4f per alzare/abbassare il volume
+        }
+
         // 2. Spawna la fiammata con l'offset di rotazione
         if (muzzleFlashPrefab != null)
         {

@@ -14,6 +14,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip dieSFX;
     public AudioClip pickupSFX;
     public AudioClip hurtSFX;
+    public AudioClip gunShootSFX;
+    public AudioClip rifleShootSFX;
 
     [Header("--- Settings Camminata ---")]
     [SerializeField] private float fadeSpeed = 8f;

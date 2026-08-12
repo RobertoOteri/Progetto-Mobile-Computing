@@ -7,6 +7,14 @@ public class Enemy_Health : MonoBehaviour
     public int currentHealth;
     public int maxHealth;
 
+    [Header("Audio Personalizzato Nemico")]
+    public AudioClip hitSound; // 🟢 Suono quando viene colpito
+    public float hitSoundVolume = 0.5f;
+
+    [Space]
+    public AudioClip deathSound; // Suono quando muore
+    public float deathSoundVolume = 0.5f; 
+
     private Animator anim;
     private Collider2D col;
 
@@ -19,6 +27,15 @@ public class Enemy_Health : MonoBehaviour
     public void ChangeHealth(int amount){
 
         currentHealth += amount;
+
+        // 🟢 Se il nemico ha subito danni (amount < 0) e non è ancora morto
+        if (amount < 0 && currentHealth > 0)
+        {
+            if (hitSound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFXWithVolume(hitSound, hitSoundVolume);
+            }
+        }
 
         if(currentHealth > maxHealth){
             currentHealth = maxHealth;
@@ -37,6 +54,11 @@ public class Enemy_Health : MonoBehaviour
 
         if(anim != null){
             anim.SetTrigger("die");
+        }
+
+        if (deathSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(deathSound, deathSoundVolume);
         }
 
         Destroy(gameObject, 0.7f);

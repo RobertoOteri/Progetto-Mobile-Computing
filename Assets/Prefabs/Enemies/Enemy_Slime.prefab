@@ -275,12 +275,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Combat
   damage: 1
   attackPoint: {fileID: 4354146496825823161}
-  weaponRange: 0.4
+  weaponRange: 1.1
   knockbackForce: 8
   stunTime: 0.8
   playerLayer:
     serializedVersion: 2
     m_Bits: 1048576
+  attackSFX: {fileID: 8300000, guid: 942bc35064a1cdc4e9d695e098d62af0, type: 3}
+  attackVolume: 0.4
 --- !u!114 &4732855509312533881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,7 +296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Movement
   speed: 2
-  attackRange: 0.8
+  attackRange: 1.1
   attackCooldown: 1
   playerDetectRange: 3.5
   detectionPoint: {fileID: 5663500815170189521}
@@ -351,6 +353,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
   currentHealth: 3
   maxHealth: 3
+  hitSound: {fileID: 8300000, guid: 0bda6b4969403c24795f31f1d17860ab, type: 3}
+  hitSoundVolume: 0.5
+  deathSound: {fileID: 8300000, guid: f898ca4d3c042b74aa3879d3dba958ee, type: 3}
+  deathSoundVolume: 1.5
 --- !u!114 &682607381463780340
 MonoBehaviour:
   m_ObjectHideFlags: 0
