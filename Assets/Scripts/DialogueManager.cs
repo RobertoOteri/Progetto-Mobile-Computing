@@ -8,11 +8,21 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
-    [Header("Riferimenti UI")]
+    [Header("Riferimenti UI Generali")]
     public GameObject dialoguePanel;
-    public TMP_Text nameText;
     public TMP_Text dialogueText;
-    public Image portraitImage;
+
+    [Header("UI Sinistra (Player / Navicella)")]
+    public GameObject portraitBoxLeft;
+    public Image portraitImageLeft;
+    public GameObject nameTagLeft;
+    public TMP_Text nameTextLeft;
+    
+    [Header("UI Destra (NPC)")]
+    public GameObject portraitBoxRight;
+    public Image portraitImageRight;
+    public GameObject nameTagRight;
+    public TMP_Text nameTextRight;
 
     [Header("Impostazioni")]
     public float textSpeed = 0.03f;
@@ -21,7 +31,6 @@ public class DialogueManager : MonoBehaviour
     private bool isTyping = false;
     private string currentSentence;
 
-    // Riferimento allo script di movimento del giocatore
     private PlayerMovement playerMovement;
 
     private void Awake()
@@ -34,7 +43,6 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
-        // Trova il giocatore e recupera il suo PlayerMovement
         FindPlayerComponents();
     }
 
@@ -47,34 +55,46 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void StartDialogue(string speakerName, Sprite portrait, string[] lines)
+    public void StartDialogue(string speakerName, Sprite portrait, string[] lines, bool isPortraitOnRight = false)
     {
         dialoguePanel.SetActive(true);
-        nameText.text = speakerName;
 
-        // Se non abbiamo ancora il riferimento al Player, proviamo a cercarlo
         if (playerMovement == null) 
             FindPlayerComponents();
 
-        // --- BLOCCA IL MOVIMENTO E RESETTA L'ANIMATORE ---
+        // Blocca il movimento del personaggio
         if (playerMovement != null)
         {
-            playerMovement.StopMovement(); // Azzera la fisica e imposta horizontal=0 e vertical=0 sull'Animator
-            playerMovement.enabled = false; // Spegne lo script per bloccare gli input
+            playerMovement.StopMovement();
+            playerMovement.enabled = false;
         }
 
-        // Gestione immagine ritratto
-        if (portrait != null)
+        // --- GESTIONE DESTRA vs SINISTRA ---
+        if (isPortraitOnRight)
         {
-            portraitImage.sprite = portrait;
-            portraitImage.gameObject.SetActive(true);
+            // === DISPOSIZIONE DESTRA (NPC) ===
+            if (portraitBoxLeft != null) portraitBoxLeft.SetActive(false);
+            if (nameTagLeft != null) nameTagLeft.SetActive(false);
+
+            if (portraitBoxRight != null) portraitBoxRight.SetActive(portrait != null);
+            if (portraitImageRight != null && portrait != null) portraitImageRight.sprite = portrait;
+
+            if (nameTagRight != null) nameTagRight.SetActive(true);
+            if (nameTextRight != null) nameTextRight.text = speakerName;
         }
         else
         {
-            portraitImage.gameObject.SetActive(false);
+            // === DISPOSIZIONE SINISTRA (Player / Navicella) ===
+            if (portraitBoxRight != null) portraitBoxRight.SetActive(false);
+            if (nameTagRight != null) nameTagRight.SetActive(false);
+
+            if (portraitBoxLeft != null) portraitBoxLeft.SetActive(portrait != null);
+            if (portraitImageLeft != null && portrait != null) portraitImageLeft.sprite = portrait;
+
+            if (nameTagLeft != null) nameTagLeft.SetActive(true);
+            if (nameTextLeft != null) nameTextLeft.text = speakerName;
         }
 
-        // Prepara le frasi del dialogo
         sentences.Clear();
         foreach (string line in lines)
         {
@@ -122,7 +142,6 @@ public class DialogueManager : MonoBehaviour
     {
         dialoguePanel.SetActive(false);
 
-        // --- SBLOCCA IL GIOCATORE ---
         if (playerMovement != null)
         {
             playerMovement.enabled = true;
