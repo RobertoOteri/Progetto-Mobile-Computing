@@ -4,6 +4,16 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+[System.Serializable]
+public struct DialogueLine
+{
+    public string speakerName;
+    public Sprite portrait;
+    public bool isRightSide; // True = Destra (NPC/Alieno), False = Sinistra (Player)
+    [TextArea(2, 4)]
+    public string sentence;
+}
+
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
@@ -17,8 +27,8 @@ public class DialogueManager : MonoBehaviour
     public Image portraitImageLeft;
     public GameObject nameTagLeft;
     public TMP_Text nameTextLeft;
-    
-    [Header("UI Destra (NPC)")]
+
+    [Header("UI Destra (NPC / Alieni)")]
     public GameObject portraitBoxRight;
     public Image portraitImageRight;
     public GameObject nameTagRight;
@@ -27,11 +37,11 @@ public class DialogueManager : MonoBehaviour
     [Header("Impostazioni")]
     public float textSpeed = 0.03f;
 
-    private Queue<string> sentences = new Queue<string>();
+    private Queue<DialogueLine> dialogueLinesQueue = new Queue<DialogueLine>();
     private bool isTyping = false;
     private string currentSentence;
-
     private PlayerMovement playerMovement;
+    private bool justOpened = false;
 
     private void Awake()
     {
@@ -57,48 +67,42 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(string speakerName, Sprite portrait, string[] lines, bool isPortraitOnRight = false)
     {
-        dialoguePanel.SetActive(true);
+        List<DialogueLine> sequence = new List<DialogueLine>();
+        foreach (string line in lines)
+        {
+            DialogueLine dl = new DialogueLine
+            {
+                speakerName = speakerName,
+                portrait = portrait,
+                isRightSide = isPortraitOnRight,
+                sentence = line
+            };
+            sequence.Add(dl);
+        }
 
-        if (playerMovement == null) 
+        StartDialogueSequence(sequence);
+    }
+
+    public void StartDialogueSequence(List<DialogueLine> lines)
+    {
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(true);
+
+        justOpened = true; // Impedisce a Update di consumare l'input in questo frame
+
+        if (playerMovement == null)
             FindPlayerComponents();
 
-        // Blocca il movimento del personaggio
         if (playerMovement != null)
         {
             playerMovement.StopMovement();
             playerMovement.enabled = false;
         }
 
-        // --- GESTIONE DESTRA vs SINISTRA ---
-        if (isPortraitOnRight)
+        dialogueLinesQueue.Clear();
+        foreach (var line in lines)
         {
-            // === DISPOSIZIONE DESTRA (NPC) ===
-            if (portraitBoxLeft != null) portraitBoxLeft.SetActive(false);
-            if (nameTagLeft != null) nameTagLeft.SetActive(false);
-
-            if (portraitBoxRight != null) portraitBoxRight.SetActive(portrait != null);
-            if (portraitImageRight != null && portrait != null) portraitImageRight.sprite = portrait;
-
-            if (nameTagRight != null) nameTagRight.SetActive(true);
-            if (nameTextRight != null) nameTextRight.text = speakerName;
-        }
-        else
-        {
-            // === DISPOSIZIONE SINISTRA (Player / Navicella) ===
-            if (portraitBoxRight != null) portraitBoxRight.SetActive(false);
-            if (nameTagRight != null) nameTagRight.SetActive(false);
-
-            if (portraitBoxLeft != null) portraitBoxLeft.SetActive(portrait != null);
-            if (portraitImageLeft != null && portrait != null) portraitImageLeft.sprite = portrait;
-
-            if (nameTagLeft != null) nameTagLeft.SetActive(true);
-            if (nameTextLeft != null) nameTextLeft.text = speakerName;
-        }
-
-        sentences.Clear();
-        foreach (string line in lines)
-        {
-            sentences.Enqueue(line);
+            dialogueLinesQueue.Enqueue(line);
         }
 
         DisplayNextSentence();
@@ -109,29 +113,56 @@ public class DialogueManager : MonoBehaviour
         if (isTyping)
         {
             StopAllCoroutines();
-            dialogueText.text = currentSentence;
+            if (dialogueText != null) dialogueText.text = currentSentence;
             isTyping = false;
             return;
         }
 
-        if (sentences.Count == 0)
+        if (dialogueLinesQueue.Count == 0)
         {
             EndDialogue();
             return;
         }
 
-        currentSentence = sentences.Dequeue();
+        DialogueLine line = dialogueLinesQueue.Dequeue();
+        currentSentence = line.sentence;
+
+        // Gestione Layout UI Sicura con controlli null
+        if (line.isRightSide)
+        {
+            if (portraitBoxLeft != null) portraitBoxLeft.SetActive(false);
+            if (nameTagLeft != null) nameTagLeft.SetActive(false);
+
+            if (portraitBoxRight != null) portraitBoxRight.SetActive(line.portrait != null);
+            if (portraitImageRight != null && line.portrait != null) portraitImageRight.sprite = line.portrait;
+
+            if (nameTagRight != null) nameTagRight.SetActive(true);
+            if (nameTextRight != null) nameTextRight.text = line.speakerName;
+        }
+        else
+        {
+            if (portraitBoxRight != null) portraitBoxRight.SetActive(false);
+            if (nameTagRight != null) nameTagRight.SetActive(false);
+
+            if (portraitBoxLeft != null) portraitBoxLeft.SetActive(line.portrait != null);
+            if (portraitImageLeft != null && line.portrait != null) portraitImageLeft.sprite = line.portrait;
+
+            if (nameTagLeft != null) nameTagLeft.SetActive(true);
+            if (nameTextLeft != null) nameTextLeft.text = line.speakerName;
+        }
+
+        StopAllCoroutines();
         StartCoroutine(TypeSentence(currentSentence));
     }
 
     IEnumerator TypeSentence(string sentence)
     {
-        dialogueText.text = "";
+        if (dialogueText != null) dialogueText.text = "";
         isTyping = true;
 
         foreach (char letter in sentence.ToCharArray())
         {
-            dialogueText.text += letter;
+            if (dialogueText != null) dialogueText.text += letter;
             yield return new WaitForSeconds(textSpeed);
         }
 
@@ -140,7 +171,8 @@ public class DialogueManager : MonoBehaviour
 
     public void EndDialogue()
     {
-        dialoguePanel.SetActive(false);
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(false);
 
         if (playerMovement != null)
         {
@@ -150,9 +182,19 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        if (dialoguePanel.activeSelf && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.E)))
+        // Se il dialogo è appena stato aperto in questo frame, ignoriamo l'input per evitare skip immediati
+        if (justOpened)
         {
-            DisplayNextSentence();
+            justOpened = false;
+            return;
+        }
+
+        if (dialoguePanel != null && dialoguePanel.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.E))
+            {
+                DisplayNextSentence();
+            }
         }
     }
 }

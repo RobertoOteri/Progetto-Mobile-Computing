@@ -1,37 +1,86 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCTriggerDialogue : MonoBehaviour
 {
-    [Header("Impostazioni Dialogo NPC")]
-    public string speakerName = "Mister Catto";
-    public Sprite portrait;
-    public bool portraitOnRight = true; // <--- Spunta per mettere il ritratto a destra!
+    [Header("Riferimenti Zone & UI")]
+    [Tooltip("L'oggetto figlio con il trigger LARGO per il primo dialogo")]
+    public GameObject firstContactZone;
+    
+    [Tooltip("L'oggetto UI con il tasto [E]")]
+    public GameObject interactPrompt;
 
-    [TextArea(3, 5)]
-    public string[] dialogueLines;
+    [Header("1. Primo Dialogo (Automatico - Trigger Largo)")]
+    public List<DialogueLine> firstConversation = new List<DialogueLine>();
 
-    [Header("Opzioni")]
-    public bool triggerOnlyOnce = true;
+    [Header("2. Dialogo Ripetibile (Tasto E - Trigger Stretto)")]
+    public List<DialogueLine> repeatConversation = new List<DialogueLine>();
 
-    private bool hasTriggered = false;
+    private bool hasHadFirstTalk = false;
+    private bool playerInRepeatZone = false;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void Start()
     {
-        if (other.CompareTag("Player"))
-        {
-            if (triggerOnlyOnce && hasTriggered) return;
+        if (interactPrompt != null)
+            interactPrompt.SetActive(false);
+    }
 
-            if (DialogueManager.Instance != null)
+    private void Update()
+    {
+        // Gestione del dialogo ripetibile con il tasto E
+        if (playerInRepeatZone && hasHadFirstTalk)
+        {
+            // Se la finestra di dialogo è aperta, nascondi il tasto [E]
+            if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel.activeSelf)
             {
-                hasTriggered = true;
-                // Passa anche la preferenza sulla posizione del ritratto
-                DialogueManager.Instance.StartDialogue(speakerName, portrait, dialogueLines, portraitOnRight);
+                if (interactPrompt != null)
+                    interactPrompt.SetActive(false);
+                return;
+            }
+            else
+            {
+                if (interactPrompt != null)
+                    interactPrompt.SetActive(true);
+            }
+
+            // Pressione del tasto E
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (DialogueManager.Instance != null && repeatConversation.Count > 0)
+                {
+                    if (interactPrompt != null)
+                        interactPrompt.SetActive(false);
+
+                    DialogueManager.Instance.StartDialogueSequence(repeatConversation);
+                }
             }
         }
     }
 
-    public void ResetDialogueTrigger()
+    // Chiamato quando il player entra nella zona LARGA
+    public void OnFirstContactTrigger()
     {
-        hasTriggered = false;
+        if (hasHadFirstTalk) return;
+
+        if (DialogueManager.Instance != null && firstConversation.Count > 0)
+        {
+            hasHadFirstTalk = true;
+            DialogueManager.Instance.StartDialogueSequence(firstConversation);
+
+            // Disattiviamo del tutto la zona larga: non servirà mai più
+            if (firstContactZone != null)
+                firstContactZone.SetActive(false);
+        }
+    }
+
+    // Chiamato quando il player entra/esce dalla zona STRETTA
+    public void SetPlayerInRepeatZone(bool inZone)
+    {
+        playerInRepeatZone = inZone;
+
+        if (!inZone && interactPrompt != null)
+        {
+            interactPrompt.SetActive(false);
+        }
     }
 }

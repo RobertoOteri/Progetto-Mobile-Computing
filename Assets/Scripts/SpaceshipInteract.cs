@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class SpaceshipInteract : MonoBehaviour
 {
+    [Header("UI Guida")]
+    public GameObject interactPrompt;
+
     [Header("Impostazioni Dialogo")]
     public string speakerName = "Jack Orbit";
     public Sprite portrait;
 
     [TextArea(3, 5)]
-    public string[] dialogueLines;
-
-    [Header("UI Guida (Opzionale)")]
-    public GameObject interactPrompt;
+    public string[] dialogueLines = new string[]
+    {
+        "È stato un atterraggio decisamente più duro del previsto...",
+        "Il propulsore secondario è completamente andato. Se non trovo una fonte di energia non andrò da nessuna parte.",
+        "Sarà meglio esplorare la zona e cercare qualcosa di utile."
+    };
 
     private bool playerInRange = false;
 
@@ -22,29 +27,48 @@ public class SpaceshipInteract : MonoBehaviour
 
     private void Update()
     {
-        // Controlla se il pannello dei dialoghi è già aperto per evitare di riattivare la conversazione
-        bool isDialogueActive = DialogueManager.Instance != null && 
-                                DialogueManager.Instance.dialoguePanel != null && 
-                                DialogueManager.Instance.dialoguePanel.activeSelf;
-
-        // Gestione della visibilità del prompt "Premi E"
-        if (interactPrompt != null)
+        // Se il giocatore è nell'area del collider
+        if (playerInRange)
         {
-            // Mostra l'icona SOLO se il player è vicino E il dialogo NON è in corso
-            interactPrompt.SetActive(playerInRange && !isDialogueActive);
-        }
-
-        // Se il giocatore è vicino, premi 'E' e il dialogo non è già aperto -> Avvia il dialogo
-        if (playerInRange && Input.GetKeyDown(KeyCode.E) && !isDialogueActive)
-        {
-            if (DialogueManager.Instance != null)
+            // Se il dialogo è attualmente aperto a schermo, nascondi il tasto [E]
+            if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel != null && DialogueManager.Instance.dialoguePanel.activeSelf)
             {
-                DialogueManager.Instance.StartDialogue(speakerName, portrait, dialogueLines);
+                if (interactPrompt != null)
+                    interactPrompt.SetActive(false);
+                return;
+            }
+            else
+            {
+                if (interactPrompt != null)
+                    interactPrompt.SetActive(true);
+            }
+
+            // Pressione del tasto E
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (DialogueManager.Instance != null)
+                {
+                    if (interactPrompt != null)
+                        interactPrompt.SetActive(false);
+
+                    // Avvia il dialogo specificando isRightSide = false (Jack a sinistra)
+                    DialogueManager.Instance.StartDialogue(speakerName, portrait, dialogueLines, false);
+                }
             }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+            if (interactPrompt != null)
+                interactPrompt.SetActive(true);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
@@ -57,6 +81,8 @@ public class SpaceshipInteract : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
+            if (interactPrompt != null)
+                interactPrompt.SetActive(false);
         }
     }
 }
