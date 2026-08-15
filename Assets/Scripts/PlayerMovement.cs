@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5;
+    public float speed = 5f;
     public int facingDirection = 1;
     public Rigidbody2D rb;
 
@@ -30,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (player_Combat != null && player_Combat.IsThrowingBomb) return;
+
         float rawH = Input.GetAxisRaw("Horizontal");
         float rawV = Input.GetAxisRaw("Vertical");
 
@@ -39,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
             lastVertical = rawV;
         }
 
-        if (Input.GetButtonDown("Slash"))
+        if (Input.GetButtonDown("Slash") || (Input.GetKeyDown(KeyCode.Q) && player_Combat != null && player_Combat.hasBomb))
         {
             float v = Input.GetAxisRaw("Vertical");
             float h = Input.GetAxisRaw("Horizontal");
@@ -55,7 +57,19 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isKnockedBack == false)
         {
-            // === BLOCCO SPARO (Spara con Fucile o Pistola) ===
+            // === BLOCCO LANCIO BOMBA ===
+            if (player_Combat != null && player_Combat.IsThrowingBomb)
+            {
+                rb.linearVelocity = Vector2.zero;
+                if (anim != null)
+                {
+                    anim.SetFloat("horizontal", 0f);
+                    anim.SetFloat("vertical", 0f);
+                }
+                return;
+            }
+
+            // === BLOCCO SPARO (Fucile o Pistola) ===
             bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
             bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
 
@@ -71,8 +85,8 @@ public class PlayerMovement : MonoBehaviour
 
                 if (anim != null)
                 {
-                    anim.SetFloat("horizontal", 0);
-                    anim.SetFloat("vertical", 0);
+                    anim.SetFloat("horizontal", 0f);
+                    anim.SetFloat("vertical", 0f);
 
                     Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
 
@@ -104,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
 
-            // === NORMALE MOVIMENTO ORIGINALE ===
+            // === NORMALE MOVIMENTO ===
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
 
@@ -119,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
                 if (horizontal != 0)
                 {
                     anim.SetFloat("horizontal", horizontal);
-                    anim.SetFloat("vertical", 0);
+                    anim.SetFloat("vertical", 0f);
                 }
                 else
                 {
@@ -158,7 +172,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // --- FUNZIONE PER FERMARE IL MOVIMENTO E L'ANIMAZIONE ---
     public void StopMovement()
     {
         if (rb != null)
@@ -168,15 +181,15 @@ public class PlayerMovement : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetFloat("horizontal", 0);
-            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0f);
+            anim.SetFloat("vertical", 0f);
         }
     }
 
     void Flip()
     {
         facingDirection *= -1;
-        transform.localScale = new Vector3 (transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 
     public void Knockback(Transform enemy, float force, float stunTime)
