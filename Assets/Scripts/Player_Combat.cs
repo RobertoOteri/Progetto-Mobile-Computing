@@ -109,11 +109,11 @@ public class Player_Combat : MonoBehaviour
         UpdateAnimatorBools();
 
         if (vert > 0)
-            anim.Play("bomb_throw_up", 0, 0f);
+            anim.Play("Bomb_throw_up", 0, 0f);
         else if (vert < 0)
-            anim.Play("bomb_throw_down", 0, 0f);
+            anim.Play("Bomb_throw_down", 0, 0f);
         else
-            anim.Play("bomb_throw_side", 0, 0f);
+            anim.Play("Bomb_throw_side", 0, 0f);
 
         if (bombProjectilePrefab != null && attackPoint != null)
         {
