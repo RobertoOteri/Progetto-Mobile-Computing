@@ -2009,7 +2009,7 @@ GameObject:
   - component: {fileID: 266255299}
   - component: {fileID: 266255298}
   - component: {fileID: 266255297}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: Collision-Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9502,7 +9502,7 @@ GameObject:
   - component: {fileID: 359194725}
   - component: {fileID: 359194724}
   - component: {fileID: 359194726}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: InvisibleCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16307,7 +16307,7 @@ GameObject:
   - component: {fileID: 703759535}
   - component: {fileID: 703759537}
   - component: {fileID: 703759536}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Decorations
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19147,7 +19147,7 @@ GameObject:
   - component: {fileID: 768397305}
   - component: {fileID: 768397304}
   - component: {fileID: 768397303}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Struct-Lv.2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21317,7 +21317,7 @@ GameObject:
   - component: {fileID: 952398021}
   - component: {fileID: 952398020}
   - component: {fileID: 952398022}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Struct
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25446,7 +25446,7 @@ GameObject:
   - component: {fileID: 1121573239}
   - component: {fileID: 1121573241}
   - component: {fileID: 1121573240}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Struct_less_order
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64024,7 +64024,7 @@ GameObject:
   - component: {fileID: 1314615042}
   - component: {fileID: 1314615041}
   - component: {fileID: 1314615040}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
