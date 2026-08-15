@@ -63,6 +63,12 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.linearVelocity = Vector2.zero;
 
+                // Se sta sparando fermiamo l'effetto audio della camminata
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.StopWalkSound();
+                }
+
                 if (anim != null)
                 {
                     anim.SetFloat("horizontal", 0);
@@ -122,7 +128,33 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            rb.linearVelocity = new Vector2(horizontal, vertical) * speed; 
+            rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
+
+            // === LOGICA RIPRODUZIONE / INTERRUZIONE SUONO PASSI ===
+            bool isMoving = (horizontal != 0 || vertical != 0);
+
+            if (isMoving)
+            {
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.StartWalkSound();
+                }
+            }
+            else
+            {
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.StopWalkSound();
+                }
+            }
+        }
+        else
+        {
+            // Se subisce knockback e non può muoversi, fermiamo il suono della camminata
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopWalkSound();
+            }
         }
     }
 

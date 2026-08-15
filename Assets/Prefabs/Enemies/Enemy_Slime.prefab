@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 4730367343488082425}
   - component: {fileID: 9219771301186535068}
   - component: {fileID: 682607381463780340}
+  - component: {fileID: 2050519684050093749}
   m_Layer: 6
   m_Name: Enemy_Slime
   m_TagString: Untagged
@@ -274,12 +275,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Combat
   damage: 1
   attackPoint: {fileID: 4354146496825823161}
-  weaponRange: 0.8
+  weaponRange: 1.1
   knockbackForce: 8
   stunTime: 0.8
   playerLayer:
     serializedVersion: 2
     m_Bits: 1048576
+  attackSFX: {fileID: 8300000, guid: 942bc35064a1cdc4e9d695e098d62af0, type: 3}
+  attackVolume: 0.4
 --- !u!114 &4732855509312533881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,8 +337,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.5, y: 0}
-  m_Radius: 1.042361
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.3
 --- !u!114 &9219771301186535068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,6 +353,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
   currentHealth: 3
   maxHealth: 3
+  hitSound: {fileID: 8300000, guid: 0bda6b4969403c24795f31f1d17860ab, type: 3}
+  hitSoundVolume: 0.5
+  deathSound: {fileID: 8300000, guid: f898ca4d3c042b74aa3879d3dba958ee, type: 3}
+  deathSoundVolume: 1.5
 --- !u!114 &682607381463780340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,3 +369,100 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d746568c76681cc4e9f2ef5e18261b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Knockback
+--- !u!82 &2050519684050093749
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340369853583597435}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 1539ad66e8e703c46ac1bef461794f99, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.199
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 2
+  MaxDistance: 6
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

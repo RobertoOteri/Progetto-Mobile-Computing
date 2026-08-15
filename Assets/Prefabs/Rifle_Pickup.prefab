@@ -153,7 +153,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   weaponToEquip: 2
-  swordPickupPrefab: {fileID: 0}
+  swordPickupPrefab: {fileID: 2465589001379539799, guid: 5fbd1c56891042b4990418e920a30937,
+    type: 3}
   hammerPickupPrefab: {fileID: 2778455210248024074, guid: eff172ee21531a244ab9030a1cd0e377,
     type: 3}
   riflePickupPrefab: {fileID: 2008097554407966146}
+  gunPickupPrefab: {fileID: 5111128700720642397, guid: 96195ded904e0b04885458801f301887,
+    type: 3}

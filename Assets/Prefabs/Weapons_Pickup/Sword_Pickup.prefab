@@ -156,3 +156,6 @@ MonoBehaviour:
   swordPickupPrefab: {fileID: 2465589001379539799}
   hammerPickupPrefab: {fileID: 2778455210248024074, guid: eff172ee21531a244ab9030a1cd0e377,
     type: 3}
+  riflePickupPrefab: {fileID: 2008097554407966146, guid: 3279c5a74ac0a024fb77d719666f393c,
+    type: 3}
+  gunPickupPrefab: {fileID: 0}

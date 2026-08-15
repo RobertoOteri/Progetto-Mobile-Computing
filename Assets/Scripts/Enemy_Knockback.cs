@@ -14,6 +14,7 @@ public class Enemy_Knockback : MonoBehaviour
 
     public void Knockback(Transform forceTransform, float knockbackForce, float knockbackTime, float stunTime)
     {
+        
         StopAllCoroutines();
 
         enemy_Movement.ChangeState(EnemyState.Knockback);

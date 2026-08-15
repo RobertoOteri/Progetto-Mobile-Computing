@@ -4,6 +4,9 @@ public class HealthPotion : MonoBehaviour
 {
     public int healAmount = 2; 
 
+    [Header("--- Audio ---")]
+    [SerializeField] private AudioClip healSFX; // Trascina il suono (mela o pozione) nell'Inspector
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Controlla se a toccare la pozione è il Giocatore
@@ -17,8 +20,14 @@ public class HealthPotion : MonoBehaviour
                 if (playerHealth.currentHealth < playerHealth.maxHealth)
                 {
                     playerHealth.ChangeHealth(healAmount);
+
+                    // Riproduce il suono normale assegnato a questa pozione/mela
+                    if (healSFX != null && AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlaySFX(healSFX);
+                    }
                     
-                    // Distrugge la pozione dalla mappa dopo che è stata raccolta
+                    // Distrugge l'oggetto dalla mappa dopo la raccolta
                     Destroy(gameObject);
                 }
             }

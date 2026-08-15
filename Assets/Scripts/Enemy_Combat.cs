@@ -9,8 +9,18 @@ public class Enemy_Combat : MonoBehaviour
     public float stunTime;
     public LayerMask playerLayer;
 
+    [Header("--- Audio ---")]
+    [SerializeField] private AudioClip attackSFX; 
+    [Range(0f, 1f)]
+    [SerializeField] private float attackVolume = 0.4f;
+
     public void Attack()
     {
+        if (attackSFX != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(attackSFX, attackVolume);
+        }
+
         // Rileva gli oggetti nel raggio d'attacco
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, weaponRange, playerLayer);
 
