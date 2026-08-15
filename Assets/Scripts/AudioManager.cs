@@ -10,12 +10,13 @@ public class AudioManager : MonoBehaviour
 
     [Header("--- Audio Clips ---")]
     public AudioClip walkSFX;
-    public AudioClip attackSFX;
     public AudioClip dieSFX;
     public AudioClip pickupSFX;
     public AudioClip hurtSFX;
     public AudioClip gunShootSFX;
     public AudioClip rifleShootSFX;
+    public AudioClip swordAttackSFX;
+public AudioClip hammerAttackSFX;
 
     [Header("--- Settings Camminata ---")]
     [SerializeField] private float fadeSpeed = 8f;
