@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    public enum WeaponType { Sword, Hammer, Rifle, Gun } // AGGIUNTO Gun
+    public enum WeaponType { Sword, Hammer, Rifle, Gun, Bomb }
 
     [Header("Tipo di questa arma")]
     public WeaponType weaponToEquip;
@@ -12,7 +12,8 @@ public class ItemPickup : MonoBehaviour
     public GameObject swordPickupPrefab;  
     public GameObject hammerPickupPrefab; 
     public GameObject riflePickupPrefab;
-    public GameObject gunPickupPrefab; // AGGIUNTO: Prefab per la pistola da terra
+    public GameObject gunPickupPrefab;
+    public GameObject bombPickupPrefab;
 
     private bool canBePickedUp = true;
 
@@ -20,49 +21,79 @@ public class ItemPickup : MonoBehaviour
     {
         if (!canBePickedUp) return;
 
-        if (other.CompareTag("Player")) // Permette solo al Player di raccogliere le armi
+        if (other.CompareTag("Player"))
         {
             Player_Combat combat = other.GetComponent<Player_Combat>();
 
             if (combat != null)
             {
-                Vector3 dropPosition = other.transform.position + new Vector3(0.8f, 0f, 0f); // Posizione di drop a destra
+                Vector3 dropPosition = other.transform.position + new Vector3(0.8f, 0f, 0f);
 
-                // Spawna a terra l'arma precedente e imposta la scala corretta
-                if (combat.hasSword && swordPickupPrefab != null)
+                // 1. Droppa l'arma attualmente posseduta
+                GameObject itemToDrop = null;
+
+                if (combat.hasSword)
                 {
-                    GameObject droppedItem = Instantiate(swordPickupPrefab, dropPosition, Quaternion.identity);
-                    droppedItem.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-                    droppedItem.GetComponent<ItemPickup>().StartCoroutine(droppedItem.GetComponent<ItemPickup>().PickupCooldown());
+                    itemToDrop = swordPickupPrefab;
                 }
-                else if (combat.hasHammer && hammerPickupPrefab != null)
+                else if (combat.hasHammer)
                 {
-                    GameObject droppedItem = Instantiate(hammerPickupPrefab, dropPosition, Quaternion.identity);
-                    droppedItem.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-                    droppedItem.GetComponent<ItemPickup>().StartCoroutine(droppedItem.GetComponent<ItemPickup>().PickupCooldown());
+                    itemToDrop = hammerPickupPrefab;
                 }
-                else if (combat.hasRifle && riflePickupPrefab != null)
+                else if (combat.hasRifle)
                 {
-                    GameObject droppedItem = Instantiate(riflePickupPrefab, dropPosition, Quaternion.identity);
-                    droppedItem.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-                    droppedItem.GetComponent<ItemPickup>().StartCoroutine(droppedItem.GetComponent<ItemPickup>().PickupCooldown());
+                    itemToDrop = riflePickupPrefab;
                 }
-                else if (combat.hasGun && gunPickupPrefab != null) // AGGIUNTO: Se avevi la pistola, la droppa a terra
+                else if (combat.hasGun)
                 {
-                    GameObject droppedItem = Instantiate(gunPickupPrefab, dropPosition, Quaternion.identity);
-                    droppedItem.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-                    droppedItem.GetComponent<ItemPickup>().StartCoroutine(droppedItem.GetComponent<ItemPickup>().PickupCooldown());
+                    itemToDrop = gunPickupPrefab;
+                }
+                else if (combat.hasBomb)
+                {
+                    itemToDrop = bombPickupPrefab;
                 }
 
-                // Equipaggia la nuova arma
-                if (weaponToEquip == WeaponType.Sword) combat.EquipSword();
-                else if (weaponToEquip == WeaponType.Hammer) combat.EquipHammer();
-                else if (weaponToEquip == WeaponType.Rifle) combat.EquipRifle();
-                else if (weaponToEquip == WeaponType.Gun) combat.EquipGun(); // AGGIUNTO
+                if (itemToDrop != null)
+                {
+                    DropItem(itemToDrop, dropPosition);
+                }
 
-                // Rimuove l'oggetto raccolto
+                // 2. Equipaggia la nuova arma
+                switch (weaponToEquip)
+                {
+                    case WeaponType.Sword:
+                        combat.EquipSword();
+                        break;
+                    case WeaponType.Hammer:
+                        combat.EquipHammer();
+                        break;
+                    case WeaponType.Rifle:
+                        combat.EquipRifle();
+                        break;
+                    case WeaponType.Gun:
+                        combat.EquipGun();
+                        break;
+                    case WeaponType.Bomb:
+                        combat.EquipBomb();
+                        break;
+                }
+
+                // 3. Distrugge l'oggetto raccolto
                 Destroy(gameObject);
             }
+        }
+    }
+
+    private void DropItem(GameObject prefab, Vector3 position)
+    {
+        GameObject droppedItem = Instantiate(prefab, position, Quaternion.identity);
+        droppedItem.transform.localScale = prefab.transform.localScale;
+
+        ItemPickup pickup = droppedItem.GetComponent<ItemPickup>();
+        if (pickup != null)
+        {
+            pickup.canBePickedUp = false;
+            pickup.StartCoroutine(pickup.PickupCooldown());
         }
     }
 
