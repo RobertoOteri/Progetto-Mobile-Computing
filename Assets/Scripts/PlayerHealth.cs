@@ -14,8 +14,8 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
-        // Prende l'Animator dallo stesso GameObject
         anim = GetComponent<Animator>();
+        if (playerMovement == null) playerMovement = GetComponent<PlayerMovement>();
     }
 
     public void ChangeHealth(int amount)
@@ -29,6 +29,12 @@ public class PlayerHealth : MonoBehaviour
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlayHurtSound();
+            }
+
+            // Se subisce danno senza essere passato da Knockback, lancia comunque l'hit
+            if (anim != null && currentHealth > 0)
+            {
+                anim.SetTrigger("hit");
             }
         }
 

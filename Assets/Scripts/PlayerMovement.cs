@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     public Animator anim;
 
-    private bool isKnockedBack;
+    private bool isKnockedBack = false;
     
     public Player_Combat player_Combat;
     public Player_Rifle player_Rifle;
@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (isKnockedBack) return;
         if (player_Combat != null && player_Combat.IsThrowingBomb) return;
 
         float rawH = Input.GetAxisRaw("Horizontal");
@@ -55,116 +56,113 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isKnockedBack == false)
+        if (isKnockedBack)
         {
-            // === BLOCCO LANCIO BOMBA ===
-            if (player_Combat != null && player_Combat.IsThrowingBomb)
+            if (AudioManager.Instance != null)
             {
-                rb.linearVelocity = Vector2.zero;
-                if (anim != null)
-                {
-                    anim.SetFloat("horizontal", 0f);
-                    anim.SetFloat("vertical", 0f);
-                }
-                return;
+                AudioManager.Instance.StopWalkSound();
+            }
+            return;
+        }
+
+        // === BLOCCO LANCIO BOMBA ===
+        if (player_Combat != null && player_Combat.IsThrowingBomb)
+        {
+            rb.linearVelocity = Vector2.zero;
+            if (anim != null)
+            {
+                anim.SetFloat("horizontal", 0f);
+                anim.SetFloat("vertical", 0f);
+            }
+            return;
+        }
+
+        // === BLOCCO SPARO (Fucile o Pistola) ===
+        bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
+        bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
+
+        if (isShootingRifle || isShootingGun)
+        {
+            rb.linearVelocity = Vector2.zero;
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopWalkSound();
             }
 
-            // === BLOCCO SPARO (Fucile o Pistola) ===
-            bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
-            bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
-
-            if (isShootingRifle || isShootingGun)
+            if (anim != null)
             {
-                rb.linearVelocity = Vector2.zero;
+                anim.SetFloat("horizontal", 0f);
+                anim.SetFloat("vertical", 0f);
 
-                // Se sta sparando fermiamo l'effetto audio della camminata
-                if (AudioManager.Instance != null)
+                Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
+
+                string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Up";
+                string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
+                string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
+
+                if (aim.y > 0)
                 {
-                    AudioManager.Instance.StopWalkSound();
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleUp))
+                        anim.Play(idleUp);
                 }
-
-                if (anim != null)
+                else if (aim.y < 0)
                 {
-                    anim.SetFloat("horizontal", 0f);
-                    anim.SetFloat("vertical", 0f);
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleDown))
+                        anim.Play(idleDown);
+                }
+                else if (aim.x != 0)
+                {
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleSide))
+                        anim.Play(idleSide);
 
-                    Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
-
-                    string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Up";
-                    string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
-                    string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
-
-                    if (aim.y > 0)
+                    if ((aim.x > 0 && transform.localScale.x > 0) || (aim.x < 0 && transform.localScale.x < 0))
                     {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleUp))
-                            anim.Play(idleUp);
-                    }
-                    else if (aim.y < 0)
-                    {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleDown))
-                            anim.Play(idleDown);
-                    }
-                    else if (aim.x != 0)
-                    {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleSide))
-                            anim.Play(idleSide);
-
-                        if ((aim.x > 0 && transform.localScale.x > 0) || (aim.x < 0 && transform.localScale.x < 0))
-                        {
-                            Flip();
-                        }
+                        Flip();
                     }
                 }
-                return;
             }
+            return;
+        }
 
-            // === NORMALE MOVIMENTO ===
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
+        // === NORMALE MOVIMENTO ===
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-            if ((horizontal > 0 && transform.localScale.x > 0) ||
-                (horizontal < 0 && transform.localScale.x < 0))
+        if ((horizontal > 0 && transform.localScale.x > 0) ||
+            (horizontal < 0 && transform.localScale.x < 0))
+        {
+            Flip();
+        }
+
+        if (anim != null && !anim.GetBool("isAttacking"))
+        {
+            if (horizontal != 0)
             {
-                Flip();
-            }
-
-            if (anim != null && !anim.GetBool("isAttacking"))
-            {
-                if (horizontal != 0)
-                {
-                    anim.SetFloat("horizontal", horizontal);
-                    anim.SetFloat("vertical", 0f);
-                }
-                else
-                {
-                    anim.SetFloat("horizontal", horizontal);
-                    anim.SetFloat("vertical", vertical);
-                }
-            }
-
-            rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
-
-            // === LOGICA RIPRODUZIONE / INTERRUZIONE SUONO PASSI ===
-            bool isMoving = (horizontal != 0 || vertical != 0);
-
-            if (isMoving)
-            {
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.StartWalkSound();
-                }
+                anim.SetFloat("horizontal", horizontal);
+                anim.SetFloat("vertical", 0f);
             }
             else
             {
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.StopWalkSound();
-                }
+                anim.SetFloat("horizontal", horizontal);
+                anim.SetFloat("vertical", vertical);
+            }
+        }
+
+        rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
+
+        // === GESTIONE SUONO PASSI ===
+        bool isMoving = (horizontal != 0 || vertical != 0);
+
+        if (isMoving)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StartWalkSound();
             }
         }
         else
         {
-            // Se subisce knockback e non può muoversi, fermiamo il suono della camminata
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.StopWalkSound();
@@ -192,11 +190,42 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 
+    // === GESTIONE KNOCKBACK & HIT ANIMATION ===
     public void Knockback(Transform enemy, float force, float stunTime)
     {
         isKnockedBack = true;
+        
         Vector2 direction = (transform.position - enemy.position).normalized;
         rb.linearVelocity = direction * force;
+
+        if (anim != null)
+        {
+            anim.SetFloat("horizontal", 0f);
+            anim.SetFloat("vertical", 0f);
+
+            if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
+            {
+                if (direction.y > 0)
+                {
+                    anim.Play("Hit_A_down", 0, 0f);
+                }
+                else
+                {
+                    anim.Play("Hit_A_up", 0, 0f);
+                }
+            }
+            else
+            {
+                anim.Play("Hit_A_side", 0, 0f);
+
+                if ((direction.x < 0 && transform.localScale.x < 0) || 
+                    (direction.x > 0 && transform.localScale.x > 0))
+                {
+                    Flip();
+                }
+            }
+        }
+
         StartCoroutine(KnockBackCounter(stunTime));
     }
 
