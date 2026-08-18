@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -16,7 +17,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip gunShootSFX;
     public AudioClip rifleShootSFX;
     public AudioClip swordAttackSFX;
-public AudioClip hammerAttackSFX;
+    public AudioClip hammerAttackSFX;
+    public AudioClip typewriterSound;
+    public AudioClip introAmbientSource;
 
     [Header("--- Settings Camminata ---")]
     [SerializeField] private float fadeSpeed = 8f;
@@ -118,6 +121,79 @@ public AudioClip hammerAttackSFX;
         if (hurtSFX != null && sfxSource != null)
         {
             PlaySFX(hurtSFX); // Riproduce il suono dell'impatto a volume/pitch standard
+        }
+    }
+
+    public void PlayTypewriterSound()
+    {
+        if (sfxSource != null && typewriterSound != null)
+        {
+            // Se sta già riproducendo l'effetto audio, evita di sovrapporne un altro
+            if (sfxSource.isPlaying && sfxSource.clip == typewriterSound)
+                return;
+
+            sfxSource.pitch = Random.Range(0.85f, 1.15f);
+            sfxSource.clip = typewriterSound;
+            sfxSource.PlayOneShot(typewriterSound, 2f);
+        }
+    }
+
+    public void StopTypewriterSound()
+    {
+        if (sfxSource != null)
+        {
+            if (sfxSource.clip == typewriterSound)
+            {
+                sfxSource.Stop();
+            }
+            sfxSource.pitch = 1f;
+        }
+    }
+
+    // Fa iniziare il suono ambientale dell'intro
+    public void PlayIntroAmbient()
+    {
+        if (sfxSource != null && introAmbientSource != null)
+        {
+            sfxSource.clip = introAmbientSource;
+            sfxSource.loop = true; 
+            sfxSource.Play();
+        }
+    }
+    public void FadeOutIntroAmbient(float duration)
+    {
+        if (sfxSource != null && sfxSource.isPlaying)
+        {
+            StartCoroutine(FadeOutRoutine(duration));
+        }
+    }
+
+    private IEnumerator FadeOutRoutine(float duration)
+    {
+        float startVolume = sfxSource.volume;
+
+        while (sfxSource.volume > 0)
+        {
+            // Riduce il volume in base al tempo
+            sfxSource.volume -= startVolume * (Time.deltaTime / duration);
+            yield return null;
+        }
+
+        // Quando il volume arriva a 0, ferma l'audio e ripristina i parametri
+        sfxSource.Stop();
+        sfxSource.loop = false;
+        sfxSource.clip = null;
+        sfxSource.volume = startVolume; // Ripristina il volume per i suoni futuri
+    }
+
+    // Ferma il suono ambientale dell'intro
+    public void StopIntroAmbient()
+    {
+        if (sfxSource != null && sfxSource.clip == introAmbientSource)
+        {
+            sfxSource.Stop();
+            sfxSource.loop = false; 
+            sfxSource.clip = null;
         }
     }
 

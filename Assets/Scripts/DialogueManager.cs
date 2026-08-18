@@ -98,6 +98,11 @@ public class DialogueManager : MonoBehaviour
             playerMovement.StopMovement();
             playerMovement.enabled = false;
         }
+        if (AudioManager.Instance != null)
+        {
+            // Se hai un metodo dedicato nell'AudioManager per fermare i passi o gli SFX di movimento:
+            AudioManager.Instance.StopWalkSound(); // Sostituisci col nome del tuo metodo
+        }
 
         dialogueLinesQueue.Clear();
         foreach (var line in lines)
@@ -110,9 +115,16 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
+        // Se si salta la frase mentre sta scrivendo, ferma l'effetto visivo e sonoro
         if (isTyping)
         {
             StopAllCoroutines();
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopTypewriterSound();
+            }
+
             if (dialogueText != null) dialogueText.text = currentSentence;
             isTyping = false;
             return;
@@ -160,10 +172,28 @@ public class DialogueManager : MonoBehaviour
         if (dialogueText != null) dialogueText.text = "";
         isTyping = true;
 
+        int charCount = 0;
+
         foreach (char letter in sentence.ToCharArray())
         {
             if (dialogueText != null) dialogueText.text += letter;
+
+            // Suona ogni 2 lettere (escludendo gli spazi vuoti)
+            if (letter != ' ' && charCount % 2 == 0)
+            {
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayTypewriterSound();
+                }
+            }
+
+            charCount++;
             yield return new WaitForSeconds(textSpeed);
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopTypewriterSound();
         }
 
         isTyping = false;
@@ -171,6 +201,12 @@ public class DialogueManager : MonoBehaviour
 
     public void EndDialogue()
     {
+        // Interrompe il suono se il dialogo viene chiuso
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopTypewriterSound();
+        }
+
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
