@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5;
+    public float speed = 5f;
     public int facingDirection = 1;
     public Rigidbody2D rb;
 
     public Animator anim;
 
-    private bool isKnockedBack;
+    private bool isKnockedBack = false;
     
     public Player_Combat player_Combat;
     public Player_Rifle player_Rifle;
@@ -30,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (isKnockedBack) return;
+        if (player_Combat != null && player_Combat.IsThrowingBomb) return;
+
         float rawH = Input.GetAxisRaw("Horizontal");
         float rawV = Input.GetAxisRaw("Vertical");
 
@@ -39,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
             lastVertical = rawV;
         }
 
-        if (Input.GetButtonDown("Slash"))
+        if (Input.GetButtonDown("Slash") || (Input.GetKeyDown(KeyCode.Q) && player_Combat != null && player_Combat.hasBomb))
         {
             float v = Input.GetAxisRaw("Vertical");
             float h = Input.GetAxisRaw("Horizontal");
@@ -53,104 +56,113 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isKnockedBack == false)
+        if (isKnockedBack)
         {
-            // === BLOCCO SPARO (Spara con Fucile o Pistola) ===
-            bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
-            bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
-
-            if (isShootingRifle || isShootingGun)
+            if (AudioManager.Instance != null)
             {
-                rb.linearVelocity = Vector2.zero;
+                AudioManager.Instance.StopWalkSound();
+            }
+            return;
+        }
 
-                // Se sta sparando fermiamo l'effetto audio della camminata
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.StopWalkSound();
-                }
+        // === BLOCCO LANCIO BOMBA ===
+        if (player_Combat != null && player_Combat.IsThrowingBomb)
+        {
+            rb.linearVelocity = Vector2.zero;
+            if (anim != null)
+            {
+                anim.SetFloat("horizontal", 0f);
+                anim.SetFloat("vertical", 0f);
+            }
+            return;
+        }
 
-                if (anim != null)
-                {
-                    anim.SetFloat("horizontal", 0);
-                    anim.SetFloat("vertical", 0);
+        // === BLOCCO SPARO (Fucile o Pistola) ===
+        bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
+        bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
 
-                    Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
+        if (isShootingRifle || isShootingGun)
+        {
+            rb.linearVelocity = Vector2.zero;
 
-                    string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Up";
-                    string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
-                    string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
-
-                    if (aim.y > 0)
-                    {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleUp))
-                            anim.Play(idleUp);
-                    }
-                    else if (aim.y < 0)
-                    {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleDown))
-                            anim.Play(idleDown);
-                    }
-                    else if (aim.x != 0)
-                    {
-                        if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleSide))
-                            anim.Play(idleSide);
-
-                        if ((aim.x > 0 && transform.localScale.x > 0) || (aim.x < 0 && transform.localScale.x < 0))
-                        {
-                            Flip();
-                        }
-                    }
-                }
-                return;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopWalkSound();
             }
 
-            // === NORMALE MOVIMENTO ORIGINALE ===
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
-
-            if ((horizontal > 0 && transform.localScale.x > 0) ||
-                (horizontal < 0 && transform.localScale.x < 0))
+            if (anim != null)
             {
-                Flip();
+                anim.SetFloat("horizontal", 0f);
+                anim.SetFloat("vertical", 0f);
+
+                Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
+
+                string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Up";
+                string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
+                string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
+
+                if (aim.y > 0)
+                {
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleUp))
+                        anim.Play(idleUp);
+                }
+                else if (aim.y < 0)
+                {
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleDown))
+                        anim.Play(idleDown);
+                }
+                else if (aim.x != 0)
+                {
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleSide))
+                        anim.Play(idleSide);
+
+                    if ((aim.x > 0 && transform.localScale.x > 0) || (aim.x < 0 && transform.localScale.x < 0))
+                    {
+                        Flip();
+                    }
+                }
             }
+            return;
+        }
 
-            if (anim != null && !anim.GetBool("isAttacking"))
+        // === NORMALE MOVIMENTO ===
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        if ((horizontal > 0 && transform.localScale.x > 0) ||
+            (horizontal < 0 && transform.localScale.x < 0))
+        {
+            Flip();
+        }
+
+        if (anim != null && !anim.GetBool("isAttacking"))
+        {
+            if (horizontal != 0)
             {
-                if (horizontal != 0)
-                {
-                    anim.SetFloat("horizontal", horizontal);
-                    anim.SetFloat("vertical", 0);
-                }
-                else
-                {
-                    anim.SetFloat("horizontal", horizontal);
-                    anim.SetFloat("vertical", vertical);
-                }
-            }
-
-            rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
-
-            // === LOGICA RIPRODUZIONE / INTERRUZIONE SUONO PASSI ===
-            bool isMoving = (horizontal != 0 || vertical != 0);
-
-            if (isMoving)
-            {
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.StartWalkSound();
-                }
+                anim.SetFloat("horizontal", horizontal);
+                anim.SetFloat("vertical", 0f);
             }
             else
             {
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.StopWalkSound();
-                }
+                anim.SetFloat("horizontal", horizontal);
+                anim.SetFloat("vertical", vertical);
+            }
+        }
+
+        rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
+
+        // === GESTIONE SUONO PASSI ===
+        bool isMoving = (horizontal != 0 || vertical != 0);
+
+        if (isMoving)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StartWalkSound();
             }
         }
         else
         {
-            // Se subisce knockback e non può muoversi, fermiamo il suono della camminata
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.StopWalkSound();
@@ -158,7 +170,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // --- FUNZIONE PER FERMARE IL MOVIMENTO E L'ANIMAZIONE ---
     public void StopMovement()
     {
         if (rb != null)
@@ -168,22 +179,53 @@ public class PlayerMovement : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetFloat("horizontal", 0);
-            anim.SetFloat("vertical", 0);
+            anim.SetFloat("horizontal", 0f);
+            anim.SetFloat("vertical", 0f);
         }
     }
 
     void Flip()
     {
         facingDirection *= -1;
-        transform.localScale = new Vector3 (transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 
+    // === GESTIONE KNOCKBACK & HIT ANIMATION ===
     public void Knockback(Transform enemy, float force, float stunTime)
     {
         isKnockedBack = true;
+        
         Vector2 direction = (transform.position - enemy.position).normalized;
         rb.linearVelocity = direction * force;
+
+        if (anim != null)
+        {
+            anim.SetFloat("horizontal", 0f);
+            anim.SetFloat("vertical", 0f);
+
+            if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
+            {
+                if (direction.y > 0)
+                {
+                    anim.Play("Hit_A_down", 0, 0f);
+                }
+                else
+                {
+                    anim.Play("Hit_A_up", 0, 0f);
+                }
+            }
+            else
+            {
+                anim.Play("Hit_A_side", 0, 0f);
+
+                if ((direction.x < 0 && transform.localScale.x < 0) || 
+                    (direction.x > 0 && transform.localScale.x > 0))
+                {
+                    Flip();
+                }
+            }
+        }
+
         StartCoroutine(KnockBackCounter(stunTime));
     }
 

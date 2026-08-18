@@ -1,44 +1,67 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player_Combat : MonoBehaviour
 {   
+    [Header("Parametri Attacco Melee")]
     public Transform attackPoint;
-    public float weaponRange = 1;
-    public float knockbackForce = 25;
-    public float knockbackTime = .15f;
-    public float stunTime = .3f;
+    public float weaponRange = 1f;
+    public float knockbackForce = 25f;
+    public float knockbackTime = 0.15f;
+    public float stunTime = 0.3f;
     public LayerMask enemyLayer;
     public int damage = 1;
 
+    [Header("Riferimenti")]
     public Animator anim;
+    public Player_Rifle playerRifle;
+    public Player_Gun playerGun;
 
     [Header("Oggetti Figli nel Player")]
     public GameObject swordObject;  
     public GameObject hammerObject; 
     public GameObject rifleObject;
     public GameObject gunObject;
+    public GameObject bombObject;
 
     [Header("Stato Equipaggiamento")]
     public bool hasSword = false;
     public bool hasHammer = false;
     public bool hasRifle = false;
     public bool hasGun = false;
+    public bool hasBomb = false;
+
+    [Header("Impostazioni Lancio Bomba")]
+    public GameObject bombProjectilePrefab;
+    public float bombThrowForce = 7f;
+    public float bombThrowDuration = 0.4f;
+
+    public bool IsThrowingBomb { get; private set; } = false;
+
+    private Collider2D playerCollider;
+
+    private void Awake()
+    {
+        playerCollider = GetComponent<Collider2D>();
+        if (playerRifle == null) playerRifle = GetComponent<Player_Rifle>();
+        if (playerGun == null) playerGun = GetComponent<Player_Gun>();
+    }
 
     private void Start()
     {
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void Attack(float vInput, float hInput, float lastV, float lastH)
     {
-        if (anim == null) return;
-        if (!hasSword && !hasHammer) return; // Se disarmato, non attacca
+        if (anim == null || IsThrowingBomb) return;
+        if (!hasSword && !hasHammer && !hasBomb) return;
 
         float vert = 0f;
         float horiz = 0f;
 
-        // Prende l'ultima direzione se non stiamo premendo nessun tasto
         float targetV = (vInput != 0) ? vInput : lastV;
         float targetH = (hInput != 0) ? hInput : lastH;
 
@@ -51,13 +74,19 @@ public class Player_Combat : MonoBehaviour
             horiz = targetH < 0 ? -1f : 1f;
         }
 
-        if (attackPoint != null){
-            float offset = 0.8f; // Distanza dell'attacco dal centro del personaggio
+        Vector2 throwDirection = new Vector2(horiz, vert).normalized;
 
-            if (vert > 0)       attackPoint.localPosition = new Vector3(0f, offset, 0f);  // Guarda in alto
-            else if (vert < 0) attackPoint.localPosition = new Vector3(0f, -offset, 0f); // Guarda in basso
-            else if (horiz > 0) attackPoint.localPosition = new Vector3(offset, 0f, 0f);  // Guarda a destra
-            else if (horiz < 0) attackPoint.localPosition = new Vector3(-offset, 0f, 0f); // Guarda a sinistra
+        // Posizioniamo l'AttackPoint nello spazio del mondo reale (evita il bug del ribaltamento a sinistra)
+        if (attackPoint != null)
+        {
+            float offset = 0.8f;
+            attackPoint.position = transform.position + new Vector3(throwDirection.x * offset, throwDirection.y * offset, 0f);
+        }
+
+        if (hasBomb)
+        {
+            StartCoroutine(ThrowBombRoutine(throwDirection, vert, horiz));
+            return;
         }
 
         anim.SetFloat("vertical", vert);
@@ -65,26 +94,70 @@ public class Player_Combat : MonoBehaviour
         anim.SetBool("hasSword", hasSword);
         anim.SetBool("hasHammer", hasHammer);
         anim.SetBool("isAttacking", true);
+    }
 
-        if (AudioManager.Instance != null)
+    private IEnumerator ThrowBombRoutine(Vector2 direction, float vert, float horiz)
+    {
+        IsThrowingBomb = true;
+
+        anim.SetFloat("horizontal", 0f);
+        anim.SetFloat("vertical", 0f);
+
+        hasBomb = false;
+        UpdateWeaponVisibility();
+        UpdateAnimatorBools();
+        SyncGunScripts();
+
+        // Avvio animazione corretta
+        if (vert > 0)
+            anim.Play("Bomb_throw_up", 0, 0f);
+        else if (vert < 0)
+            anim.Play("Bomb_throw_down", 0, 0f);
+        else
+            anim.Play("Bomb_throw_side", 0, 0f);
+
+        // Istanziazione del proiettile
+        if (bombProjectilePrefab != null && attackPoint != null)
         {
-            if (hasSword)
+            GameObject bomb = Instantiate(bombProjectilePrefab, attackPoint.position, Quaternion.identity);
+
+            // Ignora le collisioni tra la bomba appena spawnata e il corpo del Player
+            Collider2D bombCollider = bomb.GetComponent<Collider2D>();
+            if (bombCollider != null && playerCollider != null)
             {
-                AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.swordAttackSFX,0.3f);
+                Physics2D.IgnoreCollision(bombCollider, playerCollider, true);
             }
-            else if (hasHammer)
+
+            BombProjectile bp = bomb.GetComponent<BombProjectile>();
+            if (bp != null)
             {
-                AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.hammerAttackSFX,0.3f);
+                bp.Launch(direction, bombThrowForce);
+            }
+            else
+            {
+                Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.linearVelocity = direction * bombThrowForce;
+                }
             }
         }
+
+        yield return new WaitForSeconds(bombThrowDuration);
+
+        IsThrowingBomb = false;
     }
 
     public void DealDamage()
     {
-        Collider2D[] enemies = Physics2D.OverlapCircleAll(attackPoint.position,weaponRange,enemyLayer);
-        if(enemies.Length > 0){
-            enemies[0].GetComponent<Enemy_Health>().ChangeHealth(-damage);
-            enemies[0].GetComponent<Enemy_Knockback>().Knockback(transform, knockbackForce, knockbackTime, stunTime);
+        Collider2D[] enemies = Physics2D.OverlapCircleAll(attackPoint.position, weaponRange, enemyLayer);
+        if (enemies.Length > 0)
+        {
+            Enemy_Health health = enemies[0].GetComponent<Enemy_Health>();
+            if (health != null) health.ChangeHealth(-damage);
+
+            Enemy_Knockback kb = enemies[0].GetComponent<Enemy_Knockback>();
+            if (kb != null) kb.Knockback(transform, knockbackForce, knockbackTime, stunTime);
         }
     }
 
@@ -98,8 +171,9 @@ public class Player_Combat : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        if (attackPoint == null) return;
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPoint.position,weaponRange);
+        Gizmos.DrawWireSphere(attackPoint.position, weaponRange);
     }
 
     public void EquipSword()
@@ -108,8 +182,10 @@ public class Player_Combat : MonoBehaviour
         hasHammer = false;
         hasRifle = false;
         hasGun = false;
+        hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void EquipHammer()
@@ -118,8 +194,10 @@ public class Player_Combat : MonoBehaviour
         hasHammer = true;
         hasRifle = false;
         hasGun = false;
+        hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void EquipRifle()
@@ -128,37 +206,59 @@ public class Player_Combat : MonoBehaviour
         hasHammer = false;
         hasRifle = true;
         hasGun = false;
+        hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
-    // AGGIUNTO: Metodo per equipaggiare la Pistola
     public void EquipGun()
     {
         hasSword = false;
         hasHammer = false;
         hasRifle = false;
         hasGun = true;
+        hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
-    // Viene chiamata ogni volta che l'arma viene cambiata oppure all'inizio quando non ha nessun arma
+    public void EquipBomb()
+    {
+        hasSword = false;
+        hasHammer = false;
+        hasRifle = false;
+        hasGun = false;
+        hasBomb = true;
+        UpdateWeaponVisibility();
+        UpdateAnimatorBools();
+        SyncGunScripts();
+    }
+
     private void UpdateWeaponVisibility()
     {
         if (swordObject != null) swordObject.SetActive(hasSword);
         if (hammerObject != null) hammerObject.SetActive(hasHammer);
         if (rifleObject != null) rifleObject.SetActive(hasRifle);
         if (gunObject != null) gunObject.SetActive(hasGun);
+        if (bombObject != null) bombObject.SetActive(hasBomb);
     }
 
     private void UpdateAnimatorBools()
     {
-        if(anim == null) return;
+        if (anim == null) return;
 
         anim.SetBool("hasSword", hasSword);
         anim.SetBool("hasHammer", hasHammer);
         anim.SetBool("hasRifle", hasRifle);
         anim.SetBool("hasGun", hasGun);
+        anim.SetBool("hasBomb", hasBomb);
+    }
+
+    private void SyncGunScripts()
+    {
+        if (playerRifle != null) playerRifle.enabled = hasRifle;
+        if (playerGun != null) playerGun.enabled = hasGun;
     }
 }
