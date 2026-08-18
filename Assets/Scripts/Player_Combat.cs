@@ -14,6 +14,8 @@ public class Player_Combat : MonoBehaviour
 
     [Header("Riferimenti")]
     public Animator anim;
+    public Player_Rifle playerRifle;
+    public Player_Gun playerGun;
 
     [Header("Oggetti Figli nel Player")]
     public GameObject swordObject;  
@@ -36,10 +38,20 @@ public class Player_Combat : MonoBehaviour
 
     public bool IsThrowingBomb { get; private set; } = false;
 
+    private Collider2D playerCollider;
+
+    private void Awake()
+    {
+        playerCollider = GetComponent<Collider2D>();
+        if (playerRifle == null) playerRifle = GetComponent<Player_Rifle>();
+        if (playerGun == null) playerGun = GetComponent<Player_Gun>();
+    }
+
     private void Start()
     {
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void Attack(float vInput, float hInput, float lastV, float lastH)
@@ -62,19 +74,18 @@ public class Player_Combat : MonoBehaviour
             horiz = targetH < 0 ? -1f : 1f;
         }
 
+        Vector2 throwDirection = new Vector2(horiz, vert).normalized;
+
+        // Posizioniamo l'AttackPoint nello spazio del mondo reale (evita il bug del ribaltamento a sinistra)
         if (attackPoint != null)
         {
             float offset = 0.8f;
-
-            if (vert > 0)       attackPoint.localPosition = new Vector3(0f, offset, 0f);
-            else if (vert < 0)  attackPoint.localPosition = new Vector3(0f, -offset, 0f);
-            else if (horiz > 0) attackPoint.localPosition = new Vector3(offset, 0f, 0f);
-            else if (horiz < 0) attackPoint.localPosition = new Vector3(-offset, 0f, 0f);
+            attackPoint.position = transform.position + new Vector3(throwDirection.x * offset, throwDirection.y * offset, 0f);
         }
 
         if (hasBomb)
         {
-            StartCoroutine(ThrowBombRoutine(new Vector2(horiz, vert).normalized, vert, horiz));
+            StartCoroutine(ThrowBombRoutine(throwDirection, vert, horiz));
             return;
         }
 
@@ -83,18 +94,6 @@ public class Player_Combat : MonoBehaviour
         anim.SetBool("hasSword", hasSword);
         anim.SetBool("hasHammer", hasHammer);
         anim.SetBool("isAttacking", true);
-
-        if (AudioManager.Instance != null)
-        {
-            if (hasSword)
-            {
-                AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.swordAttackSFX,0.3f);
-            }
-            else if (hasHammer)
-            {
-                AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.hammerAttackSFX,0.3f);
-            }
-        }
     }
 
     private IEnumerator ThrowBombRoutine(Vector2 direction, float vert, float horiz)
@@ -107,7 +106,9 @@ public class Player_Combat : MonoBehaviour
         hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
 
+        // Avvio animazione corretta
         if (vert > 0)
             anim.Play("Bomb_throw_up", 0, 0f);
         else if (vert < 0)
@@ -115,9 +116,18 @@ public class Player_Combat : MonoBehaviour
         else
             anim.Play("Bomb_throw_side", 0, 0f);
 
+        // Istanziazione del proiettile
         if (bombProjectilePrefab != null && attackPoint != null)
         {
             GameObject bomb = Instantiate(bombProjectilePrefab, attackPoint.position, Quaternion.identity);
+
+            // Ignora le collisioni tra la bomba appena spawnata e il corpo del Player
+            Collider2D bombCollider = bomb.GetComponent<Collider2D>();
+            if (bombCollider != null && playerCollider != null)
+            {
+                Physics2D.IgnoreCollision(bombCollider, playerCollider, true);
+            }
+
             BombProjectile bp = bomb.GetComponent<BombProjectile>();
             if (bp != null)
             {
@@ -175,6 +185,7 @@ public class Player_Combat : MonoBehaviour
         hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void EquipHammer()
@@ -186,6 +197,7 @@ public class Player_Combat : MonoBehaviour
         hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void EquipRifle()
@@ -197,6 +209,7 @@ public class Player_Combat : MonoBehaviour
         hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void EquipGun()
@@ -208,6 +221,7 @@ public class Player_Combat : MonoBehaviour
         hasBomb = false;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     public void EquipBomb()
@@ -219,6 +233,7 @@ public class Player_Combat : MonoBehaviour
         hasBomb = true;
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
+        SyncGunScripts();
     }
 
     private void UpdateWeaponVisibility()
@@ -239,5 +254,11 @@ public class Player_Combat : MonoBehaviour
         anim.SetBool("hasRifle", hasRifle);
         anim.SetBool("hasGun", hasGun);
         anim.SetBool("hasBomb", hasBomb);
+    }
+
+    private void SyncGunScripts()
+    {
+        if (playerRifle != null) playerRifle.enabled = hasRifle;
+        if (playerGun != null) playerGun.enabled = hasGun;
     }
 }
