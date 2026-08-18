@@ -72,7 +72,6 @@ public class Enemy_Movement : MonoBehaviour
 
         if (hits.Length > 0)
         {
-            // Controlla se il giocatore è morto
             PlayerHealth playerHealth = hits[0].GetComponent<PlayerHealth>();
             if (playerHealth != null && playerHealth.IsDead)
             {
@@ -83,7 +82,7 @@ public class Enemy_Movement : MonoBehaviour
                 {
                     ChangeState(EnemyState.Idle);
                 }
-                return; // Esce e non esegue l'attacco o l'inseguimento
+                return;
             }
 
             player = hits[0].transform;
@@ -109,14 +108,14 @@ public class Enemy_Movement : MonoBehaviour
     {
         if (anim == null) return;
 
-        // Disattiva animazione precedente
+        // Disattiva i bool dello stato precedente
         if (enemyState == EnemyState.Idle) anim.SetBool("IsIdle", false);
         else if (enemyState == EnemyState.Chasing) anim.SetBool("IsChasing", false);
         else if (enemyState == EnemyState.Attacking) anim.SetBool("IsAttacking", false);
 
         enemyState = newState;
 
-        // Attiva nuova animazione
+        // Attiva il bool del nuovo stato (se Knockback, restano tutti false finché dura l'animazione)
         if (enemyState == EnemyState.Idle) anim.SetBool("IsIdle", true);
         else if (enemyState == EnemyState.Chasing) anim.SetBool("IsChasing", true);
         else if (enemyState == EnemyState.Attacking) anim.SetBool("IsAttacking", true);
