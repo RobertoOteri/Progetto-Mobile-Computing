@@ -76,7 +76,6 @@ public class Player_Combat : MonoBehaviour
 
         Vector2 throwDirection = new Vector2(horiz, vert).normalized;
 
-        // Posizioniamo l'AttackPoint nello spazio del mondo reale (evita il bug del ribaltamento a sinistra)
         if (attackPoint != null)
         {
             float offset = 0.8f;
@@ -108,7 +107,6 @@ public class Player_Combat : MonoBehaviour
         UpdateAnimatorBools();
         SyncGunScripts();
 
-        // Avvio animazione corretta
         if (vert > 0)
             anim.Play("Bomb_throw_up", 0, 0f);
         else if (vert < 0)
@@ -116,12 +114,10 @@ public class Player_Combat : MonoBehaviour
         else
             anim.Play("Bomb_throw_side", 0, 0f);
 
-        // Istanziazione del proiettile
         if (bombProjectilePrefab != null && attackPoint != null)
         {
             GameObject bomb = Instantiate(bombProjectilePrefab, attackPoint.position, Quaternion.identity);
 
-            // Ignora le collisioni tra la bomba appena spawnata e il corpo del Player
             Collider2D bombCollider = bomb.GetComponent<Collider2D>();
             if (bombCollider != null && playerCollider != null)
             {
@@ -243,6 +239,22 @@ public class Player_Combat : MonoBehaviour
         if (rifleObject != null) rifleObject.SetActive(hasRifle);
         if (gunObject != null) gunObject.SetActive(hasGun);
         if (bombObject != null) bombObject.SetActive(hasBomb);
+    }
+
+    // Nasconde tutte le armi attive (es. durante l'Hit)
+    public void HideWeapons()
+    {
+        if (swordObject != null) swordObject.SetActive(false);
+        if (hammerObject != null) hammerObject.SetActive(false);
+        if (rifleObject != null) rifleObject.SetActive(false);
+        if (gunObject != null) gunObject.SetActive(false);
+        if (bombObject != null) bombObject.SetActive(false);
+    }
+
+    // Ripristina l'arma attualmente equipaggiata
+    public void RestoreWeapons()
+    {
+        UpdateWeaponVisibility();
     }
 
     private void UpdateAnimatorBools()

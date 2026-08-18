@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
 
     public Animator anim;
 
+    [Header("Durata Hit / Visibilità Arma")]
+    public float hitAnimationDuration = 0.45f; // Regola questo tempo dall'Inspector per farlo combaciare con l'animazione
+
     private bool isKnockedBack = false;
     
     public Player_Combat player_Combat;
@@ -194,8 +197,23 @@ public class PlayerMovement : MonoBehaviour
     public void Knockback(Transform enemy, float force, float stunTime)
     {
         isKnockedBack = true;
+
+        // Nasconde subito l'arma
+        if (player_Combat != null)
+        {
+            player_Combat.HideWeapons();
+        }
         
-        Vector2 direction = (transform.position - enemy.position).normalized;
+        Vector2 direction = Vector2.zero;
+        if (enemy != null)
+        {
+            direction = (transform.position - enemy.position).normalized;
+        }
+        else
+        {
+            direction = new Vector2(-lastHorizontal, -lastVertical).normalized;
+        }
+
         rb.linearVelocity = direction * force;
 
         if (anim != null)
@@ -226,13 +244,29 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        StopCoroutine(nameof(KnockBackCounter));
         StartCoroutine(KnockBackCounter(stunTime));
     }
 
     IEnumerator KnockBackCounter(float stunTime)
     {
+        // 1. Arresta la spinta fisica
         yield return new WaitForSeconds(stunTime);
         rb.linearVelocity = Vector2.zero;
+
+        // 2. Attende il tempo rimanente dell'animazione di hit
+        float remainingTime = hitAnimationDuration - stunTime;
+        if (remainingTime > 0f)
+        {
+            yield return new WaitForSeconds(remainingTime);
+        }
+
         isKnockedBack = false;
+
+        // 3. Ripristina l'arma in mano a fine animazione
+        if (player_Combat != null)
+        {
+            player_Combat.RestoreWeapons();
+        }
     }
 }

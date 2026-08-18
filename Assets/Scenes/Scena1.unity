@@ -13836,6 +13836,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
   currentHealth: 5
   maxHealth: 5
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.12
   hitSound: {fileID: 0}
   hitSoundVolume: 0.5
   deathSound: {fileID: 0}
@@ -24249,6 +24251,7 @@ MonoBehaviour:
   facingDirection: 1
   rb: {fileID: 1795376246}
   anim: {fileID: 1795376250}
+  hitAnimationDuration: 0.55
   player_Combat: {fileID: 1795376253}
   player_Rifle: {fileID: 0}
   player_Gun: {fileID: 0}
@@ -24436,6 +24439,8 @@ MonoBehaviour:
   maxHealth: 10
   playerSr: {fileID: 1795376248}
   playerMovement: {fileID: 1795376245}
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.12
 --- !u!114 &1795376252
 MonoBehaviour:
   m_ObjectHideFlags: 0
