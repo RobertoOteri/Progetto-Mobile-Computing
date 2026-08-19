@@ -160,4 +160,5 @@ MonoBehaviour:
     type: 3}
   gunPickupPrefab: {fileID: 379133184990739515, guid: aff0843707d2b0f4385cc784a6ca9e0e,
     type: 3}
-  bombPickupPrefab: {fileID: 0}
+  bombPickupPrefab: {fileID: 7515343532041900196, guid: de6b297e3042852428ca0ff54ed24127,
+    type: 3}

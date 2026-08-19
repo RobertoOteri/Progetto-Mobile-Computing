@@ -112,7 +112,9 @@ MonoBehaviour:
   hammerPickupPrefab: {fileID: 2778455210248024074}
   riflePickupPrefab: {fileID: 2008097554407966146, guid: 3279c5a74ac0a024fb77d719666f393c,
     type: 3}
-  gunPickupPrefab: {fileID: 5111128700720642397, guid: 96195ded904e0b04885458801f301887,
+  gunPickupPrefab: {fileID: 379133184990739515, guid: aff0843707d2b0f4385cc784a6ca9e0e,
+    type: 3}
+  bombPickupPrefab: {fileID: 7515343532041900196, guid: de6b297e3042852428ca0ff54ed24127,
     type: 3}
 --- !u!61 &5214220409369294372
 BoxCollider2D:
