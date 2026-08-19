@@ -1826,7 +1826,9 @@ MonoBehaviour:
   rifleShootSFX: {fileID: 8300000, guid: b4653ec39fed86641a151c3766fdd962, type: 3}
   swordAttackSFX: {fileID: 8300000, guid: b52185ea60a190347925596d39165491, type: 3}
   hammerAttackSFX: {fileID: 8300000, guid: 56a72077896d8054f9d6d667b759bd92, type: 3}
+  bombExplodeSFX: {fileID: 8300000, guid: 5e0a20c445244c04c9c59e05fd8f474f, type: 3}
   typewriterSound: {fileID: 8300000, guid: 657a059e686451b449732ac1e080a350, type: 3}
+  introAmbientSource: {fileID: 0}
   fadeSpeed: 4
   walkMaxVolume: 0.3
   walkPitch: 0.6

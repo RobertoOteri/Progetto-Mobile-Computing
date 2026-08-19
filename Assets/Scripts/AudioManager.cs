@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip rifleShootSFX;
     public AudioClip swordAttackSFX;
     public AudioClip hammerAttackSFX;
+    public AudioClip bombExplodeSFX;
     public AudioClip typewriterSound;
     public AudioClip introAmbientSource;
 
@@ -121,6 +122,14 @@ public class AudioManager : MonoBehaviour
         if (hurtSFX != null && sfxSource != null)
         {
             PlaySFX(hurtSFX); // Riproduce il suono dell'impatto a volume/pitch standard
+        }
+    }
+    
+    public void PlayBombExplodeSound()
+    {
+        if (bombExplodeSFX != null)
+        {
+            PlaySFX(bombExplodeSFX);
         }
     }
 
