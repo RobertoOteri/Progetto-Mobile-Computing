@@ -19,6 +19,7 @@ public class PlayerHealth : MonoBehaviour
     public bool IsDead => isDead;
     private Color originalColor;
     private Coroutine flashCoroutine;
+    private Coroutine hitResetCoroutine;
 
     private void Start()
     {
@@ -47,7 +48,11 @@ public class PlayerHealth : MonoBehaviour
 
             if (anim != null && currentHealth > 0)
             {
+                anim.ResetTrigger("hit"); // Svuota eventuali hit rimasti incastrati
                 anim.SetTrigger("hit");
+
+                if (hitResetCoroutine != null) StopCoroutine(hitResetCoroutine);
+                hitResetCoroutine = StartCoroutine(ResetHitTriggerRoutine());
             }
 
             // Avvia il flash rosso sul Player
@@ -94,6 +99,15 @@ public class PlayerHealth : MonoBehaviour
         if (anim != null)
         {
             anim.SetTrigger("die");
+        }
+    }
+    
+    private IEnumerator ResetHitTriggerRoutine()
+    {
+        yield return new WaitForEndOfFrame();
+        if (anim != null)
+        {
+            anim.ResetTrigger("hit");
         }
     }
 }
