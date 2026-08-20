@@ -98,10 +98,11 @@ public class PlayerHealth : MonoBehaviour
 
         if (anim != null)
         {
+            anim.ResetTrigger("hit");
             anim.SetTrigger("die");
         }
     }
-    
+
     private IEnumerator ResetHitTriggerRoutine()
     {
         yield return new WaitForEndOfFrame();
