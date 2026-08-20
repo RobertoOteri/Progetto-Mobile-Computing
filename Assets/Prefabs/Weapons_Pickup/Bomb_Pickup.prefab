@@ -145,7 +145,7 @@ MonoBehaviour:
   weaponToEquip: 4
   swordPickupPrefab: {fileID: 3141351738504115848, guid: 27b89302c7d00e344b06bd97c2e7e18d,
     type: 3}
-  hammerPickupPrefab: {fileID: 3975926955243347062, guid: 2a3031523c5920349b218146f5ef4938,
+  hammerPickupPrefab: {fileID: 2778455210248024074, guid: eff172ee21531a244ab9030a1cd0e377,
     type: 3}
   riflePickupPrefab: {fileID: 2008097554407966146, guid: 3279c5a74ac0a024fb77d719666f393c,
     type: 3}
