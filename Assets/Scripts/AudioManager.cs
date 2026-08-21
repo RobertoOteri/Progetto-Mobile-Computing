@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     [Header("--- Audio Sources ---")]
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource walkSource;
+    [SerializeField] private AudioSource musicSource;
 
     [Header("--- Audio Clips ---")]
     public AudioClip walkSFX;
@@ -21,6 +22,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip bombExplodeSFX;
     public AudioClip typewriterSound;
     public AudioClip introAmbientSource;
+    public AudioClip bgmMusic;
 
     [Header("--- Settings Camminata ---")]
     [SerializeField] private float fadeSpeed = 8f;
@@ -31,6 +33,7 @@ public class AudioManager : MonoBehaviour
     
     private bool isWalking = false;
     private Coroutine dieSoundCoroutine; // Per tracciare la coroutine del suono di morte
+    private Coroutine musicFadeCoroutine;
 
     private void Awake()
     {
@@ -43,6 +46,14 @@ public class AudioManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        if (bgmMusic != null)
+        {
+            PlayMusic(bgmMusic);
         }
     }
 
@@ -65,7 +76,51 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // 🟢 Riproduzione SFX normali: garantisce sempre Pitch = 1!
+    // METODI PER IL MANAGEMENT DELLA MUSICA
+    public void PlayMusic(AudioClip clip, float volume = 0.5f)
+    {
+        if (musicSource == null || clip == null) return;
+
+        if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+
+        musicSource.clip = clip;
+        musicSource.loop = true;
+        musicSource.volume = volume;
+        musicSource.Play();
+    }
+
+    public void StopMusic()
+    {
+        if (musicSource != null)
+        {
+            musicSource.Stop();
+        }
+    }
+
+    public void FadeOutMusic(float duration)
+    {
+        if (musicSource != null && musicSource.isPlaying)
+        {
+            if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+            musicFadeCoroutine = StartCoroutine(FadeOutMusicRoutine(duration));
+        }
+    }
+
+    private IEnumerator FadeOutMusicRoutine(float duration)
+    {
+        float startVolume = musicSource.volume;
+
+        while (musicSource.volume > 0)
+        {
+            musicSource.volume -= startVolume * (Time.deltaTime / duration);
+            yield return null;
+        }
+
+        musicSource.Stop();
+        musicSource.volume = startVolume;
+    }
+
+    // Riproduzione SFX normali
     public void PlaySFX(AudioClip clip)
     {
         if (clip != null && sfxSource != null)
@@ -77,7 +132,7 @@ public class AudioManager : MonoBehaviour
                 dieSoundCoroutine = null;
             }
 
-            sfxSource.pitch = 1f; // 👈 Forza la velocità e la tonalità originale (44.1kHz / 48kHz standard)
+            sfxSource.pitch = 1f; // Forza la velocità e la tonalità originale 
             sfxSource.PlayOneShot(clip);
         }
     }
