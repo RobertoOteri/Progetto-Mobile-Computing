@@ -3,7 +3,20 @@ using UnityEngine;
 
 public class NPCTriggerDialogue : MonoBehaviour
 {
-    public static bool HasHadFirstTalkSession = false;
+    [Header("Identificativo NPC")]
+    [Tooltip("Nome unico per salvare questo dialogo (es. NPC_Alieno_1)")]
+    public string npcID = "NPC_Alieno_1";
+
+    // Proprietà helper per leggere/scrivere il salvataggio
+    public static bool HasHadFirstTalkSession
+    {
+        get => PlayerPrefs.GetInt("NPC_FirstTalkDone", 0) == 1;
+        set
+        {
+            PlayerPrefs.SetInt("NPC_FirstTalkDone", value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+    }
 
     [Header("Riferimenti Zone & UI")]
     [Tooltip("L'oggetto figlio con il trigger LARGO per il primo dialogo")]
@@ -18,7 +31,6 @@ public class NPCTriggerDialogue : MonoBehaviour
     [Header("2. Dialogo Ripetibile (Tasto E - Trigger Stretto)")]
     public List<DialogueLine> repeatConversation = new List<DialogueLine>();
 
-    //private bool hasHadFirstTalk = false;
     private bool playerInRepeatZone = false;
 
     private void Start()
@@ -26,12 +38,13 @@ public class NPCTriggerDialogue : MonoBehaviour
         if (interactPrompt != null)
             interactPrompt.SetActive(false);
 
-        // Se il dialogo è già avvenuto in questa sessione, disattiva il trigger largo
+        // Se il dialogo è già avvenuto (salvato sul disco), disattiva il trigger largo
         if (HasHadFirstTalkSession && firstContactZone != null)
         {
             firstContactZone.SetActive(false);
         }
     }
+
     private void Update()
     {
         if (playerInRepeatZone && HasHadFirstTalkSession)
@@ -64,7 +77,9 @@ public class NPCTriggerDialogue : MonoBehaviour
 
         if (DialogueManager.Instance != null && firstConversation.Count > 0)
         {
+            // Salva permanentemente che il dialogo è avvenuto
             HasHadFirstTalkSession = true;
+
             DialogueManager.Instance.StartDialogueSequence(firstConversation);
 
             if (firstContactZone != null)
