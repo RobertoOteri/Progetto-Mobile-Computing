@@ -37,6 +37,10 @@ public class BombProjectile : MonoBehaviour
     {
         if (hasExploded) return;
         hasExploded = true;
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayBombExplodeSound();
+        }
 
         // Ferma lo scivolamento
         if (rb != null)

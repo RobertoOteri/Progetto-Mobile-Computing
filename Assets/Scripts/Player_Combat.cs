@@ -93,6 +93,18 @@ public class Player_Combat : MonoBehaviour
         anim.SetBool("hasSword", hasSword);
         anim.SetBool("hasHammer", hasHammer);
         anim.SetBool("isAttacking", true);
+
+        if (AudioManager.Instance != null)
+        {
+            if (hasSword)
+            {
+                AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.swordAttackSFX, 0.3f);
+            }
+            else if (hasHammer)
+            {
+                AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.hammerAttackSFX, 0.3f);
+            }
+        }
     }
 
     private IEnumerator ThrowBombRoutine(Vector2 direction, float vert, float horiz)
