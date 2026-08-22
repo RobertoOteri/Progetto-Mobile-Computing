@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7c3ba18f5c1d97c4489c758ad794ecb1
+guid: 596cbea563406714bbbd667d862d058a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1843214774119471190
-    second: Nebbia_0
+      213: 7430894665830898758
+    second: GameOver_Image_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Nebbia_0
+      name: GameOver_Image_0
       rect:
         serializedVersion: 2
-        x: 83
-        y: 51
-        width: 2016
-        height: 1833
+        x: 0
+        y: 0
+        width: 2752
+        height: 1536
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6589420421a649910800000000000000
-      internalID: 1843214774119471190
+      spriteID: 64c1238f357df1760800000000000000
+      internalID: 7430894665830898758
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Nebbia_0: 1843214774119471190
+      GameOver_Image_0: 7430894665830898758
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

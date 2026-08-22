@@ -14,6 +14,10 @@ public class PlayerHealth : MonoBehaviour
     public Color flashColor = Color.red;
     public float flashDuration = 0.12f;
 
+    [Header("Impostazioni Game Over")]
+    [Tooltip("Tempo di attesa prima che appaia il Game Over (per lasciare finire l'animazione di morte)")]
+    public float gameOverDelay = 1.5f;
+
     private Animator anim;
     private bool isDead = false;
     public bool IsDead => isDead;
@@ -100,6 +104,19 @@ public class PlayerHealth : MonoBehaviour
         {
             anim.ResetTrigger("hit");
             anim.SetTrigger("die");
+        }
+
+        // Avvia la comparsa del Game Over dopo un piccolo delay
+        StartCoroutine(ShowGameOverRoutine());
+    }
+
+    private IEnumerator ShowGameOverRoutine()
+    {
+        yield return new WaitForSeconds(gameOverDelay);
+
+        if (GameOverManager.Instance != null)
+        {
+            GameOverManager.Instance.TriggerGameOver();
         }
     }
 
