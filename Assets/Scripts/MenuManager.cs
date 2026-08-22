@@ -8,22 +8,30 @@ public class MainMenuManager : MonoBehaviour
     public GameObject pannelloPrincipale;
     public GameObject pannelloImpostazioni;
     
-    [Header("Impostazioni Audio")]
-    public int volumeCorrente = 5;
-    public int volumeMassimo = 10;
-    public GameObject[] taccheVolume;
-
-    [Header("Impostazioni Luminosità")]
-    public Image filtroLuminosita;        // Il pannello nero semitrasparente
-    public int luminositaCorrente = 10;   // Luminosità di partenza (es. 10 su 10, schermo chiaro)
-    public int luminositaMassima = 10;
-    public GameObject[] taccheLuminosita; // La lista delle immagini delle tacche luminosità
+    [Header("Impostazioni Grafiche e Audio")]
+    public Image filtroLuminosita; 
+    public Slider sliderVolume;       
+    public Slider sliderLuminosita;   
 
     void Start()
     {
-        // All'avvio, imposta sia il volume che la luminosità
-        ApplicaVolume();
-        ApplicaLuminosita();
+        // Impostiamo lo stato iniziale dei pannelli
+        if (pannelloPrincipale != null) pannelloPrincipale.SetActive(true);
+        if (pannelloImpostazioni != null) pannelloImpostazioni.SetActive(false);
+
+        // --- INIZIALIZZAZIONE AUDIO E LUMINOSITÀ ---
+        
+        // Applica subito il volume leggendo il valore di partenza dello slider 
+        if (sliderVolume != null)
+        {
+            CambiaVolume(sliderVolume.value);
+        }
+
+        // Applica subito la luminosità leggendo il valore di partenza dello slider 
+        if (sliderLuminosita != null)
+        {
+            CambiaLuminosita(sliderLuminosita.value);
+        }
     }
 
     // --- FUNZIONI NAVIGAZIONE MENU ---
@@ -32,52 +40,29 @@ public class MainMenuManager : MonoBehaviour
     public void ApriImpostazioni() { pannelloPrincipale.SetActive(false); pannelloImpostazioni.SetActive(true); }
     public void ChiudiImpostazioni() { pannelloImpostazioni.SetActive(false); pannelloPrincipale.SetActive(true); }
 
-    // --- FUNZIONI AUDIO ---
-    public void AumentaVolume() { if (volumeCorrente < volumeMassimo) { volumeCorrente++; ApplicaVolume(); } }
-    public void DiminuisciVolume() { if (volumeCorrente > 0) { volumeCorrente--; ApplicaVolume(); } }
-
-    private void ApplicaVolume()
+    // --- FUNZIONI DEGLI SLIDER ---
+    
+    public void CambiaVolume(float volume)
     {
-        AudioListener.volume = (float)volumeCorrente / volumeMassimo;
-        for (int i = 0; i < taccheVolume.Length; i++) { taccheVolume[i].SetActive(i < volumeCorrente); }
-    }
-
-    // --- NUOVE FUNZIONI LUMINOSITÀ ---
-    public void AumentaLuminosita()
-    {
-        if (luminositaCorrente < luminositaMassima)
+        // Il volume in ingresso ora è un numero da 0 a 10 (o i blocchi massimi che hai impostato).
+        // Lo dividiamo per il valore massimo dello slider per ottenere un numero tra 0.0 e 1.0.
+        if (sliderVolume != null)
         {
-            luminositaCorrente++;
-            ApplicaLuminosita();
+            float volumeNormalizzato = volume / sliderVolume.maxValue;
+            AudioListener.volume = volumeNormalizzato;
         }
     }
 
-    public void DiminuisciLuminosita()
+    public void CambiaLuminosita(float luminosita)
     {
-        // Ci fermiamo a 1 (invece di 0) per non far diventare lo schermo del tutto nero!
-        if (luminositaCorrente > 1)
+        if (filtroLuminosita != null && sliderLuminosita != null)
         {
-            luminositaCorrente--;
-            ApplicaLuminosita();
-        }
-    }
-
-    private void ApplicaLuminosita()
-    {
-        // 1. Calcola la trasparenza.
-        // Se luminositaCorrente è 10, valoreLuminosita è 1. (Trasparenza al 0% = Schermo Chiaro)
-        // Se luminositaCorrente è 5, valoreLuminosita è 0.5 (Trasparenza al 50% = Schermo Scuro)
-        float valoreLuminosita = (float)luminositaCorrente / luminositaMassima;
-
-        // Prendi il colore del filtro nero e cambiagli la trasparenza (Alpha 'a')
-        Color coloreFiltro = filtroLuminosita.color;
-        coloreFiltro.a = 1f - valoreLuminosita; // Invertiamo: meno luminosità = più nero (Alpha alto)
-        filtroLuminosita.color = coloreFiltro;
-
-        // 2. Accende e spegne le tacche visive della luminosità
-        for (int i = 0; i < taccheLuminosita.Length; i++)
-        {
-            taccheLuminosita[i].SetActive(i < luminositaCorrente);
+            // Stessa cosa: normalizziamo il valore da 0-10 a 0.0-1.0
+            float luminositaNormalizzata = luminosita / sliderLuminosita.maxValue;
+            
+            Color coloreFiltro = filtroLuminosita.color;
+            coloreFiltro.a = 1f - luminositaNormalizzata; 
+            filtroLuminosita.color = coloreFiltro;
         }
     }
 }
