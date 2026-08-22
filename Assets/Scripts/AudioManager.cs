@@ -49,13 +49,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (bgmMusic != null)
-        {
-            PlayMusic(bgmMusic);
-        }
-    }
 
     private void Update()
     {

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class NPCTriggerDialogue : MonoBehaviour
 {
+    public static bool HasHadFirstTalkSession = false;
+
     [Header("Riferimenti Zone & UI")]
     [Tooltip("L'oggetto figlio con il trigger LARGO per il primo dialogo")]
     public GameObject firstContactZone;
@@ -16,41 +18,39 @@ public class NPCTriggerDialogue : MonoBehaviour
     [Header("2. Dialogo Ripetibile (Tasto E - Trigger Stretto)")]
     public List<DialogueLine> repeatConversation = new List<DialogueLine>();
 
-    private bool hasHadFirstTalk = false;
+    //private bool hasHadFirstTalk = false;
     private bool playerInRepeatZone = false;
 
     private void Start()
     {
         if (interactPrompt != null)
             interactPrompt.SetActive(false);
-    }
 
+        // Se il dialogo è già avvenuto in questa sessione, disattiva il trigger largo
+        if (HasHadFirstTalkSession && firstContactZone != null)
+        {
+            firstContactZone.SetActive(false);
+        }
+    }
     private void Update()
     {
-        // Gestione del dialogo ripetibile con il tasto E
-        if (playerInRepeatZone && hasHadFirstTalk)
+        if (playerInRepeatZone && HasHadFirstTalkSession)
         {
-            // Se la finestra di dialogo è aperta, nascondi il tasto [E]
             if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel.activeSelf)
             {
-                if (interactPrompt != null)
-                    interactPrompt.SetActive(false);
+                if (interactPrompt != null) interactPrompt.SetActive(false);
                 return;
             }
             else
             {
-                if (interactPrompt != null)
-                    interactPrompt.SetActive(true);
+                if (interactPrompt != null) interactPrompt.SetActive(true);
             }
 
-            // Pressione del tasto E
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (DialogueManager.Instance != null && repeatConversation.Count > 0)
                 {
-                    if (interactPrompt != null)
-                        interactPrompt.SetActive(false);
-
+                    if (interactPrompt != null) interactPrompt.SetActive(false);
                     DialogueManager.Instance.StartDialogueSequence(repeatConversation);
                 }
             }
@@ -60,14 +60,13 @@ public class NPCTriggerDialogue : MonoBehaviour
     // Chiamato quando il player entra nella zona LARGA
     public void OnFirstContactTrigger()
     {
-        if (hasHadFirstTalk) return;
+        if (HasHadFirstTalkSession) return;
 
         if (DialogueManager.Instance != null && firstConversation.Count > 0)
         {
-            hasHadFirstTalk = true;
+            HasHadFirstTalkSession = true;
             DialogueManager.Instance.StartDialogueSequence(firstConversation);
 
-            // Disattiviamo del tutto la zona larga: non servirà mai più
             if (firstContactZone != null)
                 firstContactZone.SetActive(false);
         }
@@ -77,7 +76,6 @@ public class NPCTriggerDialogue : MonoBehaviour
     public void SetPlayerInRepeatZone(bool inZone)
     {
         playerInRepeatZone = inZone;
-
         if (!inZone && interactPrompt != null)
         {
             interactPrompt.SetActive(false);

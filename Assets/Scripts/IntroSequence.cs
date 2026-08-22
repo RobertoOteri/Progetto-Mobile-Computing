@@ -125,6 +125,12 @@ public class IntroSequence : MonoBehaviour
 
     private void LoadGameScene()
     {
+        // Fai partire la BGM solo adesso che l'intro è finita
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMusic(AudioManager.Instance.bgmMusic);
+        }
+
         SceneManager.LoadScene(nextSceneName);
     }
 }

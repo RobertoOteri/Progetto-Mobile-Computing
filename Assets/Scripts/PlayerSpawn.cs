@@ -3,22 +3,39 @@ using UnityEngine;
 public class PlayerSpawn : MonoBehaviour
 {
     [Header("Riferimenti")]
-    public Transform spawnPoint; // Il punto vicino alla navicella
-    public string playerTag = "Player"; // Assicurati che l'astronauta abbia questo Tag
+    public Transform defaultSpawnPoint; // SpaceShip
+    public string playerTag = "Player";
 
     private void Start()
     {
-        // Cerca il giocatore nella scena tramite il suo Tag
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
+        if (player == null) return;
 
-        if (player != null && spawnPoint != null)
+        // Controlla se siamo appena passati da una porta/teleport
+        string targetSpawnName = PlayerPrefs.GetString("TargetSpawnPoint", "");
+
+        if (!string.IsNullOrEmpty(targetSpawnName))
         {
-            // Sposta il personaggio sulla posizione dello SpawnPoint
-            player.transform.position = spawnPoint.position;
+            GameObject targetSpawn = GameObject.Find(targetSpawnName);
+            if (targetSpawn != null)
+            {
+                player.transform.position = targetSpawn.transform.position;
+            }
+            // Cancella subito la chiave per il prossimo avvio pulito
+            PlayerPrefs.DeleteKey("TargetSpawnPoint");
         }
-        else
+        else if (defaultSpawnPoint != null)
         {
-            Debug.LogWarning("Player o SpawnPoint non trovati nella scena!");
+            // Spawn standard vicino alla astronave
+            player.transform.position = defaultSpawnPoint.position;
         }
+    }
+
+    // 🔴 AGGIUNGI QUESTO: Cancella la memoria vecchia premendo Clic Destro sullo script nell'Inspector
+    [ContextMenu("Reset PlayerPrefs (Pulisci Salvataggi)")]
+    public void ResetPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+        Debug.Log("PlayerPrefs completamente cancellati!");
     }
 }

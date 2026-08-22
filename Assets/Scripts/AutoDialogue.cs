@@ -15,6 +15,13 @@ public class AutoDialogue : MonoBehaviour
 
     private IEnumerator Start()
     {
+        // 🔴 CONTROLLO SICUREZZA: Se il gioco è già stato avviato o l'intro è completata, annulla il dialogo
+        if (PlayerPrefs.GetInt("GameIntroCompleted", 0) == 1 || NPCTriggerDialogue.HasHadFirstTalkSession)
+        {
+            gameObject.SetActive(false);
+            yield break; // Interrompe subito la Coroutine
+        }
+
         // Aspetta una frazione di secondo (utile se c'è un fade-in all'avvio della scena)
         yield return new WaitForSeconds(delayBeforeStart);
 
