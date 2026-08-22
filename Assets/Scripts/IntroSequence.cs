@@ -21,6 +21,9 @@ public class IntroSequence : MonoBehaviour
     public float displayDuration = 3.0f;    // Tempo in cui la frase resta visibile dopo essere stata scritta
     public float fadeDuration = 0.8f;       // Tempo di dissolvenza prima della frase successiva
     
+    [Header("Impostazioni Audio Sfumatura")]
+    public float ambientFadeDuration = 1.5f; // Tempo di sfumatura dell'audio prima del cambio scena
+
     [Header("Scena Successiva")]
     public string nextSceneName = "Scena1";
 
@@ -29,6 +32,11 @@ public class IntroSequence : MonoBehaviour
 
     private void Start()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayIntroAmbient();
+        }
+
         currentRoutine = StartCoroutine(PlayIntro());
     }
 
@@ -53,7 +61,7 @@ public class IntroSequence : MonoBehaviour
             textCanvasGroup.alpha = 1f;
             introText.text = "";
 
-            // Effetto Macchina da Scrivere (scrive lettera per lettera)
+            // Effetto visivo lettera per lettera (senza suono)
             yield return StartCoroutine(TypeSentence(sentences[i]));
 
             // Pausa di lettura a fine frase
@@ -63,15 +71,27 @@ public class IntroSequence : MonoBehaviour
             yield return StartCoroutine(FadeCanvasGroup(textCanvasGroup, 1f, 0f, fadeDuration));
         }
 
-        // Carica la scena di gioco principale
+        // Quando le frasi finiscono, fa sfumare il suono ambientale
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.FadeOutIntroAmbient(ambientFadeDuration);
+        }
+
+        // Attende la conclusione della sfumatura audio
+        yield return new WaitForSeconds(ambientFadeDuration);
+
         LoadGameScene();
     }
 
     private IEnumerator TypeSentence(string sentence)
     {
+        int charCount = 0;
+
         foreach (char letter in sentence.ToCharArray())
         {
             introText.text += letter;
+
+            charCount++;
             yield return new WaitForSeconds(typingSpeed);
         }
     }
@@ -91,8 +111,16 @@ public class IntroSequence : MonoBehaviour
     private void SkipIntro()
     {
         isSkipping = true;
+
         if (currentRoutine != null) StopCoroutine(currentRoutine);
-        LoadGameScene();
+
+        // Fa sfumare rapidamente l'audio d'ambiente (es. 0.5 secondi) in caso di skip
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.FadeOutIntroAmbient(0.5f);
+        }
+
+        Invoke(nameof(LoadGameScene), 0.5f);
     }
 
     private void LoadGameScene()
