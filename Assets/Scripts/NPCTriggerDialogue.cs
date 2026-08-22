@@ -80,6 +80,9 @@ public class NPCTriggerDialogue : MonoBehaviour
             // Salva permanentemente che il dialogo è avvenuto
             HasHadFirstTalkSession = true;
 
+            // Abilita l'hint solo alla fine di questo primo dialogo
+            DialogueManager.Instance.EnableHintOnNextDialogueEnd();
+
             DialogueManager.Instance.StartDialogueSequence(firstConversation);
 
             if (firstContactZone != null)

@@ -2143,6 +2143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 186803d2d9e1f3443800f38f50855412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCTriggerDialogue
+  npcID: NPC_Alieno_1
   firstContactZone: {fileID: 1091497819}
   interactPrompt: {fileID: 616819378}
   firstConversation:
@@ -18035,6 +18036,74 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 900172728}
   m_CullTransparentMesh: 1
+--- !u!1001 &901417677
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2008097554407966146, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_Name
+      value: Rifle_Pickup
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.368517
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.247696
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166982563616838303, guid: 3279c5a74ac0a024fb77d719666f393c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3279c5a74ac0a024fb77d719666f393c, type: 3}
 --- !u!1 &959415278
 GameObject:
   m_ObjectHideFlags: 0
@@ -22573,6 +22642,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1860760454}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1361567756
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1361567757}
+  m_Layer: 0
+  m_Name: SpawnPointFromScena2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1361567757
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361567756}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.98, y: -16.92, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1367496549
 GameObject:
@@ -30458,7 +30558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16e8d079a367b904ea0d12f49025b211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawn
-  spawnPoint: {fileID: 1892211776}
+  defaultSpawnPoint: {fileID: 1892211776}
   playerTag: Player
 --- !u!1 &1893654568
 GameObject:
@@ -30493,6 +30593,7 @@ MonoBehaviour:
   sceneToLoad: Scena2
   fadeAnim: {fileID: 811507559}
   fadeTime: 0.8
+  targetSpawnPointName: 
 --- !u!61 &1893654570
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -32636,3 +32737,5 @@ SceneRoots:
   - {fileID: 1714449722}
   - {fileID: 1860760454}
   - {fileID: 1729548704}
+  - {fileID: 1361567757}
+  - {fileID: 901417677}

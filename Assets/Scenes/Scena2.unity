@@ -15553,6 +15553,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db6cab1ee0102da4a8f564eb75e17468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
+  toggleWeaponKey: 101
+  storedWeapon: 3
+  isWeaponDrawn: 0
   attackPoint: {fileID: 1142974788}
   weaponRange: 0.1
   knockbackForce: 20
@@ -66849,7 +66852,7 @@ MonoBehaviour:
   sceneToLoad: Scena1
   fadeAnim: {fileID: 2053147097}
   fadeTime: 0.8
-  targetSpawnPointName: SpawnDallaScena2
+  targetSpawnPointName: SpawnPointFromScena2
 --- !u!61 &1978961314
 BoxCollider2D:
   m_ObjectHideFlags: 0
