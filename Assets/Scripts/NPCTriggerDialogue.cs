@@ -27,10 +27,8 @@ public class NPCTriggerDialogue : MonoBehaviour
 
     private void Update()
     {
-        // Gestione del dialogo ripetibile con il tasto E
         if (playerInRepeatZone && hasHadFirstTalk)
         {
-            // Se la finestra di dialogo è aperta, nascondi il tasto [E]
             if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel.activeSelf)
             {
                 if (interactPrompt != null)
@@ -43,7 +41,6 @@ public class NPCTriggerDialogue : MonoBehaviour
                     interactPrompt.SetActive(true);
             }
 
-            // Pressione del tasto E
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (DialogueManager.Instance != null && repeatConversation.Count > 0)
@@ -57,7 +54,6 @@ public class NPCTriggerDialogue : MonoBehaviour
         }
     }
 
-    // Chiamato quando il player entra nella zona LARGA
     public void OnFirstContactTrigger()
     {
         if (hasHadFirstTalk) return;
@@ -65,15 +61,17 @@ public class NPCTriggerDialogue : MonoBehaviour
         if (DialogueManager.Instance != null && firstConversation.Count > 0)
         {
             hasHadFirstTalk = true;
+
+            // Abilita l'hint solo per questo primo dialogo
+            DialogueManager.Instance.EnableHintOnNextDialogueEnd();
+
             DialogueManager.Instance.StartDialogueSequence(firstConversation);
 
-            // Disattiviamo del tutto la zona larga: non servirà mai più
             if (firstContactZone != null)
                 firstContactZone.SetActive(false);
         }
     }
 
-    // Chiamato quando il player entra/esce dalla zona STRETTA
     public void SetPlayerInRepeatZone(bool inZone)
     {
         playerInRepeatZone = inZone;

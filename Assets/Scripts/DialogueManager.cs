@@ -9,7 +9,7 @@ public struct DialogueLine
 {
     public string speakerName;
     public Sprite portrait;
-    public bool isRightSide; // True = Destra (NPC/Alieno), False = Sinistra (Player)
+    public bool isRightSide;
     [TextArea(2, 4)]
     public string sentence;
 }
@@ -42,6 +42,7 @@ public class DialogueManager : MonoBehaviour
     private string currentSentence;
     private PlayerMovement playerMovement;
     private bool justOpened = false;
+    private bool triggerGunHint = false;
 
     private void Awake()
     {
@@ -63,6 +64,11 @@ public class DialogueManager : MonoBehaviour
         {
             playerMovement = player.GetComponent<PlayerMovement>();
         }
+    }
+
+    public void EnableHintOnNextDialogueEnd()
+    {
+        triggerGunHint = true;
     }
 
     public void StartDialogue(string speakerName, Sprite portrait, string[] lines, bool isPortraitOnRight = false)
@@ -88,7 +94,7 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(true);
 
-        justOpened = true; // Impedisce a Update di consumare l'input in questo frame
+        justOpened = true; 
 
         if (playerMovement == null)
             FindPlayerComponents();
@@ -98,10 +104,10 @@ public class DialogueManager : MonoBehaviour
             playerMovement.StopMovement();
             playerMovement.enabled = false;
         }
+
         if (AudioManager.Instance != null)
         {
-            // Se hai un metodo dedicato nell'AudioManager per fermare i passi o gli SFX di movimento:
-            AudioManager.Instance.StopWalkSound(); // Sostituisci col nome del tuo metodo
+            AudioManager.Instance.StopWalkSound();
         }
 
         dialogueLinesQueue.Clear();
@@ -115,7 +121,6 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        // Se si salta la frase mentre sta scrivendo, ferma l'effetto visivo e sonoro
         if (isTyping)
         {
             StopAllCoroutines();
@@ -139,7 +144,6 @@ public class DialogueManager : MonoBehaviour
         DialogueLine line = dialogueLinesQueue.Dequeue();
         currentSentence = line.sentence;
 
-        // Gestione Layout UI Sicura con controlli null
         if (line.isRightSide)
         {
             if (portraitBoxLeft != null) portraitBoxLeft.SetActive(false);
@@ -178,7 +182,6 @@ public class DialogueManager : MonoBehaviour
         {
             if (dialogueText != null) dialogueText.text += letter;
 
-            // Suona ogni 2 lettere (escludendo gli spazi vuoti)
             if (letter != ' ' && charCount % 2 == 0)
             {
                 if (AudioManager.Instance != null)
@@ -201,7 +204,6 @@ public class DialogueManager : MonoBehaviour
 
     public void EndDialogue()
     {
-        // Interrompe il suono se il dialogo viene chiuso
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.StopTypewriterSound();
@@ -214,11 +216,19 @@ public class DialogueManager : MonoBehaviour
         {
             playerMovement.enabled = true;
         }
+
+        if (triggerGunHint)
+        {
+            if (TutorialHintUI.Instance != null)
+            {
+                TutorialHintUI.Instance.ShowHint("Premi [1] per estrarre la pistola");
+            }
+            triggerGunHint = false;
+        }
     }
 
     private void Update()
     {
-        // Se il dialogo è appena stato aperto in questo frame, ignoriamo l'input per evitare skip immediati
         if (justOpened)
         {
             justOpened = false;
