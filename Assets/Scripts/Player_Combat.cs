@@ -1,8 +1,18 @@
 using System.Collections;
 using UnityEngine;
 
+// Ordine originale esatto per non sfasare l'Inspector di Unity
+public enum WeaponType { Sword = 0, Hammer = 1, Rifle = 2, Gun = 3, Bomb = 4, None = 5 }
+
 public class Player_Combat : MonoBehaviour
 {   
+    [Header("Tasto Equipaggia / Riponi")]
+    public KeyCode toggleWeaponKey = KeyCode.E;
+
+    [Header("Arma Posseduta")]
+    public WeaponType storedWeapon = WeaponType.Gun; // Parte con la Pistola memorizzata
+    public bool isWeaponDrawn = false; // Parte a mani nude
+
     [Header("Parametri Attacco Melee")]
     public Transform attackPoint;
     public float weaponRange = 1f;
@@ -24,7 +34,7 @@ public class Player_Combat : MonoBehaviour
     public GameObject gunObject;
     public GameObject bombObject;
 
-    [Header("Stato Equipaggiamento")]
+    [Header("Stato Equipaggiamento (In Mano)")]
     public bool hasSword = false;
     public bool hasHammer = false;
     public bool hasRifle = false;
@@ -49,6 +59,58 @@ public class Player_Combat : MonoBehaviour
 
     private void Start()
     {
+        // Assicurati che parta a mani nude ma con la pistola memorizzata
+        storedWeapon = WeaponType.Gun;
+        isWeaponDrawn = false;
+        ApplyWeaponState();
+    }
+
+    private void Update()
+    {
+        // Tasto Toggle per estrarre/riporre
+        if (Input.GetKeyDown(toggleWeaponKey) || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            ToggleWeapon();
+        }
+    }
+
+    public void ToggleWeapon()
+    {
+        if (storedWeapon == WeaponType.None) return;
+
+        isWeaponDrawn = !isWeaponDrawn;
+        ApplyWeaponState();
+    }
+
+    public void EquipNewWeapon(WeaponType newWeapon)
+    {
+        storedWeapon = newWeapon;
+        isWeaponDrawn = true; // Quando raccogli, la metti subito in mano
+        ApplyWeaponState();
+    }
+
+    private void ApplyWeaponState()
+    {
+        // 1. Resetta tutte le variabili
+        hasSword = false;
+        hasHammer = false;
+        hasRifle = false;
+        hasGun = false;
+        hasBomb = false;
+
+        // 2. Se l'arma è estratta, attiva la specifica arma memorizzata
+        if (isWeaponDrawn)
+        {
+            switch (storedWeapon)
+            {
+                case WeaponType.Sword: hasSword = true; break;
+                case WeaponType.Hammer: hasHammer = true; break;
+                case WeaponType.Rifle: hasRifle = true; break;
+                case WeaponType.Gun: hasGun = true; break;
+                case WeaponType.Bomb: hasBomb = true; break;
+            }
+        }
+
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
         SyncGunScripts();
@@ -114,10 +176,9 @@ public class Player_Combat : MonoBehaviour
         anim.SetFloat("horizontal", 0f);
         anim.SetFloat("vertical", 0f);
 
-        hasBomb = false;
-        UpdateWeaponVisibility();
-        UpdateAnimatorBools();
-        SyncGunScripts();
+        storedWeapon = WeaponType.None;
+        isWeaponDrawn = false;
+        ApplyWeaponState();
 
         if (vert > 0)
             anim.Play("Bomb_throw_up", 0, 0f);
@@ -184,65 +245,11 @@ public class Player_Combat : MonoBehaviour
         Gizmos.DrawWireSphere(attackPoint.position, weaponRange);
     }
 
-    public void EquipSword()
-    {
-        hasSword = true;
-        hasHammer = false;
-        hasRifle = false;
-        hasGun = false;
-        hasBomb = false;
-        UpdateWeaponVisibility();
-        UpdateAnimatorBools();
-        SyncGunScripts();
-    }
-
-    public void EquipHammer()
-    {
-        hasSword = false;
-        hasHammer = true;
-        hasRifle = false;
-        hasGun = false;
-        hasBomb = false;
-        UpdateWeaponVisibility();
-        UpdateAnimatorBools();
-        SyncGunScripts();
-    }
-
-    public void EquipRifle()
-    {
-        hasSword = false;
-        hasHammer = false;
-        hasRifle = true;
-        hasGun = false;
-        hasBomb = false;
-        UpdateWeaponVisibility();
-        UpdateAnimatorBools();
-        SyncGunScripts();
-    }
-
-    public void EquipGun()
-    {
-        hasSword = false;
-        hasHammer = false;
-        hasRifle = false;
-        hasGun = true;
-        hasBomb = false;
-        UpdateWeaponVisibility();
-        UpdateAnimatorBools();
-        SyncGunScripts();
-    }
-
-    public void EquipBomb()
-    {
-        hasSword = false;
-        hasHammer = false;
-        hasRifle = false;
-        hasGun = false;
-        hasBomb = true;
-        UpdateWeaponVisibility();
-        UpdateAnimatorBools();
-        SyncGunScripts();
-    }
+    public void EquipSword() => EquipNewWeapon(WeaponType.Sword);
+    public void EquipHammer() => EquipNewWeapon(WeaponType.Hammer);
+    public void EquipRifle() => EquipNewWeapon(WeaponType.Rifle);
+    public void EquipGun() => EquipNewWeapon(WeaponType.Gun);
+    public void EquipBomb() => EquipNewWeapon(WeaponType.Bomb);
 
     private void UpdateWeaponVisibility()
     {
@@ -253,7 +260,6 @@ public class Player_Combat : MonoBehaviour
         if (bombObject != null) bombObject.SetActive(hasBomb);
     }
 
-    // Nasconde tutte le armi attive (es. durante l'Hit)
     public void HideWeapons()
     {
         if (swordObject != null) swordObject.SetActive(false);
@@ -263,7 +269,6 @@ public class Player_Combat : MonoBehaviour
         if (bombObject != null) bombObject.SetActive(false);
     }
 
-    // Ripristina l'arma attualmente equipaggiata
     public void RestoreWeapons()
     {
         UpdateWeaponVisibility();

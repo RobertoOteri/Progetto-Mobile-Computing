@@ -3,9 +3,7 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    public enum WeaponType { Sword, Hammer, Rifle, Gun, Bomb }
-
-    [Header("Tipo di questa arma")]
+    [Header("Tipo di questa arma a terra")]
     public WeaponType weaponToEquip;
 
     [Header("Prefab delle armi da terra")]
@@ -29,34 +27,28 @@ public class ItemPickup : MonoBehaviour
             {
                 Vector3 dropPosition = other.transform.position + new Vector3(0.8f, 0f, 0f);
 
-                // Drop dell'arma precedente mantenendo la scala del Prefab originale
-                if (combat.hasSword && swordPickupPrefab != null)
+                // 1. Lascia cadere l'arma che il player possedeva precedentemente
+                switch (combat.storedWeapon)
                 {
-                    DropItem(swordPickupPrefab, dropPosition);
-                }
-                else if (combat.hasHammer && hammerPickupPrefab != null)
-                {
-                    DropItem(hammerPickupPrefab, dropPosition);
-                }
-                else if (combat.hasRifle && riflePickupPrefab != null)
-                {
-                    DropItem(riflePickupPrefab, dropPosition);
-                }
-                else if (combat.hasGun && gunPickupPrefab != null)
-                {
-                    DropItem(gunPickupPrefab, dropPosition);
-                }
-                else if (combat.hasBomb && bombPickupPrefab != null)
-                {
-                    DropItem(bombPickupPrefab, dropPosition);
+                    case WeaponType.Sword:
+                        if (swordPickupPrefab != null) DropItem(swordPickupPrefab, dropPosition);
+                        break;
+                    case WeaponType.Hammer:
+                        if (hammerPickupPrefab != null) DropItem(hammerPickupPrefab, dropPosition);
+                        break;
+                    case WeaponType.Rifle:
+                        if (riflePickupPrefab != null) DropItem(riflePickupPrefab, dropPosition);
+                        break;
+                    case WeaponType.Gun:
+                        if (gunPickupPrefab != null) DropItem(gunPickupPrefab, dropPosition);
+                        break;
+                    case WeaponType.Bomb:
+                        if (bombPickupPrefab != null) DropItem(bombPickupPrefab, dropPosition);
+                        break;
                 }
 
-                // Equipaggia la nuova arma
-                if (weaponToEquip == WeaponType.Sword) combat.EquipSword();
-                else if (weaponToEquip == WeaponType.Hammer) combat.EquipHammer();
-                else if (weaponToEquip == WeaponType.Rifle) combat.EquipRifle();
-                else if (weaponToEquip == WeaponType.Gun) combat.EquipGun();
-                else if (weaponToEquip == WeaponType.Bomb) combat.EquipBomb();
+                // 2. Assegna e impugna la nuova arma raccolta
+                combat.EquipNewWeapon(weaponToEquip);
 
                 if (AudioManager.Instance != null && AudioManager.Instance.pickupSFX != null)
                 {
