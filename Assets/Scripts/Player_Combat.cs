@@ -59,9 +59,11 @@ public class Player_Combat : MonoBehaviour
 
     private void Start()
     {
-        // Assicurati che parta a mani nude ma con la pistola memorizzata
-        storedWeapon = WeaponType.Gun;
-        isWeaponDrawn = false;
+        if (PlayerPrefs.HasKey("SavedWeapon"))
+        {
+            storedWeapon = (WeaponType)PlayerPrefs.GetInt("SavedWeapon");
+            isWeaponDrawn = PlayerPrefs.GetInt("SavedIsDrawn", 0) == 1;
+        }
         ApplyWeaponState();
     }
 
@@ -73,6 +75,12 @@ public class Player_Combat : MonoBehaviour
             ToggleWeapon();
         }
     }
+    public void SaveWeaponData()
+    {
+        PlayerPrefs.SetInt("SavedWeapon", (int)storedWeapon);
+        PlayerPrefs.SetInt("SavedIsDrawn", isWeaponDrawn ? 1 : 0);
+        PlayerPrefs.Save();
+    }
 
     public void ToggleWeapon()
     {
@@ -80,6 +88,7 @@ public class Player_Combat : MonoBehaviour
 
         isWeaponDrawn = !isWeaponDrawn;
         ApplyWeaponState();
+        SaveWeaponData();
     }
 
     public void EquipNewWeapon(WeaponType newWeapon)
@@ -87,6 +96,7 @@ public class Player_Combat : MonoBehaviour
         storedWeapon = newWeapon;
         isWeaponDrawn = true; // Quando raccogli, la metti subito in mano
         ApplyWeaponState();
+        SaveWeaponData();
     }
 
     private void ApplyWeaponState()
@@ -179,6 +189,7 @@ public class Player_Combat : MonoBehaviour
         storedWeapon = WeaponType.None;
         isWeaponDrawn = false;
         ApplyWeaponState();
+        SaveWeaponData();
 
         if (vert > 0)
             anim.Play("Bomb_throw_up", 0, 0f);

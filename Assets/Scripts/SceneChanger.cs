@@ -16,6 +16,13 @@ public class SceneChanger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            // 🔹 NUOVO: Salva l'arma e il suo stato prima di cambiare scena
+            Player_Combat combat = collision.GetComponent<Player_Combat>();
+            if (combat != null)
+            {
+                combat.SaveWeaponData();
+            }
+
             // 1. Salva il nome dello SpawnPoint in cui il player apparirà
             if (!string.IsNullOrEmpty(targetSpawnPointName))
             {
