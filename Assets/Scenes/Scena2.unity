@@ -26109,6 +26109,36 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 764657459467567882, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 395.7791
+      objectReference: {fileID: 0}
+    - target: {fileID: 764657459467567882, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 171.6848
+      objectReference: {fileID: 0}
+    - target: {fileID: 764657459467567882, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -727.1105
+      objectReference: {fileID: 0}
+    - target: {fileID: 764657459467567882, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -434.1576
+      objectReference: {fileID: 0}
+    - target: {fileID: 3038094620692401576, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 97
+      objectReference: {fileID: 0}
+    - target: {fileID: 3038094620692401576, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 97
+      objectReference: {fileID: 0}
     - target: {fileID: 3723256020377631014, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
       propertyPath: fadeDuration
