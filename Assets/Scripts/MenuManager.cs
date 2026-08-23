@@ -10,56 +10,62 @@ public class MainMenuManager : MonoBehaviour
     
     [Header("Impostazioni Grafiche e Audio")]
     public Image filtroLuminosita; 
-    public Slider sliderVolume;       
+    public Slider sliderMusica;  // Sostituisce il vecchio sliderVolume
+    public Slider sliderSuoni;   // Il nuovo slider per gli effetti
     public Slider sliderLuminosita;   
 
     void Start()
     {
-        // Impostiamo lo stato iniziale dei pannelli
         if (pannelloPrincipale != null) pannelloPrincipale.SetActive(true);
         if (pannelloImpostazioni != null) pannelloImpostazioni.SetActive(false);
 
-        // --- INIZIALIZZAZIONE AUDIO E LUMINOSITÀ ---
-        
-        // Applica subito il volume leggendo il valore di partenza dello slider 
-        if (sliderVolume != null)
-        {
-            CambiaVolume(sliderVolume.value);
-        }
-
-        // Applica subito la luminosità leggendo il valore di partenza dello slider 
-        if (sliderLuminosita != null)
-        {
-            CambiaLuminosita(sliderLuminosita.value);
-        }
+        // Inizializza tutti e tre gli slider all'avvio
+        if (sliderMusica != null) CambiaMusica(sliderMusica.value);
+        if (sliderSuoni != null) CambiaSuoni(sliderSuoni.value);
+        if (sliderLuminosita != null) CambiaLuminosita(sliderLuminosita.value);
     }
 
     // --- FUNZIONI NAVIGAZIONE MENU ---
-    public void Gioca() { SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); }
+    public void Gioca() 
+    { 
+        // Ricorda di mettere il VERO nome della tua scena Intro qui!
+        SceneManager.LoadScene("Intro"); 
+    }
+    
     public void Esci() { Application.Quit(); }
     public void ApriImpostazioni() { pannelloPrincipale.SetActive(false); pannelloImpostazioni.SetActive(true); }
     public void ChiudiImpostazioni() { pannelloImpostazioni.SetActive(false); pannelloPrincipale.SetActive(true); }
 
-    // --- FUNZIONI DEGLI SLIDER ---
+    // --- FUNZIONI DEGLI SLIDER AUDIO ---
     
-    public void CambiaVolume(float volume)
+    public void CambiaMusica(float volume)
     {
-        // Il volume in ingresso ora è un numero da 0 a 10 (o i blocchi massimi che hai impostato).
-        // Lo dividiamo per il valore massimo dello slider per ottenere un numero tra 0.0 e 1.0.
-        if (sliderVolume != null)
+        if (sliderMusica != null)
         {
-            float volumeNormalizzato = volume / sliderVolume.maxValue;
-            AudioListener.volume = volumeNormalizzato;
+            float volNormalizzato = volume / sliderMusica.maxValue;
+            Debug.Log("La MUSICA è stata impostata a: " + volNormalizzato);
+            
+            // Qui collegheremo l'AudioMixer per la musica!
         }
     }
 
+    public void CambiaSuoni(float volume)
+    {
+        if (sliderSuoni != null)
+        {
+            float volNormalizzato = volume / sliderSuoni.maxValue;
+            Debug.Log("I SUONI (effetti) sono stati impostati a: " + volNormalizzato);
+            
+            // Qui collegheremo l'AudioMixer per gli effetti sonori!
+        }
+    }
+
+    // --- FUNZIONE LUMINOSITÀ ---
     public void CambiaLuminosita(float luminosita)
     {
         if (filtroLuminosita != null && sliderLuminosita != null)
         {
-            // Stessa cosa: normalizziamo il valore da 0-10 a 0.0-1.0
             float luminositaNormalizzata = luminosita / sliderLuminosita.maxValue;
-            
             Color coloreFiltro = filtroLuminosita.color;
             coloreFiltro.a = 1f - luminositaNormalizzata; 
             filtroLuminosita.color = coloreFiltro;
