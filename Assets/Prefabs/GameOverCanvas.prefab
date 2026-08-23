@@ -205,4 +205,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverManager
   gameOverPanel: {fileID: 6196814693844042750}
+  hudCanvasOrPanel: {fileID: 0}
+  gameOverAudioSource: {fileID: 0}
+  gameOverMusicClip: {fileID: 0}
+  fadeDuration: 1
   pauseGameOnDeath: 1
