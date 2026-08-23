@@ -29503,7 +29503,7 @@ MonoBehaviour:
   playerMovement: {fileID: 1795376245}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.12
-  gameOverDelay: 1.5
+  gameOverDelay: 3
 --- !u!114 &1795376252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32659,7 +32659,7 @@ PrefabInstance:
     - target: {fileID: 3723256020377631014, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
       propertyPath: fadeDuration
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3723256020377631014, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
@@ -32675,6 +32675,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameOverCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893879933630364204, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7495974499924518148, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
