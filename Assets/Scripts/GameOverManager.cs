@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class GameOverManager : MonoBehaviour
@@ -7,17 +8,13 @@ public class GameOverManager : MonoBehaviour
     public static GameOverManager Instance;
 
     [Header("Riferimenti UI")]
-    [Tooltip("Il pannello principale del Game Over con l'immagine")]
     public GameObject gameOverPanel;
-
-    [Tooltip("Trascina qui il Canvas o il pannello dell'HUD (cuori, munizioni, ecc.) per nasconderlo")]
     public GameObject hudCanvasOrPanel;
 
     [Header("Audio Game Over")]
-    [Tooltip("AudioSource per la musica di Game Over (se vuoto ne userà uno automatico)")]
     public AudioSource gameOverAudioSource;
-    [Tooltip("Traccia musicale o SFX di Game Over")]
     public AudioClip gameOverMusicClip;
+    public AudioMixerGroup musicMixerGroup; 
 
     [Header("Impostazioni Dissolvenza")]
     public float fadeDuration = 1.0f;
@@ -54,7 +51,6 @@ public class GameOverManager : MonoBehaviour
             }
         }
 
-        // Assicura che la musica di Game Over suoni anche se il tempo di gioco viene fermato
         if (gameOverAudioSource != null)
         {
             gameOverAudioSource.ignoreListenerPause = true;
@@ -72,19 +68,25 @@ public class GameOverManager : MonoBehaviour
 
     public void TriggerGameOver()
     {
-        // 1. Nasconde l'HUD dei cuori
+        // 1. Nasconde l'HUD
         if (hudCanvasOrPanel != null)
         {
             hudCanvasOrPanel.SetActive(false);
         }
 
-        // 2. Ferma i suoni di sottofondo/nemici nel mondo
+        // 2. Sfuma la musica principale di sottofondo in 1.5 secondi
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.FadeOutMusic(1.5f);
+        }
+
+        // 3. Ferma gli altri suoni del mondo
         SilenceWorldAudio();
 
-        // 3. Riproduce la musica di Game Over
+        // 4. Riproduce la musica di Game Over (collegata al Mixer)
         PlayGameOverMusic();
 
-        // 4. Avvia la dissolvenza
+        // 5. Avvia la dissolvenza della schermata
         if (gameOverPanel != null)
         {
             gameOverPanel.transform.SetAsLastSibling();
@@ -94,14 +96,12 @@ public class GameOverManager : MonoBehaviour
 
     private void SilenceWorldAudio()
     {
-        // Ferma le tracce gestite dall'AudioManager se presente
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.StopWalkSound();
             AudioManager.Instance.StopTypewriterSound();
         }
 
-        // Trova e muta tutti gli altri AudioSource attivi nella scena (nemici, trappole, ecc.)
         AudioSource[] allAudioSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (AudioSource source in allAudioSources)
         {
@@ -116,6 +116,11 @@ public class GameOverManager : MonoBehaviour
     {
         if (gameOverAudioSource != null && gameOverMusicClip != null)
         {
+            if (musicMixerGroup != null)
+            {
+                gameOverAudioSource.outputAudioMixerGroup = musicMixerGroup;
+            }
+
             gameOverAudioSource.clip = gameOverMusicClip;
             gameOverAudioSource.loop = false;
             gameOverAudioSource.Play();
@@ -148,8 +153,6 @@ public class GameOverManager : MonoBehaviour
             Time.timeScale = 0f;
         }
     }
-
-    // --- PULSANTI ---
 
     public void RestartLevel()
     {

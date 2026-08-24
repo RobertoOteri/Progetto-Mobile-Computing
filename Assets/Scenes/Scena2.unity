@@ -26223,6 +26223,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3723256020377631014, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
+      propertyPath: musicMixerGroup
+      value: 
+      objectReference: {fileID: 1053475888257266385, guid: ef0c4ccd3b3e2134085c35e511300037,
+        type: 2}
+    - target: {fileID: 3723256020377631014, guid: 2371cc7e1690a0e4fae77069f4431a8b,
+        type: 3}
       propertyPath: hudCanvasOrPanel
       value: 
       objectReference: {fileID: 653096417}
