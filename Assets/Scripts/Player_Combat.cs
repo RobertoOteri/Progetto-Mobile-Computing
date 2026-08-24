@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-// Ordine originale esatto per non sfasare l'Inspector di Unity
 public enum WeaponType { Sword = 0, Hammer = 1, Rifle = 2, Gun = 3, Bomb = 4, None = 5 }
 
 public class Player_Combat : MonoBehaviour
@@ -10,8 +9,8 @@ public class Player_Combat : MonoBehaviour
     public KeyCode toggleWeaponKey = KeyCode.E;
 
     [Header("Arma Posseduta")]
-    public WeaponType storedWeapon = WeaponType.Gun; // Parte con la Pistola memorizzata
-    public bool isWeaponDrawn = false; // Parte a mani nude
+    public WeaponType storedWeapon = WeaponType.Gun;
+    public bool isWeaponDrawn = false; // Mani nude all'avvio
 
     [Header("Parametri Attacco Melee")]
     public Transform attackPoint;
@@ -53,28 +52,27 @@ public class Player_Combat : MonoBehaviour
     private void Awake()
     {
         playerCollider = GetComponent<Collider2D>();
+        if (anim == null) anim = GetComponent<Animator>();
         if (playerRifle == null) playerRifle = GetComponent<Player_Rifle>();
         if (playerGun == null) playerGun = GetComponent<Player_Gun>();
     }
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey("SavedWeapon"))
-        {
-            storedWeapon = (WeaponType)PlayerPrefs.GetInt("SavedWeapon");
-            isWeaponDrawn = PlayerPrefs.GetInt("SavedIsDrawn", 0) == 1;
-        }
+        // Se vuoi che il player parta sempre disarmato all'inizio della scena:
+        isWeaponDrawn = false;
+        
         ApplyWeaponState();
     }
 
     private void Update()
     {
-        // Tasto Toggle per estrarre/riporre
         if (Input.GetKeyDown(toggleWeaponKey) || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
         {
             ToggleWeapon();
         }
     }
+
     public void SaveWeaponData()
     {
         PlayerPrefs.SetInt("SavedWeapon", (int)storedWeapon);
@@ -94,21 +92,21 @@ public class Player_Combat : MonoBehaviour
     public void EquipNewWeapon(WeaponType newWeapon)
     {
         storedWeapon = newWeapon;
-        isWeaponDrawn = true; // Quando raccogli, la metti subito in mano
+        isWeaponDrawn = true;
         ApplyWeaponState();
         SaveWeaponData();
     }
 
-    private void ApplyWeaponState()
+    public void ApplyWeaponState()
     {
-        // 1. Resetta tutte le variabili
+        // 1. Resetta tutte le variabili logiche
         hasSword = false;
         hasHammer = false;
         hasRifle = false;
         hasGun = false;
         hasBomb = false;
 
-        // 2. Se l'arma è estratta, attiva la specifica arma memorizzata
+        // 2. Attiva la specifica arma solo ed esclusivamente se è estratta
         if (isWeaponDrawn)
         {
             switch (storedWeapon)
@@ -124,11 +122,57 @@ public class Player_Combat : MonoBehaviour
         UpdateWeaponVisibility();
         UpdateAnimatorBools();
         SyncGunScripts();
+        UpdateMobileUI();
+    }
+
+    private void UpdateMobileUI()
+    {
+        if (AttackButtonUI.Instance == null) return;
+
+        if (hasSword || hasHammer)
+        {
+            AttackButtonUI.Instance.SetMeleeMode();
+        }
+        else if (hasGun || hasRifle)
+        {
+            AttackButtonUI.Instance.SetRangedMode();
+        }
+        else if (hasBomb)
+        {
+            AttackButtonUI.Instance.SetBombMode();
+        }
+        else
+        {
+            // Default visivo a mani nude
+            AttackButtonUI.Instance.SetMeleeMode();
+        }
+    }
+
+    public void PerformMobileAction(float vInput, float hInput, float lastV, float lastH)
+    {
+        if (!isWeaponDrawn) return;
+
+        if (hasGun && playerGun != null)
+        {
+            playerGun.Shoot();
+            return;
+        }
+
+        if (hasRifle && playerRifle != null)
+        {
+            playerRifle.Shoot();
+            return;
+        }
+
+        if (hasSword || hasHammer || hasBomb)
+        {
+            Attack(vInput, hInput, lastV, lastH);
+        }
     }
 
     public void Attack(float vInput, float hInput, float lastV, float lastH)
     {
-        if (anim == null || IsThrowingBomb) return;
+        if (anim == null || IsThrowingBomb || !isWeaponDrawn) return;
         if (!hasSword && !hasHammer && !hasBomb) return;
 
         float vert = 0f;

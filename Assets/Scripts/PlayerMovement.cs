@@ -9,8 +9,12 @@ public class PlayerMovement : MonoBehaviour
 
     public Animator anim;
 
+    [Header("Mobile Controls")]
+    [Tooltip("Trascina qui il prefab del Fixed Joystick presente nel Canvas")]
+    public Joystick movementJoystick;
+
     [Header("Durata Hit / Visibilità Arma")]
-    public float hitAnimationDuration = 0.45f; // Regola questo tempo dall'Inspector per farlo combaciare con l'animazione
+    public float hitAnimationDuration = 0.45f;
 
     private bool isKnockedBack = false;
     
@@ -36,8 +40,9 @@ public class PlayerMovement : MonoBehaviour
         if (isKnockedBack) return;
         if (player_Combat != null && player_Combat.IsThrowingBomb) return;
 
-        float rawH = Input.GetAxisRaw("Horizontal");
-        float rawV = Input.GetAxisRaw("Vertical");
+        // Legge l'input da Joystick o Tastiera
+        float rawH = GetHorizontalInput();
+        float rawV = GetVerticalInput();
 
         if (rawH != 0 || rawV != 0)
         {
@@ -45,15 +50,10 @@ public class PlayerMovement : MonoBehaviour
             lastVertical = rawV;
         }
 
+        // Tasto attacco / bomba da tastiera (per i test da PC)
         if (Input.GetButtonDown("Slash") || (Input.GetKeyDown(KeyCode.Q) && player_Combat != null && player_Combat.hasBomb))
         {
-            float v = Input.GetAxisRaw("Vertical");
-            float h = Input.GetAxisRaw("Horizontal");
-
-            if (player_Combat != null)
-            {
-                player_Combat.Attack(v, h, lastVertical, lastHorizontal);
-            }
+            TriggerAttack();
         }
     }
 
@@ -100,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
 
                 Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
 
-                string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Up";
+                string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Down";
                 string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
                 string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
 
@@ -129,8 +129,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // === NORMALE MOVIMENTO ===
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float horizontal = GetHorizontalInput();
+        float vertical = GetVerticalInput();
 
         if ((horizontal > 0 && transform.localScale.x > 0) ||
             (horizontal < 0 && transform.localScale.x < 0))
@@ -173,6 +173,49 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // --- FUNZIONI INPUT IBRIDE (Tastiera + Touch) ---
+    private float GetHorizontalInput()
+    {
+        if (movementJoystick != null && Mathf.Abs(movementJoystick.Horizontal) > 0.1f)
+        {
+            return movementJoystick.Horizontal;
+        }
+        return Input.GetAxis("Horizontal");
+    }
+
+    private float GetVerticalInput()
+    {
+        if (movementJoystick != null && Mathf.Abs(movementJoystick.Vertical) > 0.1f)
+        {
+            return movementJoystick.Vertical;
+        }
+        return Input.GetAxis("Vertical");
+    }
+
+    // Funzione pubblica per il pulsante touch d'attacco a schermo
+    public void TriggerAttack()
+    {
+        Debug.Log("--- PULSANTE ATTACCO PREMUTO CON SUCCESSO! ---");
+
+        if (player_Combat != null)
+        {
+            float v = GetVerticalInput();
+            float h = GetHorizontalInput();
+            player_Combat.Attack(v, h, lastVertical, lastHorizontal);
+        }
+        else
+        {
+            Debug.LogError("Player_Combat è NULL su PlayerMovement!");
+        }
+        
+        if (player_Combat != null)
+        {
+            float v = GetVerticalInput();
+            float h = GetHorizontalInput();
+            player_Combat.Attack(v, h, lastVertical, lastHorizontal);
+        }
+    }
+
     public void StopMovement()
     {
         if (rb != null)
@@ -198,7 +241,6 @@ public class PlayerMovement : MonoBehaviour
     {
         isKnockedBack = true;
 
-        // Nasconde subito l'arma
         if (player_Combat != null)
         {
             player_Combat.HideWeapons();
@@ -250,11 +292,9 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator KnockBackCounter(float stunTime)
     {
-        // 1. Arresta la spinta fisica
         yield return new WaitForSeconds(stunTime);
         rb.linearVelocity = Vector2.zero;
 
-        // 2. Attende il tempo rimanente dell'animazione di hit
         float remainingTime = hitAnimationDuration - stunTime;
         if (remainingTime > 0f)
         {
@@ -263,7 +303,6 @@ public class PlayerMovement : MonoBehaviour
 
         isKnockedBack = false;
 
-        // 3. Ripristina l'arma in mano a fine animazione
         if (player_Combat != null)
         {
             player_Combat.RestoreWeapons();
