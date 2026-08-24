@@ -4,8 +4,10 @@ using UnityEngine.SceneManagement;
 public class PauseMenuManager : MonoBehaviour
 {
     public static PauseMenuManager instance;
+    
+    [Header("Navigazione UI")]
     public GameObject pauseMenuPanel;
-    public string mainMenuSceneName = "Menu"; // Inserisci il nome esatto della scena del menù principale
+    public GameObject settingsMenuPanel;
     
     private bool isPaused = false;
 
@@ -19,11 +21,14 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
-    void Start() { pauseMenuPanel.SetActive(false); }
+    void Start()
+    {
+        pauseMenuPanel.SetActive(false);
+        if(settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
+    }
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == mainMenuSceneName) return;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused) Resume();
@@ -34,6 +39,7 @@ public class PauseMenuManager : MonoBehaviour
     public void Resume()
     {
         pauseMenuPanel.SetActive(false);
+        if(settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
     }
@@ -45,14 +51,24 @@ public class PauseMenuManager : MonoBehaviour
         isPaused = true;
     }
 
-    public void SaveGame() { Debug.Log("Salvataggio..."); }
-    public void OpenSettings() { Debug.Log("Apro le impostazioni..."); }
+    public void OpenSettings() 
+    { 
+        pauseMenuPanel.SetActive(false); 
+        settingsMenuPanel.SetActive(true); 
+    }
+
+    public void CloseSettings()
+    {
+        settingsMenuPanel.SetActive(false); 
+        pauseMenuPanel.SetActive(true); // Nel gioco, tornando indietro riapre sempre la pausa
+    }
 
     public void QuitToMainMenu()
     {
         Time.timeScale = 1f; 
         isPaused = false;
-        pauseMenuPanel.SetActive(false);
-        SceneManager.LoadScene(mainMenuSceneName);
+        // Distruggiamo il Canvas di pausa quando torniamo al menù, così non si porta dietro cose vecchie!
+        Destroy(gameObject); 
+        SceneManager.LoadScene("Menu"); 
     }
 }
