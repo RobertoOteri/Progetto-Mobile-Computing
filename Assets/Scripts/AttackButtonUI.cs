@@ -25,7 +25,7 @@ public class AttackButtonUI : MonoBehaviour
         Instance = this;
     }
 
-    // 1. Corpo a corpo
+    // 1. Corpo a corpo (Spada, Martello)
     public void SetMeleeMode()
     {
         if (buttonIcon != null && meleeSprite != null) 

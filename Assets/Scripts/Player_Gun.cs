@@ -17,22 +17,23 @@ public class Player_Gun : MonoBehaviour
 
     private Vector2 aimDirection = Vector2.right;
 
-    public float shootCooldown = .3f; // Cooldown pistola
+    public float shootCooldown = 0.3f;
     private float shootTimer;
 
     [Header("Blocco Movimento Sparo")]
     public float shootStopDuration = 0.15f; 
     private float stopTimer;
 
-    // Proprietà pubbliche per PlayerMovement
     public bool IsShooting => stopTimer > 0;
     public Vector2 AimDirection => aimDirection;
 
     private Player_Combat combat;
+    private PlayerMovement playerMovement;
 
-    void Start()
+    void Awake()
     {
         combat = GetComponent<Player_Combat>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     void Update()
@@ -44,25 +45,35 @@ public class Player_Gun : MonoBehaviour
 
         shootTimer -= Time.deltaTime;
 
-        // Verifica se il player ha la pistola equipaggiata (assicurati che in Player_Combat ci sia hasGun o simile)
         if (combat != null && !combat.hasGun) return;
 
         HandleAiming();
 
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-
-        // Per la pistola usiamo GetButtonDown (sparo singolo per ogni click)
-        if (Input.GetButtonDown("Shoot") && shootTimer <= 0 && h == 0 && v == 0)
+        // Tasto J per sparare da PC
+        if (Input.GetKeyDown(KeyCode.J))
         {
             Shoot(); 
         }
     }
 
-    private void HandleAiming()
+    public void HandleAiming()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        float horizontal = 0f;
+        float vertical = 0f;
+
+        // Se usi il Joystick Mobile, mira nella direzione della levetta
+        if (playerMovement != null && playerMovement.movementJoystick != null &&
+            (Mathf.Abs(playerMovement.movementJoystick.Horizontal) > 0.1f || Mathf.Abs(playerMovement.movementJoystick.Vertical) > 0.1f))
+        {
+            horizontal = playerMovement.movementJoystick.Horizontal;
+            vertical = playerMovement.movementJoystick.Vertical;
+        }
+        else
+        {
+            // Altrimenti leggi da tastiera (WASD / Frecce)
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
+        }
 
         if (horizontal != 0 || vertical != 0)
         {
@@ -75,33 +86,56 @@ public class Player_Gun : MonoBehaviour
                 aimDirection = new Vector2(0f, Mathf.Sign(vertical));
             }
         }
+        else if (playerMovement != null)
+        {
+            if (playerMovement.lastHorizontal != 0 || playerMovement.lastVertical != 0)
+            {
+                if (Mathf.Abs(playerMovement.lastHorizontal) >= Mathf.Abs(playerMovement.lastVertical))
+                {
+                    aimDirection = new Vector2(Mathf.Sign(playerMovement.lastHorizontal), 0f);
+                }
+                else
+                {
+                    aimDirection = new Vector2(0f, Mathf.Sign(playerMovement.lastVertical));
+                }
+            }
+        }
     }
 
     private Transform GetActiveLaunchPoint()
     {
-        if (aimDirection.y > 0)
+        if (aimDirection.y > 0 && launchPointUp != null)
         {
-            return launchPointUp != null ? launchPointUp : transform;
+            return launchPointUp;
         }
-        else if (aimDirection.y < 0)
+        else if (aimDirection.y < 0 && launchPointDown != null)
         {
-            return launchPointDown != null ? launchPointDown : transform;
+            return launchPointDown;
         }
-        else
+        else if (launchPointSide != null)
         {
-            return launchPointSide != null ? launchPointSide : transform;
+            return launchPointSide;
         }
+
+        return transform;
     }
 
     public void Shoot()
     {
+        if (shootTimer > 0) return;
+
         Transform activePoint = GetActiveLaunchPoint();
 
-        if (activePoint == null || gunBulletPrefab == null) return;
+        if (gunBulletPrefab == null)
+        {
+            Debug.LogError("[Player_Gun] ERRORE: Gun Bullet Prefab non assegnato nell'Inspector!");
+            return;
+        }
 
         stopTimer = shootStopDuration;
 
-        Bullet gunBullet = Instantiate(gunBulletPrefab, activePoint.position, Quaternion.identity).GetComponent<Bullet>();
+        GameObject bulletObj = Instantiate(gunBulletPrefab, activePoint.position, Quaternion.identity);
+        Bullet gunBullet = bulletObj.GetComponent<Bullet>();
         if (gunBullet != null)
         {
             gunBullet.direction = aimDirection;

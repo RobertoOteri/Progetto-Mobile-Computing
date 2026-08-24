@@ -22,9 +22,9 @@ public class PlayerMovement : MonoBehaviour
     public Player_Rifle player_Rifle;
     public Player_Gun player_Gun;
 
-    // --- MEMORIA DIREZIONE ---
-    private float lastVertical = 0f;
-    private float lastHorizontal = 1f;
+    // --- MEMORIA DIREZIONE (Rese pubbliche per gli script di combattimento) ---
+    [HideInInspector] public float lastVertical = 0f;
+    [HideInInspector] public float lastHorizontal = 1f;
 
     private void Start()
     {
@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
             lastVertical = rawV;
         }
 
-        // Tasto attacco / bomba da tastiera (per i test da PC)
+        // Tasto attacco / bomba da tastiera (Slash/K o Q)
         if (Input.GetButtonDown("Slash") || (Input.GetKeyDown(KeyCode.Q) && player_Combat != null && player_Combat.hasBomb))
         {
             TriggerAttack();
@@ -174,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // --- FUNZIONI INPUT IBRIDE (Tastiera + Touch) ---
-    private float GetHorizontalInput()
+    public float GetHorizontalInput()
     {
         if (movementJoystick != null && Mathf.Abs(movementJoystick.Horizontal) > 0.1f)
         {
@@ -183,7 +183,7 @@ public class PlayerMovement : MonoBehaviour
         return Input.GetAxis("Horizontal");
     }
 
-    private float GetVerticalInput()
+    public float GetVerticalInput()
     {
         if (movementJoystick != null && Mathf.Abs(movementJoystick.Vertical) > 0.1f)
         {
@@ -192,27 +192,16 @@ public class PlayerMovement : MonoBehaviour
         return Input.GetAxis("Vertical");
     }
 
-    // Funzione pubblica per il pulsante touch d'attacco a schermo
+    // --- AZIONE TASTO D'ATTACCO/SPARO MOBILE ---
     public void TriggerAttack()
     {
-        Debug.Log("--- PULSANTE ATTACCO PREMUTO CON SUCCESSO! ---");
-
         if (player_Combat != null)
         {
             float v = GetVerticalInput();
             float h = GetHorizontalInput();
-            player_Combat.Attack(v, h, lastVertical, lastHorizontal);
-        }
-        else
-        {
-            Debug.LogError("Player_Combat è NULL su PlayerMovement!");
-        }
-        
-        if (player_Combat != null)
-        {
-            float v = GetVerticalInput();
-            float h = GetHorizontalInput();
-            player_Combat.Attack(v, h, lastVertical, lastHorizontal);
+            
+            // Chiama l'azione dell'arma attualmente estratta (Pistola, Fucile, Spada, Bomba)
+            player_Combat.ExecuteCurrentWeaponAction(v, h, lastVertical, lastHorizontal);
         }
     }
 

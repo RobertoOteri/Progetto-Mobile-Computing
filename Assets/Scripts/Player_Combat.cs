@@ -10,7 +10,7 @@ public class Player_Combat : MonoBehaviour
 
     [Header("Arma Posseduta")]
     public WeaponType storedWeapon = WeaponType.Gun;
-    public bool isWeaponDrawn = false; // Mani nude all'avvio
+    public bool isWeaponDrawn = false;
 
     [Header("Parametri Attacco Melee")]
     public Transform attackPoint;
@@ -25,6 +25,7 @@ public class Player_Combat : MonoBehaviour
     public Animator anim;
     public Player_Rifle playerRifle;
     public Player_Gun playerGun;
+    private PlayerMovement playerMovement;
 
     [Header("Oggetti Figli nel Player")]
     public GameObject swordObject;  
@@ -52,6 +53,7 @@ public class Player_Combat : MonoBehaviour
     private void Awake()
     {
         playerCollider = GetComponent<Collider2D>();
+        playerMovement = GetComponent<PlayerMovement>();
         if (anim == null) anim = GetComponent<Animator>();
         if (playerRifle == null) playerRifle = GetComponent<Player_Rifle>();
         if (playerGun == null) playerGun = GetComponent<Player_Gun>();
@@ -59,17 +61,40 @@ public class Player_Combat : MonoBehaviour
 
     private void Start()
     {
-        // Se vuoi che il player parta sempre disarmato all'inizio della scena:
-        isWeaponDrawn = false;
-        
+        if (PlayerPrefs.HasKey("SavedWeapon"))
+        {
+            storedWeapon = (WeaponType)PlayerPrefs.GetInt("SavedWeapon");
+            isWeaponDrawn = PlayerPrefs.GetInt("SavedIsDrawn", 0) == 1;
+        }
         ApplyWeaponState();
     }
 
     private void Update()
     {
+        // Tasti Toggle per estrarre/riporre su PC (E oppure 1)
         if (Input.GetKeyDown(toggleWeaponKey) || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
         {
             ToggleWeapon();
+        }
+
+        // Tasto K per Spada/Martello su PC
+        if (Input.GetKeyDown(KeyCode.K) && (hasSword || hasHammer))
+        {
+            float v = Input.GetAxisRaw("Vertical");
+            float h = Input.GetAxisRaw("Horizontal");
+            float lastV = playerMovement != null ? playerMovement.lastVertical : 0f;
+            float lastH = playerMovement != null ? playerMovement.lastHorizontal : 1f;
+            Attack(v, h, lastV, lastH);
+        }
+
+        // Tasto Q per lanciare Bomba su PC
+        if (Input.GetKeyDown(KeyCode.Q) && hasBomb)
+        {
+            float v = Input.GetAxisRaw("Vertical");
+            float h = Input.GetAxisRaw("Horizontal");
+            float lastV = playerMovement != null ? playerMovement.lastVertical : 0f;
+            float lastH = playerMovement != null ? playerMovement.lastHorizontal : 1f;
+            Attack(v, h, lastV, lastH);
         }
     }
 
@@ -99,14 +124,12 @@ public class Player_Combat : MonoBehaviour
 
     public void ApplyWeaponState()
     {
-        // 1. Resetta tutte le variabili logiche
         hasSword = false;
         hasHammer = false;
         hasRifle = false;
         hasGun = false;
         hasBomb = false;
 
-        // 2. Attiva la specifica arma solo ed esclusivamente se è estratta
         if (isWeaponDrawn)
         {
             switch (storedWeapon)
@@ -125,7 +148,7 @@ public class Player_Combat : MonoBehaviour
         UpdateMobileUI();
     }
 
-    private void UpdateMobileUI()
+    public void UpdateMobileUI()
     {
         if (AttackButtonUI.Instance == null) return;
 
@@ -143,27 +166,30 @@ public class Player_Combat : MonoBehaviour
         }
         else
         {
-            // Default visivo a mani nude
             AttackButtonUI.Instance.SetMeleeMode();
         }
     }
 
-    public void PerformMobileAction(float vInput, float hInput, float lastV, float lastH)
+    // Eseguito dal pulsante UI Attack/Shoot/Launch
+    public void ExecuteCurrentWeaponAction(float vInput, float hInput, float lastV, float lastH)
     {
         if (!isWeaponDrawn) return;
 
+        // 1. Se ha la Pistola
         if (hasGun && playerGun != null)
         {
             playerGun.Shoot();
             return;
         }
 
+        // 2. Se ha il Fucile
         if (hasRifle && playerRifle != null)
         {
             playerRifle.Shoot();
             return;
         }
 
+        // 3. Se ha Spada, Martello o Bomba
         if (hasSword || hasHammer || hasBomb)
         {
             Attack(vInput, hInput, lastV, lastH);
