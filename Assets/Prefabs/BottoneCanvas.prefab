@@ -120,7 +120,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8008222365464103635, guid: 69cef8c3435c79f45bcb021e5a9f1cbc,
+          type: 3}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: Pause
         m_Mode: 1

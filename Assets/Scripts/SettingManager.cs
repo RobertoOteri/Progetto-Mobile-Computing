@@ -70,14 +70,25 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // --- GRAFICA ---
+   // --- GRAFICA ---
     public void CambiaLuminosita(float luminosita)
     {
-        // 1. Salva il dato globalmente!
+        // 1. Salva il dato globalmente
         PlayerPrefs.SetFloat("Luminosita", luminosita);
         PlayerPrefs.Save();
 
-        // 2. Applica la logica
+        // 2. SE IL FILTRO SI È SCOLLEGATO (es. cambiando scena), LO CERCA IN AUTOMATICO!
+        if (filtroLuminosita == null)
+        {
+            // Cerca nella scena l'oggetto che ha lo script "AutoLuminosita" che abbiamo creato prima
+            AutoLuminosita autoFiltro = FindObjectOfType<AutoLuminosita>();
+            if (autoFiltro != null)
+            {
+                filtroLuminosita = autoFiltro.GetComponent<Image>();
+            }
+        }
+
+        // 3. Applica la logica visiva
         if (filtroLuminosita != null && sliderLuminosita != null)
         {
             float luminositaNormalizzata = luminosita / sliderLuminosita.maxValue;
