@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio; // 🔴 Aggiunto per l'AudioMixer
 using TMPro; 
 
 public class SettingsManager : MonoBehaviour
 {
+    [Header("Audio Mixer")]
+    public AudioMixer mainMixer; // 🔴 Trascina il tuo AudioMixer qui dall'Inspector
+
     [Header("Riferimenti UI")]
     public Slider sliderSound;
     public Slider sliderMusic;
@@ -32,7 +36,7 @@ public class SettingsManager : MonoBehaviour
             CambiaSuoni(sliderSound.value); // Applica l'effetto
         }
 
-        if (sliderLuminosita != null && filtroLuminosita != null) 
+        if (sliderLuminosita != null) 
         {
             sliderLuminosita.value = PlayerPrefs.GetFloat("Luminosita", sliderLuminosita.maxValue);
             CambiaLuminosita(sliderLuminosita.value); // Applica l'effetto
@@ -46,12 +50,13 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetFloat("VolumeSuoni", volume); 
         PlayerPrefs.Save();
 
-        // 2. Applica la logica
-        if (sliderSound != null)
+        // 2. Applica la logica all'AudioMixer
+        if (sliderSound != null && mainMixer != null)
         {
             float volNormalizzato = volume / sliderSound.maxValue;
-            Debug.Log("Suoni globali impostati a: " + volNormalizzato);
-            // Qui andrà l'AudioMixer
+            float dB = (volNormalizzato > 0.0001f) ? Mathf.Log10(volNormalizzato) * 20f : -80f;
+            
+            mainMixer.SetFloat("SFXVol", dB);
         }
     }
 
@@ -61,12 +66,13 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetFloat("VolumeMusica", volume);
         PlayerPrefs.Save();
 
-        // 2. Applica la logica
-        if (sliderMusic != null)
+        // 2. Applica la logica all'AudioMixer
+        if (sliderMusic != null && mainMixer != null)
         {
             float volNormalizzato = volume / sliderMusic.maxValue;
-            Debug.Log("Musica globale impostata a: " + volNormalizzato);
-            // Qui andrà l'AudioMixer
+            float dB = (volNormalizzato > 0.0001f) ? Mathf.Log10(volNormalizzato) * 20f : -80f;
+
+            mainMixer.SetFloat("MusicVol", dB);
         }
     }
 
@@ -77,10 +83,9 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetFloat("Luminosita", luminosita);
         PlayerPrefs.Save();
 
-        // 2. SE IL FILTRO SI È SCOLLEGATO (es. cambiando scena), LO CERCA IN AUTOMATICO!
+        // 2. SE IL FILTRO SI È SCOLLEGATO, LO CERCA IN AUTOMATICO
         if (filtroLuminosita == null)
         {
-            // Cerca nella scena l'oggetto che ha lo script "AutoLuminosita" che abbiamo creato prima
             AutoLuminosita autoFiltro = FindObjectOfType<AutoLuminosita>();
             if (autoFiltro != null)
             {

@@ -4178,6 +4178,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2209667329250631255, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
+      propertyPath: mainMixer
+      value: 
+      objectReference: {fileID: 24100000, guid: ef0c4ccd3b3e2134085c35e511300037,
+        type: 2}
+    - target: {fileID: 2209667329250631255, guid: 22860e5e0685c6f4487c67dfc8ae94df,
+        type: 3}
       propertyPath: filtroLuminosita
       value: 
       objectReference: {fileID: 235875198}
