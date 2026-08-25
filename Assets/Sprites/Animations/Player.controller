@@ -396,7 +396,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sword-walk-side
+  m_Name: Sword_walk_side
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -729,7 +729,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sword-walk-down
+  m_Name: Sword_walk_down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -900,7 +900,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hammer-walk-up
+  m_Name: Hammer_walk_up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -928,7 +928,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rifle-Idle-Down
+  m_Name: Rifle_Idle_down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1298,7 +1298,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rifle-walk-up
+  m_Name: Rifle_walk_up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1682,7 +1682,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hammer-idle-up
+  m_Name: Hammer_Idle_up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1856,7 +1856,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sword-walk-up
+  m_Name: Sword_walk_up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1909,7 +1909,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rifle-Idle-Side
+  m_Name: Rifle_Idle_side
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1999,7 +1999,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rifle-walk-side
+  m_Name: Rifle_walk_side
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2098,7 +2098,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hammer-idle-down
+  m_Name: Hammer_Idle_down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2784,7 +2784,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hammer-idle-side
+  m_Name: Hammer_Idle_side
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -3113,7 +3113,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sword-idle-side
+  m_Name: Sword_Idle_side
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -3144,7 +3144,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rifle-Idle-Up
+  m_Name: Rifle_Idle_up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -4397,7 +4397,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hammer-walk-side
+  m_Name: Hammer_walk_side
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -4569,7 +4569,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sword-idle-down
+  m_Name: Sword_Idle_down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -5014,7 +5014,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sword-idle-up
+  m_Name: Sword_Idle_up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -5589,7 +5589,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rifle-walk-down
+  m_Name: Rifle_walk_down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -5955,7 +5955,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hammer-walk-down
+  m_Name: Hammer_walk_down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

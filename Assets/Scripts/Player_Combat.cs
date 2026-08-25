@@ -21,6 +21,10 @@ public class Player_Combat : MonoBehaviour
     public LayerMask enemyLayer;
     public int damage = 1;
 
+    [Header("Durata Attacco Melee")]
+    [Tooltip("Tempo totale dell'animazione d'attacco prima di tornare in Idle")]
+    public float meleeAttackDuration = 0.55f;
+
     [Header("Riferimenti")]
     public Animator anim;
     public Player_Rifle playerRifle;
@@ -144,7 +148,6 @@ public class Player_Combat : MonoBehaviour
         SyncGunScripts();
         UpdateMobileUI();
 
-        // Resetta isAttacking per sicurezza quando si cambia o equipaggia un'arma
         if (anim != null)
         {
             anim.SetBool("isAttacking", false);
@@ -200,6 +203,9 @@ public class Player_Combat : MonoBehaviour
         if (anim == null || IsThrowingBomb || !isWeaponDrawn) return;
         if (!hasSword && !hasHammer && !hasBomb) return;
 
+        // Evita di interrompere l'attacco corrente prima che sia completato
+        if (anim.GetBool("isAttacking")) return;
+
         float vert = 0f;
         float horiz = 0f;
 
@@ -235,9 +241,8 @@ public class Player_Combat : MonoBehaviour
         anim.SetBool("hasHammer", hasHammer);
         anim.SetBool("isAttacking", true);
 
-        // Timer di sicurezza: se l'Animation Event fallisce, ripristina lo stato dopo 0.35s
         StopCoroutine(nameof(AttackSafetyReset));
-        StartCoroutine(nameof(AttackSafetyReset));
+        StartCoroutine(AttackSafetyReset(meleeAttackDuration));
 
         if (AudioManager.Instance != null)
         {
@@ -252,9 +257,9 @@ public class Player_Combat : MonoBehaviour
         }
     }
 
-    private IEnumerator AttackSafetyReset()
+    private IEnumerator AttackSafetyReset(float duration)
     {
-        yield return new WaitForSeconds(0.35f);
+        yield return new WaitForSeconds(duration);
         FinishAttack();
     }
 
@@ -379,5 +384,24 @@ public class Player_Combat : MonoBehaviour
     {
         if (playerRifle != null) playerRifle.enabled = hasRifle;
         if (playerGun != null) playerGun.enabled = hasGun;
+    }
+    public void ForceDisarmOnDeath()
+    {
+        isWeaponDrawn = false;
+        hasSword = false;
+        hasHammer = false;
+        hasRifle = false;
+        hasGun = false;
+        hasBomb = false;
+
+        HideWeapons();
+        UpdateAnimatorBools();
+
+        if (anim != null)
+        {
+            anim.SetBool("isAttacking", false);
+        }
+
+        this.enabled = false;
     }
 }

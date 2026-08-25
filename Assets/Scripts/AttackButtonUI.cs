@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class AttackButtonUI : MonoBehaviour
+public class AttackButtonUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public static AttackButtonUI Instance;
 
@@ -23,6 +24,8 @@ public class AttackButtonUI : MonoBehaviour
     public string bombText = "LAUNCH";
 
     private Player_Combat playerCombat;
+    private PlayerMovement playerMovement;
+    private bool isPressed = false;
 
     private void Awake()
     {
@@ -37,23 +40,24 @@ public class AttackButtonUI : MonoBehaviour
 
     private void Start()
     {
-        FindPlayerCombat();
+        FindPlayerComponents();
     }
 
-    private void FindPlayerCombat()
+    private void FindPlayerComponents()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             playerCombat = player.GetComponent<Player_Combat>();
+            playerMovement = player.GetComponent<PlayerMovement>();
         }
     }
 
     private void Update()
     {
-        if (playerCombat == null)
+        if (playerCombat == null || playerMovement == null)
         {
-            FindPlayerCombat();
+            FindPlayerComponents();
             if (playerCombat == null) return;
         }
 
@@ -63,8 +67,54 @@ public class AttackButtonUI : MonoBehaviour
 
         SetInteractable(isWeaponEquippedInHand);
 
-        // Aggiorna l'icona in base all'arma posseduta/selezionata
+        // Aggiorna l'icona e il testo in base all'arma posseduta/selezionata
         UpdateIconAndText();
+
+        // GESTIONE RAFFICA FUCILE: se il tasto è tenuto premuto
+        if (isPressed && isWeaponEquippedInHand)
+        {
+            if (playerCombat.hasRifle)
+            {
+                float v = playerMovement != null ? playerMovement.GetVerticalInput() : 0f;
+                float h = playerMovement != null ? playerMovement.GetHorizontalInput() : 0f;
+                float lastV = playerMovement != null ? playerMovement.lastVertical : 0f;
+                float lastH = playerMovement != null ? playerMovement.lastHorizontal : 1f;
+
+                playerCombat.ExecuteCurrentWeaponAction(v, h, lastV, lastH);
+            }
+        }
+    }
+
+    // Viene chiamato appena tocchi lo schermo sul pulsante
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (playerCombat == null || playerMovement == null)
+            FindPlayerComponents();
+
+        if (playerCombat == null) return;
+
+        bool isWeaponEquippedInHand = playerCombat.isWeaponDrawn && 
+            (playerCombat.hasSword || playerCombat.hasHammer || playerCombat.hasGun || playerCombat.hasRifle || playerCombat.hasBomb);
+
+        if (!isWeaponEquippedInHand) return;
+
+        isPressed = true;
+
+        if (playerMovement != null)
+        {
+            playerMovement.TriggerAttack();
+        }
+    }
+
+    // Viene chiamato appena alzi il dito dal pulsante
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        isPressed = false;
+    }
+
+    private void OnDisable()
+    {
+        isPressed = false;
     }
 
     private void UpdateIconAndText()

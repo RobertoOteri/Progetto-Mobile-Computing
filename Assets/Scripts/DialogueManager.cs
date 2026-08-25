@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 public struct DialogueLine
@@ -59,7 +60,6 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
-        // Se non assegnato a mano, cerca un oggetto chiamato MobileControls o MobileButtonsCanvas
         if (mobileControls == null)
         {
             mobileControls = GameObject.Find("MobileControls");
@@ -106,7 +106,10 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(true);
 
-        // NASCONDE I COMANDI TOUCH DURANTE IL DIALOGO
+        // 1. FORZA IL RESET DEL JOYSTICK PRIMA DI NASCONDERLO
+        ResetJoystickInput();
+
+        // 2. NASCONDE I COMANDI TOUCH DURANTE IL DIALOGO
         if (mobileControls != null)
             mobileControls.SetActive(false);
 
@@ -115,9 +118,10 @@ public class DialogueManager : MonoBehaviour
         if (playerMovement == null)
             FindPlayerComponents();
 
+        // 3. FERMA IL PLAYER E FORZA L'IDLE
         if (playerMovement != null)
         {
-            playerMovement.StopMovement();
+            playerMovement.ForceIdleAndStop();
             playerMovement.enabled = false;
         }
 
@@ -133,6 +137,17 @@ public class DialogueManager : MonoBehaviour
         }
 
         DisplayNextSentence();
+    }
+
+    private void ResetJoystickInput()
+    {
+        Joystick joystick = FindFirstObjectByType<Joystick>(FindObjectsInactive.Include);
+        if (joystick != null)
+        {
+            // Simula il rilascio del tocco sul joystick per azzerare handle e coordinate
+            PointerEventData pointerData = new PointerEventData(EventSystem.current);
+            joystick.OnPointerUp(pointerData);
+        }
     }
 
     public void DisplayNextSentence()
@@ -232,16 +247,19 @@ public class DialogueManager : MonoBehaviour
         if (mobileControls != null)
             mobileControls.SetActive(true);
 
+        ResetJoystickInput();
+
         if (playerMovement != null)
         {
             playerMovement.enabled = true;
+            playerMovement.ForceIdleAndStop();
         }
 
         if (triggerGunHint)
         {
             if (TutorialHintUI.Instance != null)
             {
-                TutorialHintUI.Instance.ShowHint("Premi [1] per estrarre la pistola");
+                TutorialHintUI.Instance.ShowHint("Premi [SWITCH] per estrarre la pistola");
             }
             triggerGunHint = false;
         }

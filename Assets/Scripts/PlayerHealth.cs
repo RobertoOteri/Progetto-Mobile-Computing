@@ -9,6 +9,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("Riferimenti")]
     public SpriteRenderer playerSr;
     public PlayerMovement playerMovement;
+    public Player_Combat playerCombat;
 
     [Header("Effetto Flash Danno")]
     public Color flashColor = Color.red;
@@ -29,6 +30,7 @@ public class PlayerHealth : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         if (playerMovement == null) playerMovement = GetComponent<PlayerMovement>();
+        if (playerCombat == null) playerCombat = GetComponent<Player_Combat>();
         if (playerSr == null) playerSr = GetComponent<SpriteRenderer>();
 
         if (playerSr != null)
@@ -52,14 +54,13 @@ public class PlayerHealth : MonoBehaviour
 
             if (anim != null && currentHealth > 0)
             {
-                anim.ResetTrigger("hit"); // Svuota eventuali hit rimasti incastrati
+                anim.ResetTrigger("hit");
                 anim.SetTrigger("hit");
 
                 if (hitResetCoroutine != null) StopCoroutine(hitResetCoroutine);
                 hitResetCoroutine = StartCoroutine(ResetHitTriggerRoutine());
             }
 
-            // Avvia il flash rosso sul Player
             if (playerSr != null && currentHealth > 0)
             {
                 if (flashCoroutine != null) StopCoroutine(flashCoroutine);
@@ -67,7 +68,6 @@ public class PlayerHealth : MonoBehaviour
             }
         }
 
-        // Limita la vita tra 0 e maxHealth
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         if (currentHealth <= 0)
@@ -83,7 +83,7 @@ public class PlayerHealth : MonoBehaviour
         playerSr.color = originalColor;
     }
 
-    private void Die()
+  private void Die()
     {
         isDead = true;
 
@@ -93,23 +93,46 @@ public class PlayerHealth : MonoBehaviour
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayDieSound();
+            AudioManager.Instance.StopWalkSound();
         }
 
+        // 1. DISARMO TOTALE: resetta bool nell'Animator e nasconde tutti gli oggetti arma
+        if (playerCombat == null) playerCombat = GetComponent<Player_Combat>();
+        if (playerCombat != null)
+        {
+            playerCombat.ForceDisarmOnDeath();
+        }
+
+        // 2. Disabilita script di sparo
+        Player_Gun gun = GetComponent<Player_Gun>();
+        if (gun != null) gun.enabled = false;
+
+        Player_Rifle rifle = GetComponent<Player_Rifle>();
+        if (rifle != null) rifle.enabled = false;
+
+        // 3. Ferma il movimento fisico e disabilita lo script
+        if (playerMovement == null) playerMovement = GetComponent<PlayerMovement>();
         if (playerMovement != null)
         {
+            playerMovement.StopMovement();
             playerMovement.enabled = false;
         }
 
+        // 4. Nasconde i controlli touch (Joystick e Tasto SHOOT/ATTACK)
+        GameObject mobileCanvas = GameObject.Find("MobileControls");
+        if (mobileCanvas == null) mobileCanvas = GameObject.Find("MobileButtonsCanvas");
+        if (mobileCanvas != null) mobileCanvas.SetActive(false);
+
+        // 5. Avvia l'animazione di morte
         if (anim != null)
         {
             anim.ResetTrigger("hit");
             anim.SetTrigger("die");
         }
 
-        // Avvia la comparsa del Game Over dopo un piccolo delay
+        // 6. Avvia il delay prima del popup di Game Over
         StartCoroutine(ShowGameOverRoutine());
     }
-
     private IEnumerator ShowGameOverRoutine()
     {
         yield return new WaitForSeconds(gameOverDelay);
