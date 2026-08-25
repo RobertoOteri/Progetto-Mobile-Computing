@@ -13,6 +13,9 @@ public class GameOverManager : MonoBehaviour
     [Tooltip("Trascina qui il Canvas o il pannello dell'HUD (cuori, munizioni, ecc.) per nasconderlo")]
     public GameObject hudCanvasOrPanel;
 
+    [Tooltip("Trascina qui il Canvas o il contenitore dei comandi mobile (MobileControls / MobileButtonsCanvas)")]
+    public GameObject mobileControlsCanvasOrPanel;
+
     [Header("Audio Game Over")]
     [Tooltip("AudioSource per la musica di Game Over (se vuoto ne userà uno automatico)")]
     public AudioSource gameOverAudioSource;
@@ -54,7 +57,6 @@ public class GameOverManager : MonoBehaviour
             }
         }
 
-        // Assicura che la musica di Game Over suoni anche se il tempo di gioco viene fermato
         if (gameOverAudioSource != null)
         {
             gameOverAudioSource.ignoreListenerPause = true;
@@ -68,6 +70,14 @@ public class GameOverManager : MonoBehaviour
         {
             gameOverPanel.SetActive(false);
         }
+
+        // Cerca automaticamente i comandi mobile se lo slot non è assegnato a mano
+        if (mobileControlsCanvasOrPanel == null)
+        {
+            mobileControlsCanvasOrPanel = GameObject.Find("MobileControls");
+            if (mobileControlsCanvasOrPanel == null)
+                mobileControlsCanvasOrPanel = GameObject.Find("MobileButtonsCanvas");
+        }
     }
 
     public void TriggerGameOver()
@@ -78,13 +88,19 @@ public class GameOverManager : MonoBehaviour
             hudCanvasOrPanel.SetActive(false);
         }
 
-        // 2. Ferma i suoni di sottofondo/nemici nel mondo
+        // 2. Nasconde i controlli touch (Joystick e Pulsanti Mobile)
+        if (mobileControlsCanvasOrPanel != null)
+        {
+            mobileControlsCanvasOrPanel.SetActive(false);
+        }
+
+        // 3. Ferma i suoni di sottofondo/nemici nel mondo
         SilenceWorldAudio();
 
-        // 3. Riproduce la musica di Game Over
+        // 4. Riproduce la musica di Game Over
         PlayGameOverMusic();
 
-        // 4. Avvia la dissolvenza
+        // 5. Avvia la dissolvenza del pannello
         if (gameOverPanel != null)
         {
             gameOverPanel.transform.SetAsLastSibling();
@@ -94,14 +110,12 @@ public class GameOverManager : MonoBehaviour
 
     private void SilenceWorldAudio()
     {
-        // Ferma le tracce gestite dall'AudioManager se presente
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.StopWalkSound();
             AudioManager.Instance.StopTypewriterSound();
         }
 
-        // Trova e muta tutti gli altri AudioSource attivi nella scena (nemici, trappole, ecc.)
         AudioSource[] allAudioSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (AudioSource source in allAudioSources)
         {
@@ -149,7 +163,7 @@ public class GameOverManager : MonoBehaviour
         }
     }
 
-    // --- PULSANTI ---
+    // --- PULSANTI UI GAME OVER ---
 
     public void RestartLevel()
     {

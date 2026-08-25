@@ -17,93 +17,121 @@ public class Player_Rifle : MonoBehaviour
 
     private Vector2 aimDirection = Vector2.right;
 
-    public float shootCooldown = .5f;
+    public float shootCooldown = 0.5f;
     private float shootTimer;
 
     [Header("Blocco Movimento Sparo")]
-    public float shootStopDuration = 0.2f; // Per quanti secondi il player rimane fermo quando spara
-    private float stopTimer;
+    public float shootStopDuration = 0.2f;
+    private float stopTimer = 0f;
 
-    // Proprietà pubbliche per leggere lo stato dall'esterno
-    public bool IsShooting => stopTimer > 0;
-    public Vector2 AimDirection => aimDirection; // <-- RIGA AGGIUNTA QUI
+    public bool IsShooting => stopTimer > 0f;
+    public Vector2 AimDirection => aimDirection;
 
     private Player_Combat combat;
+    private PlayerMovement playerMovement;
 
-    void Start()
+    void Awake()
     {
         combat = GetComponent<Player_Combat>();
+        playerMovement = GetComponent<PlayerMovement>();
+        stopTimer = 0f;
     }
 
     void Update()
     {
-        // Gestione timer per il blocco movimento
-        if (stopTimer > 0)
+        if (stopTimer > 0f)
         {
             stopTimer -= Time.deltaTime;
         }
 
-        shootTimer -= Time.deltaTime;
+        if (shootTimer > 0f)
+        {
+            shootTimer -= Time.deltaTime;
+        }
 
-        // Se il player NON ha il fucile equipaggiato, blocca la mira e lo sparo
-        if (combat != null && !combat.hasRifle) return;
+        if (combat != null && !combat.hasRifle) 
+        {
+            stopTimer = 0f;
+            return;
+        }
 
         HandleAiming();
 
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        float h = playerMovement != null ? playerMovement.GetHorizontalInput() : Input.GetAxisRaw("Horizontal");
+        float v = playerMovement != null ? playerMovement.GetVerticalInput() : Input.GetAxisRaw("Vertical");
 
-        if (Input.GetButton("Shoot") && shootTimer <= 0 && h == 0 && v == 0)
+        if (Input.GetButton("Shoot") && shootTimer <= 0f && Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f)
         {
             Shoot(); 
         }
     }
 
-    private void HandleAiming()
+    public void HandleAiming()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        float h = 0f;
+        float v = 0f;
 
-        // Snap a sole 4 Direzioni Cardinali (Niente Diagonali)
-        if (horizontal != 0 || vertical != 0)
+        if (playerMovement != null)
         {
-            if (Mathf.Abs(horizontal) >= Mathf.Abs(vertical))
+            h = playerMovement.GetHorizontalInput();
+            v = playerMovement.GetVerticalInput();
+        }
+
+        if (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f)
+        {
+            if (Mathf.Abs(h) >= Mathf.Abs(v))
             {
-                aimDirection = new Vector2(Mathf.Sign(horizontal), 0f); // Solo Destra (+1) o Sinistra (-1)
+                aimDirection = new Vector2(Mathf.Sign(h), 0f);
             }
             else
             {
-                aimDirection = new Vector2(0f, Mathf.Sign(vertical)); // Solo Su (+1) o Giù (-1)
+                aimDirection = new Vector2(0f, Mathf.Sign(v));
+            }
+        }
+        else if (playerMovement != null)
+        {
+            if (playerMovement.lastHorizontal != 0 || playerMovement.lastVertical != 0)
+            {
+                if (Mathf.Abs(playerMovement.lastHorizontal) >= Mathf.Abs(playerMovement.lastVertical))
+                {
+                    aimDirection = new Vector2(Mathf.Sign(playerMovement.lastHorizontal), 0f);
+                }
+                else
+                {
+                    aimDirection = new Vector2(0f, Mathf.Sign(playerMovement.lastVertical));
+                }
             }
         }
     }
 
     private Transform GetActiveLaunchPoint()
     {
-        if (aimDirection.y > 0)
+        if (aimDirection.y > 0 && launchPointUp != null)
         {
-            return launchPointUp != null ? launchPointUp : transform;
+            return launchPointUp;
         }
-        else if (aimDirection.y < 0)
+        else if (aimDirection.y < 0 && launchPointDown != null)
         {
-            return launchPointDown != null ? launchPointDown : transform;
+            return launchPointDown;
         }
-        else
+        else if (launchPointSide != null)
         {
-            return launchPointSide != null ? launchPointSide : transform;
+            return launchPointSide;
         }
+
+        return transform;
     }
 
     public void Shoot()
     {
+        if (shootTimer > 0f) return;
+
         Transform activePoint = GetActiveLaunchPoint();
 
         if (activePoint == null || rifleBulletPrefab == null) return;
 
-        // Blocca il personaggio per la durata dello sparo
         stopTimer = shootStopDuration;
 
-        // 1. Spawna e orienta il proiettile
         Bullet rifleBullet = Instantiate(rifleBulletPrefab, activePoint.position, Quaternion.identity).GetComponent<Bullet>();
         if (rifleBullet != null)
         {
@@ -112,10 +140,9 @@ public class Player_Rifle : MonoBehaviour
 
         if (AudioManager.Instance != null && AudioManager.Instance.rifleShootSFX != null)
         {
-            AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.rifleShootSFX, 0.2f); // Modifica 0.4f per alzare/abbassare il volume
+            AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.rifleShootSFX, 0.2f);
         }
 
-        // 2. Spawna la fiammata con l'offset di rotazione
         if (muzzleFlashPrefab != null)
         {
             float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg + flashRotationOffset;

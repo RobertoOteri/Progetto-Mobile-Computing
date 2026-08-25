@@ -71,27 +71,24 @@ public class Player_Combat : MonoBehaviour
 
     private void Update()
     {
-        // Tasti Toggle per estrarre/riporre su PC (E oppure 1)
         if (Input.GetKeyDown(toggleWeaponKey) || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
         {
             ToggleWeapon();
         }
 
-        // Tasto K per Spada/Martello su PC
         if (Input.GetKeyDown(KeyCode.K) && (hasSword || hasHammer))
         {
-            float v = Input.GetAxisRaw("Vertical");
-            float h = Input.GetAxisRaw("Horizontal");
+            float v = playerMovement != null ? playerMovement.GetVerticalInput() : Input.GetAxisRaw("Vertical");
+            float h = playerMovement != null ? playerMovement.GetHorizontalInput() : Input.GetAxisRaw("Horizontal");
             float lastV = playerMovement != null ? playerMovement.lastVertical : 0f;
             float lastH = playerMovement != null ? playerMovement.lastHorizontal : 1f;
             Attack(v, h, lastV, lastH);
         }
 
-        // Tasto Q per lanciare Bomba su PC
         if (Input.GetKeyDown(KeyCode.Q) && hasBomb)
         {
-            float v = Input.GetAxisRaw("Vertical");
-            float h = Input.GetAxisRaw("Horizontal");
+            float v = playerMovement != null ? playerMovement.GetVerticalInput() : Input.GetAxisRaw("Vertical");
+            float h = playerMovement != null ? playerMovement.GetHorizontalInput() : Input.GetAxisRaw("Horizontal");
             float lastV = playerMovement != null ? playerMovement.lastVertical : 0f;
             float lastH = playerMovement != null ? playerMovement.lastHorizontal : 1f;
             Attack(v, h, lastV, lastH);
@@ -146,6 +143,12 @@ public class Player_Combat : MonoBehaviour
         UpdateAnimatorBools();
         SyncGunScripts();
         UpdateMobileUI();
+
+        // Resetta isAttacking per sicurezza quando si cambia o equipaggia un'arma
+        if (anim != null)
+        {
+            anim.SetBool("isAttacking", false);
+        }
     }
 
     public void UpdateMobileUI()
@@ -170,26 +173,22 @@ public class Player_Combat : MonoBehaviour
         }
     }
 
-    // Eseguito dal pulsante UI Attack/Shoot/Launch
     public void ExecuteCurrentWeaponAction(float vInput, float hInput, float lastV, float lastH)
     {
         if (!isWeaponDrawn) return;
 
-        // 1. Se ha la Pistola
         if (hasGun && playerGun != null)
         {
             playerGun.Shoot();
             return;
         }
 
-        // 2. Se ha il Fucile
         if (hasRifle && playerRifle != null)
         {
             playerRifle.Shoot();
             return;
         }
 
-        // 3. Se ha Spada, Martello o Bomba
         if (hasSword || hasHammer || hasBomb)
         {
             Attack(vInput, hInput, lastV, lastH);
@@ -236,6 +235,10 @@ public class Player_Combat : MonoBehaviour
         anim.SetBool("hasHammer", hasHammer);
         anim.SetBool("isAttacking", true);
 
+        // Timer di sicurezza: se l'Animation Event fallisce, ripristina lo stato dopo 0.35s
+        StopCoroutine(nameof(AttackSafetyReset));
+        StartCoroutine(nameof(AttackSafetyReset));
+
         if (AudioManager.Instance != null)
         {
             if (hasSword)
@@ -247,6 +250,12 @@ public class Player_Combat : MonoBehaviour
                 AudioManager.Instance.PlaySFXWithVolume(AudioManager.Instance.hammerAttackSFX, 0.3f);
             }
         }
+    }
+
+    private IEnumerator AttackSafetyReset()
+    {
+        yield return new WaitForSeconds(0.35f);
+        FinishAttack();
     }
 
     private IEnumerator ThrowBombRoutine(Vector2 direction, float vert, float horiz)

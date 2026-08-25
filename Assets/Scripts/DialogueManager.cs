@@ -18,6 +18,10 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
+    [Header("Controlli Mobile da Nascondere")]
+    [Tooltip("Trascina qui il Canvas o il GameObject contenitore dei tasti mobile (MobileControls)")]
+    public GameObject mobileControls;
+
     [Header("Riferimenti UI Generali")]
     public GameObject dialoguePanel;
     public TMP_Text dialogueText;
@@ -36,6 +40,7 @@ public class DialogueManager : MonoBehaviour
 
     [Header("Impostazioni")]
     public float textSpeed = 0.03f;
+    public float interactionRadius = 1.8f;
 
     private Queue<DialogueLine> dialogueLinesQueue = new Queue<DialogueLine>();
     private bool isTyping = false;
@@ -53,6 +58,13 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
+
+        // Se non assegnato a mano, cerca un oggetto chiamato MobileControls o MobileButtonsCanvas
+        if (mobileControls == null)
+        {
+            mobileControls = GameObject.Find("MobileControls");
+            if (mobileControls == null) mobileControls = GameObject.Find("MobileButtonsCanvas");
+        }
 
         FindPlayerComponents();
     }
@@ -94,7 +106,11 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(true);
 
-        justOpened = true; 
+        // NASCONDE I COMANDI TOUCH DURANTE IL DIALOGO
+        if (mobileControls != null)
+            mobileControls.SetActive(false);
+
+        justOpened = true;
 
         if (playerMovement == null)
             FindPlayerComponents();
@@ -212,6 +228,10 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
+        // RIATTIVA I COMANDI TOUCH ALLA FINE DEL DIALOGO
+        if (mobileControls != null)
+            mobileControls.SetActive(true);
+
         if (playerMovement != null)
         {
             playerMovement.enabled = true;
@@ -224,6 +244,27 @@ public class DialogueManager : MonoBehaviour
                 TutorialHintUI.Instance.ShowHint("Premi [1] per estrarre la pistola");
             }
             triggerGunHint = false;
+        }
+    }
+
+    public void OnTalkButtonPressed()
+    {
+        if (dialoguePanel != null && dialoguePanel.activeSelf)
+        {
+            DisplayNextSentence();
+            return;
+        }
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(player.transform.position, interactionRadius);
+            foreach (Collider2D col in colliders)
+            {
+                col.SendMessage("TriggerDialogue", SendMessageOptions.DontRequireReceiver);
+                col.SendMessage("Interact", SendMessageOptions.DontRequireReceiver);
+                col.SendMessage("StartDialogue", SendMessageOptions.DontRequireReceiver);
+            }
         }
     }
 

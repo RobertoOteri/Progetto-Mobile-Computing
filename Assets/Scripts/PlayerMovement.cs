@@ -6,11 +6,9 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 5f;
     public int facingDirection = 1;
     public Rigidbody2D rb;
-
     public Animator anim;
 
     [Header("Mobile Controls")]
-    [Tooltip("Trascina qui il prefab del Fixed Joystick presente nel Canvas")]
     public Joystick movementJoystick;
 
     [Header("Durata Hit / Visibilità Arma")]
@@ -22,11 +20,10 @@ public class PlayerMovement : MonoBehaviour
     public Player_Rifle player_Rifle;
     public Player_Gun player_Gun;
 
-    // --- MEMORIA DIREZIONE (Rese pubbliche per gli script di combattimento) ---
     [HideInInspector] public float lastVertical = 0f;
     [HideInInspector] public float lastHorizontal = 1f;
 
-    private void Start()
+    private void Awake()
     {
         if (rb == null) rb = GetComponent<Rigidbody2D>();
         if (anim == null) anim = GetComponent<Animator>();
@@ -35,22 +32,28 @@ public class PlayerMovement : MonoBehaviour
         if (player_Gun == null) player_Gun = GetComponent<Player_Gun>();
     }
 
+    private void Start()
+    {
+        if (movementJoystick == null)
+        {
+            movementJoystick = FindFirstObjectByType<Joystick>(FindObjectsInactive.Include);
+        }
+    }
+
     private void Update()
     {
         if (isKnockedBack) return;
         if (player_Combat != null && player_Combat.IsThrowingBomb) return;
 
-        // Legge l'input da Joystick o Tastiera
-        float rawH = GetHorizontalInput();
-        float rawV = GetVerticalInput();
+        float h = GetHorizontalInput();
+        float v = GetVerticalInput();
 
-        if (rawH != 0 || rawV != 0)
+        if (h != 0 || v != 0)
         {
-            lastHorizontal = rawH;
-            lastVertical = rawV;
+            lastHorizontal = h;
+            lastVertical = v;
         }
 
-        // Tasto attacco / bomba da tastiera (Slash/K o Q)
         if (Input.GetButtonDown("Slash") || (Input.GetKeyDown(KeyCode.Q) && player_Combat != null && player_Combat.hasBomb))
         {
             TriggerAttack();
@@ -61,157 +64,106 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isKnockedBack)
         {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.StopWalkSound();
-            }
+            if (AudioManager.Instance != null) AudioManager.Instance.StopWalkSound();
             return;
         }
 
-        // === BLOCCO LANCIO BOMBA ===
         if (player_Combat != null && player_Combat.IsThrowingBomb)
         {
             rb.linearVelocity = Vector2.zero;
-            if (anim != null)
-            {
-                anim.SetFloat("horizontal", 0f);
-                anim.SetFloat("vertical", 0f);
-            }
             return;
         }
 
-        // === BLOCCO SPARO (Fucile o Pistola) ===
-        bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
-        bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
+        bool isShootingRifle = player_Rifle != null && player_Rifle.enabled && player_Rifle.IsShooting;
+        bool isShootingGun = player_Gun != null && player_Gun.enabled && player_Gun.IsShooting;
 
         if (isShootingRifle || isShootingGun)
         {
             rb.linearVelocity = Vector2.zero;
-
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.StopWalkSound();
-            }
-
-            if (anim != null)
-            {
-                anim.SetFloat("horizontal", 0f);
-                anim.SetFloat("vertical", 0f);
-
-                Vector2 aim = isShootingRifle ? player_Rifle.AimDirection : player_Gun.AimDirection;
-
-                string idleUp = isShootingGun ? "Gun_Idle_up" : "Rifle-Idle-Down";
-                string idleDown = isShootingGun ? "Gun_Idle_down" : "Rifle-Idle-Down";
-                string idleSide = isShootingGun ? "Gun_Idle_side" : "Rifle-Idle-Side";
-
-                if (aim.y > 0)
-                {
-                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleUp))
-                        anim.Play(idleUp);
-                }
-                else if (aim.y < 0)
-                {
-                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleDown))
-                        anim.Play(idleDown);
-                }
-                else if (aim.x != 0)
-                {
-                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName(idleSide))
-                        anim.Play(idleSide);
-
-                    if ((aim.x > 0 && transform.localScale.x > 0) || (aim.x < 0 && transform.localScale.x < 0))
-                    {
-                        Flip();
-                    }
-                }
-            }
+            if (AudioManager.Instance != null) AudioManager.Instance.StopWalkSound();
             return;
         }
 
-        // === NORMALE MOVIMENTO ===
         float horizontal = GetHorizontalInput();
         float vertical = GetVerticalInput();
 
-        if ((horizontal > 0 && transform.localScale.x > 0) ||
-            (horizontal < 0 && transform.localScale.x < 0))
+        // Flip per sprite orientato a sinistra nativamente
+        if (horizontal > 0 && transform.localScale.x > 0)
+        {
+            Flip();
+        }
+        else if (horizontal < 0 && transform.localScale.x < 0)
         {
             Flip();
         }
 
-        if (anim != null && !anim.GetBool("isAttacking"))
+        // GESTIONE ASSE DOMINANTE: permette a Gun_walk_up e Gun_walk_down di attivarsi
+        if (anim != null)
         {
-            if (horizontal != 0)
+            if (Mathf.Abs(horizontal) > 0.05f || Mathf.Abs(vertical) > 0.05f)
             {
-                anim.SetFloat("horizontal", horizontal);
-                anim.SetFloat("vertical", 0f);
+                if (Mathf.Abs(horizontal) >= Mathf.Abs(vertical))
+                {
+                    anim.SetFloat("horizontal", horizontal > 0 ? 1f : -1f);
+                    anim.SetFloat("vertical", 0f);
+                }
+                else
+                {
+                    anim.SetFloat("horizontal", 0f);
+                    anim.SetFloat("vertical", vertical > 0 ? 1f : -1f);
+                }
             }
             else
             {
-                anim.SetFloat("horizontal", horizontal);
-                anim.SetFloat("vertical", vertical);
+                anim.SetFloat("horizontal", 0f);
+                anim.SetFloat("vertical", 0f);
             }
         }
 
         rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
 
-        // === GESTIONE SUONO PASSI ===
-        bool isMoving = (horizontal != 0 || vertical != 0);
-
+        bool isMoving = (Mathf.Abs(horizontal) > 0.05f || Mathf.Abs(vertical) > 0.05f);
         if (isMoving)
         {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.StartWalkSound();
-            }
+            if (AudioManager.Instance != null) AudioManager.Instance.StartWalkSound();
         }
         else
         {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.StopWalkSound();
-            }
+            if (AudioManager.Instance != null) AudioManager.Instance.StopWalkSound();
         }
     }
 
-    // --- FUNZIONI INPUT IBRIDE (Tastiera + Touch) ---
     public float GetHorizontalInput()
     {
-        if (movementJoystick != null && Mathf.Abs(movementJoystick.Horizontal) > 0.1f)
+        if (movementJoystick != null && Mathf.Abs(movementJoystick.Horizontal) > 0.15f)
         {
             return movementJoystick.Horizontal;
         }
-        return Input.GetAxis("Horizontal");
+        return Input.GetAxisRaw("Horizontal");
     }
 
     public float GetVerticalInput()
     {
-        if (movementJoystick != null && Mathf.Abs(movementJoystick.Vertical) > 0.1f)
+        if (movementJoystick != null && Mathf.Abs(movementJoystick.Vertical) > 0.15f)
         {
             return movementJoystick.Vertical;
         }
-        return Input.GetAxis("Vertical");
+        return Input.GetAxisRaw("Vertical");
     }
 
-    // --- AZIONE TASTO D'ATTACCO/SPARO MOBILE ---
     public void TriggerAttack()
     {
         if (player_Combat != null)
         {
             float v = GetVerticalInput();
             float h = GetHorizontalInput();
-            
-            // Chiama l'azione dell'arma attualmente estratta (Pistola, Fucile, Spada, Bomba)
             player_Combat.ExecuteCurrentWeaponAction(v, h, lastVertical, lastHorizontal);
         }
     }
 
     public void StopMovement()
     {
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector2.zero;
-        }
-
+        if (rb != null) rb.linearVelocity = Vector2.zero;
         if (anim != null)
         {
             anim.SetFloat("horizontal", 0f);
@@ -225,25 +177,16 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 
-    // === GESTIONE KNOCKBACK & HIT ANIMATION ===
     public void Knockback(Transform enemy, float force, float stunTime)
     {
         isKnockedBack = true;
-
-        if (player_Combat != null)
-        {
-            player_Combat.HideWeapons();
-        }
+        if (player_Combat != null) player_Combat.HideWeapons();
         
         Vector2 direction = Vector2.zero;
         if (enemy != null)
-        {
             direction = (transform.position - enemy.position).normalized;
-        }
         else
-        {
             direction = new Vector2(-lastHorizontal, -lastVertical).normalized;
-        }
 
         rb.linearVelocity = direction * force;
 
@@ -254,21 +197,13 @@ public class PlayerMovement : MonoBehaviour
 
             if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
             {
-                if (direction.y > 0)
-                {
-                    anim.Play("Hit_A_down", 0, 0f);
-                }
-                else
-                {
-                    anim.Play("Hit_A_up", 0, 0f);
-                }
+                if (direction.y > 0) anim.Play("Hit_A_down", 0, 0f);
+                else anim.Play("Hit_A_up", 0, 0f);
             }
             else
             {
                 anim.Play("Hit_A_side", 0, 0f);
-
-                if ((direction.x < 0 && transform.localScale.x < 0) || 
-                    (direction.x > 0 && transform.localScale.x > 0))
+                if ((direction.x < 0 && transform.localScale.x < 0) || (direction.x > 0 && transform.localScale.x > 0))
                 {
                     Flip();
                 }
@@ -285,16 +220,9 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
 
         float remainingTime = hitAnimationDuration - stunTime;
-        if (remainingTime > 0f)
-        {
-            yield return new WaitForSeconds(remainingTime);
-        }
+        if (remainingTime > 0f) yield return new WaitForSeconds(remainingTime);
 
         isKnockedBack = false;
-
-        if (player_Combat != null)
-        {
-            player_Combat.RestoreWeapons();
-        }
+        if (player_Combat != null) player_Combat.RestoreWeapons();
     }
 }

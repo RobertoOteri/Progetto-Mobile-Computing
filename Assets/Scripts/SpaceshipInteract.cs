@@ -27,10 +27,8 @@ public class SpaceshipInteract : MonoBehaviour
 
     private void Update()
     {
-        // Se il giocatore è nell'area del collider
         if (playerInRange)
         {
-            // Se il dialogo è attualmente aperto a schermo, nascondi il tasto [E]
             if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel != null && DialogueManager.Instance.dialoguePanel.activeSelf)
             {
                 if (interactPrompt != null)
@@ -43,17 +41,25 @@ public class SpaceshipInteract : MonoBehaviour
                     interactPrompt.SetActive(true);
             }
 
-            // Pressione del tasto E
+            // Tasto E da tastiera su PC
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (DialogueManager.Instance != null)
-                {
-                    if (interactPrompt != null)
-                        interactPrompt.SetActive(false);
+                Interact();
+            }
+        }
+    }
 
-                    // Avvia il dialogo specificando isRightSide = false (Jack a sinistra)
-                    DialogueManager.Instance.StartDialogue(speakerName, portrait, dialogueLines, false);
-                }
+    // Metodo universale chiamato sia da tasto E che dal pulsante mobile TALK
+    public void Interact()
+    {
+        if (playerInRange)
+        {
+            if (DialogueManager.Instance != null)
+            {
+                if (interactPrompt != null)
+                    interactPrompt.SetActive(false);
+
+                DialogueManager.Instance.StartDialogue(speakerName, portrait, dialogueLines, false);
             }
         }
     }

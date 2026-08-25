@@ -22,9 +22,9 @@ public class Player_Gun : MonoBehaviour
 
     [Header("Blocco Movimento Sparo")]
     public float shootStopDuration = 0.15f; 
-    private float stopTimer;
+    private float stopTimer = 0f;
 
-    public bool IsShooting => stopTimer > 0;
+    public bool IsShooting => stopTimer > 0f;
     public Vector2 AimDirection => aimDirection;
 
     private Player_Combat combat;
@@ -34,18 +34,26 @@ public class Player_Gun : MonoBehaviour
     {
         combat = GetComponent<Player_Combat>();
         playerMovement = GetComponent<PlayerMovement>();
+        stopTimer = 0f;
     }
 
     void Update()
     {
-        if (stopTimer > 0)
+        if (stopTimer > 0f)
         {
             stopTimer -= Time.deltaTime;
         }
 
-        shootTimer -= Time.deltaTime;
+        if (shootTimer > 0f)
+        {
+            shootTimer -= Time.deltaTime;
+        }
 
-        if (combat != null && !combat.hasGun) return;
+        if (combat != null && !combat.hasGun) 
+        {
+            stopTimer = 0f;
+            return;
+        }
 
         HandleAiming();
 
@@ -58,32 +66,24 @@ public class Player_Gun : MonoBehaviour
 
     public void HandleAiming()
     {
-        float horizontal = 0f;
-        float vertical = 0f;
+        float h = 0f;
+        float v = 0f;
 
-        // Se usi il Joystick Mobile, mira nella direzione della levetta
-        if (playerMovement != null && playerMovement.movementJoystick != null &&
-            (Mathf.Abs(playerMovement.movementJoystick.Horizontal) > 0.1f || Mathf.Abs(playerMovement.movementJoystick.Vertical) > 0.1f))
+        if (playerMovement != null)
         {
-            horizontal = playerMovement.movementJoystick.Horizontal;
-            vertical = playerMovement.movementJoystick.Vertical;
-        }
-        else
-        {
-            // Altrimenti leggi da tastiera (WASD / Frecce)
-            horizontal = Input.GetAxisRaw("Horizontal");
-            vertical = Input.GetAxisRaw("Vertical");
+            h = playerMovement.GetHorizontalInput();
+            v = playerMovement.GetVerticalInput();
         }
 
-        if (horizontal != 0 || vertical != 0)
+        if (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f)
         {
-            if (Mathf.Abs(horizontal) >= Mathf.Abs(vertical))
+            if (Mathf.Abs(h) >= Mathf.Abs(v))
             {
-                aimDirection = new Vector2(Mathf.Sign(horizontal), 0f);
+                aimDirection = new Vector2(Mathf.Sign(h), 0f);
             }
             else
             {
-                aimDirection = new Vector2(0f, Mathf.Sign(vertical));
+                aimDirection = new Vector2(0f, Mathf.Sign(v));
             }
         }
         else if (playerMovement != null)
@@ -122,13 +122,12 @@ public class Player_Gun : MonoBehaviour
 
     public void Shoot()
     {
-        if (shootTimer > 0) return;
+        if (shootTimer > 0f) return;
 
         Transform activePoint = GetActiveLaunchPoint();
 
-        if (gunBulletPrefab == null)
+        if (activePoint == null || gunBulletPrefab == null)
         {
-            Debug.LogError("[Player_Gun] ERRORE: Gun Bullet Prefab non assegnato nell'Inspector!");
             return;
         }
 

@@ -7,7 +7,6 @@ public class NPCTriggerDialogue : MonoBehaviour
     [Tooltip("Nome unico per salvare questo dialogo (es. NPC_Alieno_1)")]
     public string npcID = "NPC_Alieno_1";
 
-    // Proprietà helper per leggere/scrivere il salvataggio
     public static bool HasHadFirstTalkSession
     {
         get => PlayerPrefs.GetInt("NPC_FirstTalkDone", 0) == 1;
@@ -28,7 +27,7 @@ public class NPCTriggerDialogue : MonoBehaviour
     [Header("1. Primo Dialogo (Automatico - Trigger Largo)")]
     public List<DialogueLine> firstConversation = new List<DialogueLine>();
 
-    [Header("2. Dialogo Ripetibile (Tasto E - Trigger Stretto)")]
+    [Header("2. Dialogo Ripetibile (Tasto E / Talk - Trigger Stretto)")]
     public List<DialogueLine> repeatConversation = new List<DialogueLine>();
 
     private bool playerInRepeatZone = false;
@@ -38,7 +37,6 @@ public class NPCTriggerDialogue : MonoBehaviour
         if (interactPrompt != null)
             interactPrompt.SetActive(false);
 
-        // Se il dialogo è già avvenuto (salvato sul disco), disattiva il trigger largo
         if (HasHadFirstTalkSession && firstContactZone != null)
         {
             firstContactZone.SetActive(false);
@@ -49,7 +47,7 @@ public class NPCTriggerDialogue : MonoBehaviour
     {
         if (playerInRepeatZone && HasHadFirstTalkSession)
         {
-            if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel.activeSelf)
+            if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel != null && DialogueManager.Instance.dialoguePanel.activeSelf)
             {
                 if (interactPrompt != null) interactPrompt.SetActive(false);
                 return;
@@ -59,13 +57,23 @@ public class NPCTriggerDialogue : MonoBehaviour
                 if (interactPrompt != null) interactPrompt.SetActive(true);
             }
 
+            // Tasto E da tastiera su PC
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (DialogueManager.Instance != null && repeatConversation.Count > 0)
-                {
-                    if (interactPrompt != null) interactPrompt.SetActive(false);
-                    DialogueManager.Instance.StartDialogueSequence(repeatConversation);
-                }
+                Interact();
+            }
+        }
+    }
+
+    // Metodo universale chiamato sia da tasto E che dal pulsante mobile TALK
+    public void Interact()
+    {
+        if (playerInRepeatZone && HasHadFirstTalkSession)
+        {
+            if (DialogueManager.Instance != null && repeatConversation.Count > 0)
+            {
+                if (interactPrompt != null) interactPrompt.SetActive(false);
+                DialogueManager.Instance.StartDialogueSequence(repeatConversation);
             }
         }
     }
@@ -77,12 +85,8 @@ public class NPCTriggerDialogue : MonoBehaviour
 
         if (DialogueManager.Instance != null && firstConversation.Count > 0)
         {
-            // Salva permanentemente che il dialogo è avvenuto
             HasHadFirstTalkSession = true;
-
-            // Abilita l'hint solo alla fine di questo primo dialogo
             DialogueManager.Instance.EnableHintOnNextDialogueEnd();
-
             DialogueManager.Instance.StartDialogueSequence(firstConversation);
 
             if (firstContactZone != null)
