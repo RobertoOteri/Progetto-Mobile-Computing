@@ -4245,7 +4245,7 @@ MonoBehaviour:
   sliderSuoni: {fileID: 28804809}
   sliderLuminosita: {fileID: 1094456664}
   menuBGM: {fileID: 8300000, guid: b19a2ebb78b38174a8e53822509ce726, type: 3}
-  buttonClickSFX: {fileID: 8300000, guid: 0ab48214aa5ac984daa3a8fe5570df65, type: 3}
+  buttonClickSFX: {fileID: 8300000, guid: 3945dce9938b0444584cfb3c5ee73e10, type: 3}
 --- !u!114 &1760873016
 MonoBehaviour:
   m_ObjectHideFlags: 0
