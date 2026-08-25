@@ -1881,14 +1881,14 @@ RectTransform:
   m_GameObject: {fileID: 292566910}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.95826, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1519238097}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -6, y: 4}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &292566912
@@ -1911,7 +1911,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '[TALK]'
+  m_text: '[PARLA]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 20019bf69e660784e8eeb86c2b4fb729, type: 2}
   m_sharedMaterial: {fileID: 6105297481108381905, guid: 20019bf69e660784e8eeb86c2b4fb729,
@@ -1978,7 +1978,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -18.359589, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -18234,8 +18234,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 94.24, y: 38}
-  m_SizeDelta: {x: 291.33, y: 119.1}
+  m_AnchoredPosition: {x: 118.18, y: 38}
+  m_SizeDelta: {x: 340.22, y: 119.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &900172730
 MonoBehaviour:
@@ -22630,7 +22630,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7, y: 0}
+  m_AnchoredPosition: {x: -17, y: 0}
   m_SizeDelta: {x: 255.43, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1312790311
@@ -22653,7 +22653,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '[TALK]'
+  m_text: '[PARLA]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 20019bf69e660784e8eeb86c2b4fb729, type: 2}
   m_sharedMaterial: {fileID: 6105297481108381905, guid: 20019bf69e660784e8eeb86c2b4fb729,
@@ -22720,7 +22720,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -46.096596, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -26290,8 +26290,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1095.1, y: -2299}
-  m_SizeDelta: {x: 198.1, y: 85.81}
+  m_AnchoredPosition: {x: 1096.78, y: -2305}
+  m_SizeDelta: {x: 249.96, y: 99.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1519238098
 MonoBehaviour:
@@ -29755,6 +29755,7 @@ MonoBehaviour:
   maxHealth: 10
   playerSr: {fileID: 1795376248}
   playerMovement: {fileID: 1795376245}
+  playerCombat: {fileID: 0}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.12
   gameOverDelay: 3
@@ -32911,6 +32912,42 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 323196774500116459, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: m_text
+      value: 'ATTACCA
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241022187731831940, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: m_text
+      value: 'Cambia
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787946508761465496, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: bombText
+      value: LANCIA
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787946508761465496, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: meleeText
+      value: ATTACCA
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787946508761465496, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: rangedText
+      value: SPARA
+      objectReference: {fileID: 0}
+    - target: {fileID: 2189275296750692715, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: m_text
+      value: 'PARLA
+
+'
+      objectReference: {fileID: 0}
     - target: {fileID: 4749958399030134406, guid: 49331f782a8f8f24e969d1d9c8487f47,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

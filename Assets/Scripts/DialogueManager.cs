@@ -259,7 +259,7 @@ public class DialogueManager : MonoBehaviour
         {
             if (TutorialHintUI.Instance != null)
             {
-                TutorialHintUI.Instance.ShowHint("Premi [SWITCH] per estrarre la pistola");
+                TutorialHintUI.Instance.ShowHint("Premi [CAMBIA] per estrarre la pistola");
             }
             triggerGunHint = false;
         }

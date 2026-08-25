@@ -15643,6 +15643,7 @@ MonoBehaviour:
   maxHealth: 10
   playerSr: {fileID: 545743934}
   playerMovement: {fileID: 545743931}
+  playerCombat: {fileID: 0}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.12
   gameOverDelay: 3
@@ -66506,6 +66507,43 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 323196774500116459, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: m_text
+      value: 'ATTACCA
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241022187731831940, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: m_text
+      value: 'Cambia
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787946508761465496, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: bombText
+      value: LANCIA
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787946508761465496, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: meleeText
+      value: ATTACCA
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787946508761465496, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: rangedText
+      value: SPARA
+      objectReference: {fileID: 0}
+    - target: {fileID: 2189275296750692715, guid: 49331f782a8f8f24e969d1d9c8487f47,
+        type: 3}
+      propertyPath: m_text
+      value: 'PARLA
+
+
+'
+      objectReference: {fileID: 0}
     - target: {fileID: 4749958399030134406, guid: 49331f782a8f8f24e969d1d9c8487f47,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
