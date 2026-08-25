@@ -11,6 +11,9 @@ public class PauseMenuManager : MonoBehaviour
     public GameObject settingsMenuPanel;
     public Button pauseButton; // Deve essere di tipo Button, non GameObject!
     
+    [Header("Audio Menu")]
+    public AudioClip buttonClickSFX;
+
     public string mainMenuSceneName = "Menu";
     private bool isPaused = false;
 
@@ -21,7 +24,6 @@ public class PauseMenuManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded; 
         } else {
-            // Se esiste già un manager, distruggiamo questo doppione
             Destroy(gameObject);
             return;
         }
@@ -29,26 +31,48 @@ public class PauseMenuManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 1. Se siamo nel menu principale, spegniamo il tasto pausa
         if (scene.name == mainMenuSceneName)
         {
+            // Se siamo nel menu principale, nascondi il pulsante di pausa se presente
             if (pauseButton != null) pauseButton.gameObject.SetActive(false);
         }
         else
         {
-            // 2. Se siamo in un livello di gioco, riaccendiamo il tasto e...
+            // --- RICERCA AUTOMATICA DEI PANNELLI E DEL BOTTONE IN GIOCO ---
+            
+            // Se i riferimenti sono andati persi (Missing/Null), li ritrova nella nuova scena
+            if (pauseMenuPanel == null)
+            {
+                GameObject p = GameObject.Find("Pause_Container"); // Sostituisci con il NOME ESATTO del GameObject nel Canvas
+                if (p != null) pauseMenuPanel = p;
+            }
+
+            if (settingsMenuPanel == null)
+            {
+                GameObject s = GameObject.Find("SettingsContainer"); // Sostituisci con il NOME ESATTO del Canvas impostazioni
+                if (s != null) settingsMenuPanel = s;
+            }
+
+            if (pauseButton == null)
+            {
+                GameObject b = GameObject.Find("BottonePausa"); // NOME ESATTO del pulsante di pausa nella Hierarchy
+                if (b != null) pauseButton = b.GetComponent<Button>();
+            }
+
+            // --- ASSEGNAZIONE EVENTI ---
             if (pauseButton != null) 
             {
                 pauseButton.gameObject.SetActive(true);
                 
-                // MAGIA VIA CODICE: Pulisce i vecchi collegamenti e attacca questo script al bottone nuovo!
+                // Pulisce e assegna il listener al nuovo bottone
                 pauseButton.onClick.RemoveAllListeners();
                 pauseButton.onClick.AddListener(Pause);
             }
+            
+            if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
+            if (settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
         }
-        
-        pauseMenuPanel.SetActive(false);
-        if(settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
+
         Time.timeScale = 1f;
         isPaused = false;
     }
@@ -64,8 +88,19 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
+    // --- FUNZIONE PER RIPRODURRE IL SUONO ---
+    public void PlayButtonSound()
+    {
+        if (AudioManager.Instance != null && buttonClickSFX != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSFX, 1f);
+        }
+    }
+
+    // --- FUNZIONI DI NAVIGAZIONE ---
     public void Resume()
     {
+        PlayButtonSound();
         pauseMenuPanel.SetActive(false);
         if(settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
         Time.timeScale = 1f;
@@ -74,6 +109,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void Pause()
     {
+        PlayButtonSound();
         Debug.Log("Pausa attivata con successo!");
         pauseMenuPanel.SetActive(true);
         Time.timeScale = 0f;
@@ -82,18 +118,24 @@ public class PauseMenuManager : MonoBehaviour
 
     public void OpenSettings() 
     { 
+        PlayButtonSound();
         pauseMenuPanel.SetActive(false); 
         settingsMenuPanel.SetActive(true); 
     }
 
     public void CloseSettings()
     {
+        PlayButtonSound();
         settingsMenuPanel.SetActive(false); 
         pauseMenuPanel.SetActive(true); 
     }
 
     public void QuitToMainMenu()
     {
+        PlayButtonSound();
+        if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
+        if (settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
+        if (pauseButton != null) pauseButton.gameObject.SetActive(false);
         Time.timeScale = 1f; 
         isPaused = false;
         SceneManager.LoadScene(mainMenuSceneName);

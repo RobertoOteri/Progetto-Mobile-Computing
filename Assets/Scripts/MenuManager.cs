@@ -48,18 +48,26 @@ public class MainMenuManager : MonoBehaviour
     // --- FUNZIONI NAVIGAZIONE MENU ---
     public void Gioca() 
     {   
-        // Cancella tutti i salvataggi prima di avviare il gioco
+    // Salva le impostazioni correnti prima del reset
+        float musicVol = PlayerPrefs.GetFloat("VolumeMusica", sliderMusica != null ? sliderMusica.value : 1f);
+        float soundVol = PlayerPrefs.GetFloat("VolumeSuoni", sliderSuoni != null ? sliderSuoni.value : 1f);
+        float lum = PlayerPrefs.GetFloat("Luminosita", sliderLuminosita != null ? sliderLuminosita.value : 1f);
+
+        // Cancella i salvataggi di gioco
         PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save(); // Forza il salvataggio dell'azzeramento
-        Debug.Log("PlayerPrefs azzerati all'avvio della partita!");
+
+        // Ripristina solo le impostazioni
+        PlayerPrefs.SetFloat("VolumeMusica", musicVol);
+        PlayerPrefs.SetFloat("VolumeSuoni", soundVol);
+        PlayerPrefs.SetFloat("Luminosita", lum);
+        PlayerPrefs.Save();
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.StopMusic();
         }
 
-        // Ricorda di mettere il VERO nome della tua scena Intro qui!
-        SceneManager.LoadScene("Intro"); 
+        SceneManager.LoadScene("Intro");
     }
     
     public void Esci() {
@@ -79,7 +87,7 @@ public class MainMenuManager : MonoBehaviour
         pannelloPrincipale.SetActive(true); 
     }
 
-    // --- FUNZIONI DEGLI SLIDER AUDIO ---
+   // --- FUNZIONI DEGLI SLIDER AUDIO ---
     
     public void CambiaMusica(float volume)
     {
@@ -90,6 +98,9 @@ public class MainMenuManager : MonoBehaviour
             float dB = (volNormalizzato > 0.0001f) ? Mathf.Log10(volNormalizzato) * 20f : -80f;
 
             mainMixer.SetFloat("MusicVol", dB);
+
+            PlayerPrefs.SetFloat("VolumeMusica", volume);
+            PlayerPrefs.Save();
         }
     }
 
@@ -102,6 +113,9 @@ public class MainMenuManager : MonoBehaviour
             float dB = (volNormalizzato > 0.0001f) ? Mathf.Log10(volNormalizzato) * 20f : -80f;
 
             mainMixer.SetFloat("SFXVol", dB);
+
+            PlayerPrefs.SetFloat("VolumeSuoni", volume);
+            PlayerPrefs.Save();
         }
     }
 
@@ -114,6 +128,9 @@ public class MainMenuManager : MonoBehaviour
             Color coloreFiltro = filtroLuminosita.color;
             coloreFiltro.a = 1f - luminositaNormalizzata; 
             filtroLuminosita.color = coloreFiltro;
+
+            PlayerPrefs.SetFloat("Luminosita", luminosita);
+            PlayerPrefs.Save();
         }
     }
 }

@@ -18656,6 +18656,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5773916647359891848, guid: adc31eafae65f5d40bad54810bc83dc6,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773916647359891848, guid: adc31eafae65f5d40bad54810bc83dc6,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 41799804}
@@ -23179,6 +23184,11 @@ PrefabInstance:
       propertyPath: pauseButton
       value: 
       objectReference: {fileID: 862248542}
+    - target: {fileID: 8008222365464103635, guid: 69cef8c3435c79f45bcb021e5a9f1cbc,
+        type: 3}
+      propertyPath: buttonClickSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 2e15aef9c0e975e429dece8be8733608, type: 3}
     - target: {fileID: 8008222365464103635, guid: 69cef8c3435c79f45bcb021e5a9f1cbc,
         type: 3}
       propertyPath: mainMenuSceneName

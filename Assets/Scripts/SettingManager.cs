@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Audio; // 🔴 Aggiunto per l'AudioMixer
+using UnityEngine.Audio; 
 using TMPro; 
 
 public class SettingsManager : MonoBehaviour
 {
     [Header("Audio Mixer")]
-    public AudioMixer mainMixer; // 🔴 Trascina il tuo AudioMixer qui dall'Inspector
-
+    public AudioMixer mainMixer; 
     [Header("Riferimenti UI")]
     public Slider sliderSound;
     public Slider sliderMusic;
