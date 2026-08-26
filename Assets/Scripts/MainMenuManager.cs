@@ -8,11 +8,11 @@ public class MainMenuManager : MonoBehaviour
     [Header("Audio Mixer")]
     public AudioMixer mainMixer; 
 
-    [Header("Navigazione Pannelli")]
+    [Header("Navigazione Pannelli / Canvas")]
     public GameObject pannelloPrincipale;
     public GameObject pannelloSelezionePartita;
-    public GameObject pannelloImpostazioni;
-    public GameObject pannelloConfermaNuovaPartita; // Il nuovo pop-up di avviso
+    public GameObject pannelloImpostazioni; // Trascina qui 'SettingsCanvas'
+    public GameObject pannelloConfermaNuovaPartita; // Pop-up di avviso
     
     [Header("Pulsanti Partita")]
     public Button bottoneContinua;
@@ -28,14 +28,23 @@ public class MainMenuManager : MonoBehaviour
     public AudioClip menuBGM;
     public AudioClip buttonClickSFX;  
 
+    private void Awake()
+    {
+        // Spegne subito i Canvas secondari prima ancora del primo frame di rendering
+        if (pannelloImpostazioni != null) pannelloImpostazioni.SetActive(false);
+        if (pannelloSelezionePartita != null) pannelloSelezionePartita.SetActive(false);
+        if (pannelloConfermaNuovaPartita != null) pannelloConfermaNuovaPartita.SetActive(false);
+    }
+
     void Start()
     {
+        // 1. Assicura lo stato visivo iniziale corretto
         if (pannelloPrincipale != null) pannelloPrincipale.SetActive(true);
-        if (pannelloSelezionePartita != null) pannelloSelezionePartita.SetActive(false);
         if (pannelloImpostazioni != null) pannelloImpostazioni.SetActive(false);
+        if (pannelloSelezionePartita != null) pannelloSelezionePartita.SetActive(false);
         if (pannelloConfermaNuovaPartita != null) pannelloConfermaNuovaPartita.SetActive(false);
 
-        // Slider
+        // 2. Inizializzazione Slider e Preferenze
         if (sliderMusica != null) sliderMusica.value = PlayerPrefs.GetFloat("VolumeMusica", sliderMusica.value);
         if (sliderSuoni != null) sliderSuoni.value = PlayerPrefs.GetFloat("VolumeSuoni", sliderSuoni.value);
         if (sliderLuminosita != null) sliderLuminosita.value = PlayerPrefs.GetFloat("Luminosita", sliderLuminosita.value);
@@ -44,6 +53,7 @@ public class MainMenuManager : MonoBehaviour
         if (sliderSuoni != null) CambiaSuoni(sliderSuoni.value);
         if (sliderLuminosita != null) CambiaLuminosita(sliderLuminosita.value);
 
+        // 3. Avvio musica Menu
         if (AudioManager.Instance != null && menuBGM != null)
         {
             AudioManager.Instance.PlayMusic(menuBGM, 0.5f);
@@ -83,7 +93,6 @@ public class MainMenuManager : MonoBehaviour
 
     // --- LOGICA NUOVA PARTITA CON POPUP DI CONFERMA ---
 
-    // Chiamato dal tasto "Nuova Partita"
     public void ClickNuovaPartita()
     {
         PlayButtonSound();
@@ -103,7 +112,6 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // Chiamato dal tasto "SÌ / CONFERMA" del pop-up
     public void EseguiNuovaPartita()
     {
         PlayButtonSound();
@@ -123,7 +131,6 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // Chiamato dal tasto "NO / ANNULLA" del pop-up
     public void AnnullaNuovaPartita()
     {
         PlayButtonSound();
@@ -156,6 +163,8 @@ public class MainMenuManager : MonoBehaviour
         Application.Quit(); 
     }
 
+    // --- NAVIGAZIONE IMPOSTAZIONI ---
+
     public void ApriImpostazioni() 
     { 
         PlayButtonSound(); 
@@ -169,6 +178,8 @@ public class MainMenuManager : MonoBehaviour
         if (pannelloImpostazioni != null) pannelloImpostazioni.SetActive(false); 
         if (pannelloPrincipale != null) pannelloPrincipale.SetActive(true); 
     }
+
+    // --- GESTIONE SLIDER ---
 
     public void CambiaMusica(float volume)
     {

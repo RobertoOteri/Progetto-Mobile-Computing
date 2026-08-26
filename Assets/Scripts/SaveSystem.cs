@@ -13,8 +13,8 @@ public class SaveSystem : MonoBehaviour
     private bool isContinuing = false;
 
     [Header("Prefab Armi a Terra (Pickups)")]
-    [Tooltip("Assegna i prefab dei pickup delle armi corrispondenti all'enum WeaponType se vengono istanziati da zero")]
-    public GameObject[] weaponPickupPrefabs; 
+    [Tooltip("Assegna i prefab dei pickup delle armi corrispondenti all'enum WeaponType")]
+    public GameObject[] weaponPickupPrefabs;
 
     private void Awake()
     {
@@ -39,16 +39,19 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
+    // Controlla se il file di salvataggio esiste su disco
     public bool HasSaveFile()
     {
         return File.Exists(saveFilePath);
     }
 
+    // Getter per sapere se stiamo caricando una partita salvata da "Continua"
     public bool IsContinuingGame()
     {
         return isContinuing;
     }
 
+    // Cancella il file di salvataggio
     public void DeleteSaveFile()
     {
         if (File.Exists(saveFilePath))
@@ -57,14 +60,36 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
+    // Registra un consumabile (mela/pozione) come raccolto
+    public void RegisterConsumedItem(string itemID)
+    {
+        if (currentSaveData == null) currentSaveData = new SaveData();
+
+        if (!currentSaveData.consumedItems.Contains(itemID))
+        {
+            currentSaveData.consumedItems.Add(itemID);
+        }
+    }
+
+    // Controlla se il consumabile è già stato usato
+    public bool IsItemConsumed(string itemID)
+    {
+        if (currentSaveData != null && currentSaveData.consumedItems != null)
+        {
+            return currentSaveData.consumedItems.Contains(itemID);
+        }
+        return false;
+    }
+
     // --- SALVATAGGIO COMPLETO ---
     public void SaveGame()
     {
+        // 1. Forza la scrittura su disco dei PlayerPrefs (dialoghi, trigger, opzioni)
         PlayerPrefs.Save();
 
         if (currentSaveData == null) currentSaveData = new SaveData();
 
-        // 1. Dati Player
+        // 2. Dati Player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
@@ -88,7 +113,7 @@ public class SaveSystem : MonoBehaviour
 
         currentSaveData.sceneName = SceneManager.GetActiveScene().name;
 
-        // 2. Dati Nemici
+        // 3. Dati Nemici
         currentSaveData.enemiesData.Clear();
         EnemySaveable[] allEnemies = Object.FindObjectsByType<EnemySaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (EnemySaveable enemy in allEnemies)
@@ -96,7 +121,7 @@ public class SaveSystem : MonoBehaviour
             currentSaveData.enemiesData.Add(enemy.GetSaveData());
         }
 
-        // 3. Dati Armi a Terra
+        // 4. Dati Armi a Terra
         currentSaveData.droppedWeapons.Clear();
         WeaponPickupSaveable[] allGroundWeapons = Object.FindObjectsByType<WeaponPickupSaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (WeaponPickupSaveable w in allGroundWeapons)
@@ -107,12 +132,13 @@ public class SaveSystem : MonoBehaviour
             }
         }
 
-        // 4. Scrittura File
+        // 5. Scrittura su file JSON
         string json = JsonUtility.ToJson(currentSaveData, true);
         File.WriteAllText(saveFilePath, json);
-        Debug.Log("Partita salvata con successo (con nemici e armi a terra) in: " + saveFilePath);
+        Debug.Log("Partita salvata con successo in: " + saveFilePath);
     }
 
+    // --- CARICAMENTO DATI ---
     public bool LoadGame()
     {
         if (!HasSaveFile()) return false;
@@ -122,18 +148,25 @@ public class SaveSystem : MonoBehaviour
         return true;
     }
 
+    // --- NUOVA PARTITA ---
     public void NewGame(string firstSceneName)
     {
         isContinuing = false;
         DeleteSaveFile();
         currentSaveData = null;
 
+        // Resetta la memoria statica della vita per ripartire con i cuori pieni
+        PlayerHealth.sessionHealth = -1;
+
+        // Conserva le impostazioni di volume e luminosità
         float volMusica = PlayerPrefs.GetFloat("VolumeMusica", 10f);
         float volSuoni = PlayerPrefs.GetFloat("VolumeSuoni", 10f);
         float luminosita = PlayerPrefs.GetFloat("Luminosita", 1f);
 
+        // Reset completo dei trigger di dialogo e memoria
         PlayerPrefs.DeleteAll();
 
+        // Ripristina le opzioni utente
         PlayerPrefs.SetFloat("VolumeMusica", volMusica);
         PlayerPrefs.SetFloat("VolumeSuoni", volSuoni);
         PlayerPrefs.SetFloat("Luminosita", luminosita);
@@ -142,6 +175,7 @@ public class SaveSystem : MonoBehaviour
         SceneManager.LoadScene(firstSceneName);
     }
 
+    // --- CONTINUA PARTITA ---
     public void ContinueGame()
     {
         if (LoadGame())
@@ -156,6 +190,7 @@ public class SaveSystem : MonoBehaviour
         StartCoroutine(RipristinaStatoScena(scene));
     }
 
+    // Ripristina lo stato aspettando il termine del primo frame della scena
     private IEnumerator RipristinaStatoScena(Scene scene)
     {
         yield return null;
@@ -169,7 +204,7 @@ public class SaveSystem : MonoBehaviour
 
         if (isContinuing && currentSaveData != null)
         {
-            // Ripristino Player
+            // 1. Ripristino Player (Posizione, Fisica, Vita, Armi)
             if (player != null)
             {
                 Vector3 targetPos = new Vector3(currentSaveData.playerPosX, currentSaveData.playerPosY, player.transform.position.z);
@@ -185,6 +220,7 @@ public class SaveSystem : MonoBehaviour
                 {
                     hp.maxHealth = currentSaveData.maxHealth;
                     hp.currentHealth = currentSaveData.currentHealth;
+                    PlayerHealth.sessionHealth = currentSaveData.currentHealth; // Allinea la variabile tra scene
                 }
 
                 if (combat != null)
@@ -195,7 +231,7 @@ public class SaveSystem : MonoBehaviour
                 }
             }
 
-            // Ripristino Nemici
+            // 2. Ripristino dei Nemici
             EnemySaveable[] currentEnemies = Object.FindObjectsByType<EnemySaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (EnemySaveable enemy in currentEnemies)
             {
@@ -206,20 +242,17 @@ public class SaveSystem : MonoBehaviour
                 }
             }
 
-            // Ripristino Armi a Terra
-            // 1. Rimuove i pickup presenti di default nella scena caricata
+            // 3. Ripristino Armi a Terra
             WeaponPickupSaveable[] existingWeapons = Object.FindObjectsByType<WeaponPickupSaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (WeaponPickupSaveable w in existingWeapons)
             {
                 Destroy(w.gameObject);
             }
 
-            // 2. Ricrea esattamente le armi registrate al momento del salvataggio
             if (weaponPickupPrefabs != null && weaponPickupPrefabs.Length > 0)
             {
                 foreach (DroppedWeaponSaveData drop in currentSaveData.droppedWeapons)
                 {
-                    // Cerca il prefab che corrisponde al tipo di arma salvato
                     GameObject prefabToSpawn = null;
                     foreach (GameObject p in weaponPickupPrefabs)
                     {
@@ -246,6 +279,7 @@ public class SaveSystem : MonoBehaviour
         isContinuing = false;
     }
 
+    // Gestione automatica della musica durante il caricamento
     private void GestisciMusicaScena(string sceneName)
     {
         if (sceneName == "Menu") return;
@@ -265,25 +299,5 @@ public class SaveSystem : MonoBehaviour
                 }
             }
         }
-    }
-    // Registra una mela/pozione come consumata
-    public void RegisterConsumedItem(string itemID)
-    {
-        if (currentSaveData == null) currentSaveData = new SaveData();
-
-        if (!currentSaveData.consumedItems.Contains(itemID))
-        {
-            currentSaveData.consumedItems.Add(itemID);
-        }
-    }
-
-    // Controlla se la mela/pozione è già stata usata in questa partita
-    public bool IsItemConsumed(string itemID)
-    {
-        if (currentSaveData != null && currentSaveData.consumedItems != null)
-        {
-            return currentSaveData.consumedItems.Contains(itemID);
-        }
-        return false;
     }
 }

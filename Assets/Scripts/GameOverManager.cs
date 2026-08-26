@@ -17,15 +17,15 @@ public class GameOverManager : MonoBehaviour
     [Tooltip("Trascina qui il Canvas o il contenitore dei comandi mobile (MobileControls / MobileButtonsCanvas)")]
     public GameObject mobileControlsCanvasOrPanel;
 
+    [Tooltip("Trascina qui il pulsante di pausa o l'oggetto del menu di pausa")]
+    public GameObject pauseButtonOrCanvas;
+
     public AudioMixerGroup outputAudioGroup;
     public AudioMixerGroup sfxAudioGroup;
 
     [Header("Audio Game Over")]
-    [Tooltip("AudioSource per la musica di Game Over (se vuoto ne userà uno automatico)")]
     public AudioSource gameOverAudioSource;
-    [Tooltip("Traccia musicale o SFX di Game Over")]
     public AudioClip gameOverMusicClip;
-    [Tooltip("Suono al click dei pulsanti (Esci / Rigioca)")]
     public AudioClip buttonClickSound;
 
     [Header("Impostazioni Dissolvenza")]
@@ -34,7 +34,7 @@ public class GameOverManager : MonoBehaviour
 
     private CanvasGroup canvasGroup;
 
-   private void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -51,6 +51,13 @@ public class GameOverManager : MonoBehaviour
             if (canvasGroup == null)
             {
                 canvasGroup = gameOverPanel.AddComponent<CanvasGroup>();
+            }
+
+            // Porta il Canvas del GameOver al massimo livello visivo (sopra a tutto il resto)
+            Canvas parentCanvas = gameOverPanel.GetComponentInParent<Canvas>();
+            if (parentCanvas != null)
+            {
+                parentCanvas.sortingOrder = 999;
             }
         }
 
@@ -81,37 +88,53 @@ public class GameOverManager : MonoBehaviour
         {
             gameOverPanel.SetActive(false);
         }
-
-        // Cerca automaticamente i comandi mobile se lo slot non è assegnato a mano
-        if (mobileControlsCanvasOrPanel == null)
-        {
-            mobileControlsCanvasOrPanel = GameObject.Find("MobileControls");
-            if (mobileControlsCanvasOrPanel == null)
-                mobileControlsCanvasOrPanel = GameObject.Find("MobileButtonsCanvas");
-        }
     }
 
     public void TriggerGameOver()
     {
-        // 1. Nasconde l'HUD dei cuori
+        // 1. Spegne l'HUD dei cuori
         if (hudCanvasOrPanel != null)
         {
             hudCanvasOrPanel.SetActive(false);
         }
 
-        // 2. Nasconde i controlli touch (Joystick e Pulsanti Mobile)
+        // 2. Spegne i comandi touch/mobile
         if (mobileControlsCanvasOrPanel != null)
         {
             mobileControlsCanvasOrPanel.SetActive(false);
         }
 
-        // 3. Ferma i suoni di sottofondo/nemici nel mondo
+        // 3. Spegne il tasto pausa assegnato
+        if (pauseButtonOrCanvas != null)
+        {
+            pauseButtonOrCanvas.SetActive(false);
+        }
+
+        // 4. Cerca e spegne direttamente PauseMenuManager e tutti i suoi bottoni/canvas
+        PauseMenuManager pauseManager = Object.FindAnyObjectByType<PauseMenuManager>();
+        if (pauseManager != null)
+        {
+            pauseManager.gameObject.SetActive(false);
+        }
+
+        // 5. Cerca eventuali oggetti con nome 'Pausa' o simili nella scena e li spegne
+        string[] possibleNames = { "PauseButton", "BtnPause", "PauseCanvas", "Pause_Btn", "ButtonPause", "Pause" };
+        foreach (string n in possibleNames)
+        {
+            GameObject obj = GameObject.Find(n);
+            if (obj != null && obj != gameObject && obj != gameOverPanel)
+            {
+                obj.SetActive(false);
+            }
+        }
+
+        // 6. Ferma l'audio del mondo di gioco
         SilenceWorldAudio();
 
-        // 4. Riproduce la musica di Game Over
+        // 7. Musica GameOver
         PlayGameOverMusic();
 
-        // 5. Avvia la dissolvenza del pannello
+        // 8. Dissolvenza pannello
         if (gameOverPanel != null)
         {
             gameOverPanel.transform.SetAsLastSibling();
@@ -127,7 +150,7 @@ public class GameOverManager : MonoBehaviour
             AudioManager.Instance.StopTypewriterSound();
         }
 
-        AudioSource[] allAudioSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        AudioSource[] allAudioSources = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (AudioSource source in allAudioSources)
         {
             if (source != gameOverAudioSource)
@@ -149,7 +172,6 @@ public class GameOverManager : MonoBehaviour
 
     public void PlayButtonSound()
     {
-        // Riproduce il click del pulsante tramite l'AudioManager
         if (AudioManager.Instance != null && buttonClickSound != null)
         {
             AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 1f);
