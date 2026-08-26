@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class GameOverManager : MonoBehaviour
 {
@@ -16,11 +17,16 @@ public class GameOverManager : MonoBehaviour
     [Tooltip("Trascina qui il Canvas o il contenitore dei comandi mobile (MobileControls / MobileButtonsCanvas)")]
     public GameObject mobileControlsCanvasOrPanel;
 
+    public AudioMixerGroup outputAudioGroup;
+    public AudioMixerGroup sfxAudioGroup;
+
     [Header("Audio Game Over")]
     [Tooltip("AudioSource per la musica di Game Over (se vuoto ne userà uno automatico)")]
     public AudioSource gameOverAudioSource;
     [Tooltip("Traccia musicale o SFX di Game Over")]
     public AudioClip gameOverMusicClip;
+    [Tooltip("Suono al click dei pulsanti (Esci / Rigioca)")]
+    public AudioClip buttonClickSound;
 
     [Header("Impostazioni Dissolvenza")]
     public float fadeDuration = 1.0f;
@@ -28,7 +34,7 @@ public class GameOverManager : MonoBehaviour
 
     private CanvasGroup canvasGroup;
 
-    private void Awake()
+   private void Awake()
     {
         if (Instance == null)
         {
@@ -61,6 +67,11 @@ public class GameOverManager : MonoBehaviour
         {
             gameOverAudioSource.ignoreListenerPause = true;
             gameOverAudioSource.playOnAwake = false;
+
+            if (outputAudioGroup != null)
+            {
+                gameOverAudioSource.outputAudioMixerGroup = outputAudioGroup;
+            }
         }
     }
 
@@ -136,6 +147,15 @@ public class GameOverManager : MonoBehaviour
         }
     }
 
+    public void PlayButtonSound()
+    {
+        // Riproduce il click del pulsante tramite l'AudioManager
+        if (AudioManager.Instance != null && buttonClickSound != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 1f);
+        }
+    }
+
     private IEnumerator FadeInRoutine()
     {
         gameOverPanel.SetActive(true);
@@ -174,6 +194,7 @@ public class GameOverManager : MonoBehaviour
 
     public void LoadMainMenu(string menuSceneName)
     {
+        PlayButtonSound();
         Time.timeScale = 1f;
         SceneManager.LoadScene(menuSceneName);
     }
