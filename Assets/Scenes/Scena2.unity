@@ -26683,6 +26683,11 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4675962926601789361, guid: 69cef8c3435c79f45bcb021e5a9f1cbc,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SaveGameFromPause
+      objectReference: {fileID: 0}
     - target: {fileID: 5434031952405463736, guid: 69cef8c3435c79f45bcb021e5a9f1cbc,
         type: 3}
       propertyPath: m_AnchorMax.x
