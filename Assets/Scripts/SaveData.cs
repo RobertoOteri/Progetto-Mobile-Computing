@@ -1,20 +1,37 @@
-using System;
+using System.Collections.Generic;
 
-[Serializable]
+[System.Serializable]
+public class EnemySaveData
+{
+    public string enemyID;
+    public float posX;
+    public float posY;
+    public int currentHealth;
+    public bool isDead;
+}
+
+[System.Serializable]
+public class DroppedWeaponSaveData
+{
+    public int weaponType;
+    public float posX;
+    public float posY;
+}
+
+[System.Serializable]
 public class SaveData
 {
-    // Scena
-    public string sceneName = "Intro";
-
-    // Posizione Player
+    public string sceneName;
     public float playerPosX;
     public float playerPosY;
+    public int currentHealth;
+    public int maxHealth;
+    public int storedWeapon;
+    public bool isWeaponDrawn;
 
-    // Salute
-    public int currentHealth = 5;
-    public int maxHealth = 5;
+    public List<EnemySaveData> enemiesData = new List<EnemySaveData>();
+    public List<DroppedWeaponSaveData> droppedWeapons = new List<DroppedWeaponSaveData>();
 
-    // Equipaggiamento Armi (corrisponde all'enum WeaponType)
-    public int storedWeapon = 5; // 5 = None
-    public bool isWeaponDrawn = false;
+    // Lista degli ID di mele e pozioni già consumate
+    public List<string> consumedItems = new List<string>();
 }

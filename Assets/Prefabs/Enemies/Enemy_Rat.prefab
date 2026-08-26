@@ -82,6 +82,7 @@ GameObject:
   - component: {fileID: 8085126445077768859}
   - component: {fileID: 7607628495433066953}
   - component: {fileID: 6588914675902551544}
+  - component: {fileID: -866716214857983673}
   m_Layer: 6
   m_Name: Enemy_Rat
   m_TagString: Untagged
@@ -354,6 +355,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
   currentHealth: 3
   maxHealth: 3
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.12
   hitSound: {fileID: 8300000, guid: 0bda6b4969403c24795f31f1d17860ab, type: 3}
   hitSoundVolume: 0.5
   deathSound: {fileID: 8300000, guid: f898ca4d3c042b74aa3879d3dba958ee, type: 3}
@@ -481,3 +484,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LoopWithDelay
   audioSource: {fileID: 7607628495433066953}
   delayBetweenLoops: 3.5
+--- !u!114 &-866716214857983673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8465362239070478737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b9c96145bc7845439ba1b045843b39b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySaveable
+  enemyID: 

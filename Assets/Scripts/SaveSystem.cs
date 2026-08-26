@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,10 @@ public class SaveSystem : MonoBehaviour
     private string saveFilePath;
     public SaveData currentSaveData;
     private bool isContinuing = false;
+
+    [Header("Prefab Armi a Terra (Pickups)")]
+    [Tooltip("Assegna i prefab dei pickup delle armi corrispondenti all'enum WeaponType se vengono istanziati da zero")]
+    public GameObject[] weaponPickupPrefabs; 
 
     private void Awake()
     {
@@ -39,6 +44,11 @@ public class SaveSystem : MonoBehaviour
         return File.Exists(saveFilePath);
     }
 
+    public bool IsContinuingGame()
+    {
+        return isContinuing;
+    }
+
     public void DeleteSaveFile()
     {
         if (File.Exists(saveFilePath))
@@ -47,10 +57,14 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
+    // --- SALVATAGGIO COMPLETO ---
     public void SaveGame()
     {
+        PlayerPrefs.Save();
+
         if (currentSaveData == null) currentSaveData = new SaveData();
 
+        // 1. Dati Player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
@@ -74,9 +88,29 @@ public class SaveSystem : MonoBehaviour
 
         currentSaveData.sceneName = SceneManager.GetActiveScene().name;
 
+        // 2. Dati Nemici
+        currentSaveData.enemiesData.Clear();
+        EnemySaveable[] allEnemies = Object.FindObjectsByType<EnemySaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (EnemySaveable enemy in allEnemies)
+        {
+            currentSaveData.enemiesData.Add(enemy.GetSaveData());
+        }
+
+        // 3. Dati Armi a Terra
+        currentSaveData.droppedWeapons.Clear();
+        WeaponPickupSaveable[] allGroundWeapons = Object.FindObjectsByType<WeaponPickupSaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (WeaponPickupSaveable w in allGroundWeapons)
+        {
+            if (w.gameObject.activeInHierarchy)
+            {
+                currentSaveData.droppedWeapons.Add(w.GetSaveData());
+            }
+        }
+
+        // 4. Scrittura File
         string json = JsonUtility.ToJson(currentSaveData, true);
         File.WriteAllText(saveFilePath, json);
-        Debug.Log("Partita salvata in: " + saveFilePath);
+        Debug.Log("Partita salvata con successo (con nemici e armi a terra) in: " + saveFilePath);
     }
 
     public bool LoadGame()
@@ -94,15 +128,12 @@ public class SaveSystem : MonoBehaviour
         DeleteSaveFile();
         currentSaveData = null;
 
-        // Salva le impostazioni per non perderle
         float volMusica = PlayerPrefs.GetFloat("VolumeMusica", 10f);
         float volSuoni = PlayerPrefs.GetFloat("VolumeSuoni", 10f);
         float luminosita = PlayerPrefs.GetFloat("Luminosita", 1f);
 
-        // Reset completo di chiavi e trigger
         PlayerPrefs.DeleteAll();
 
-        // Ripristina opzioni
         PlayerPrefs.SetFloat("VolumeMusica", volMusica);
         PlayerPrefs.SetFloat("VolumeSuoni", volSuoni);
         PlayerPrefs.SetFloat("Luminosita", luminosita);
@@ -132,34 +163,83 @@ public class SaveSystem : MonoBehaviour
         GestisciMusicaScena(scene.name);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null) yield break;
-
-        PlayerHealth hp = player.GetComponent<PlayerHealth>();
-        Player_Combat combat = player.GetComponent<Player_Combat>();
-        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+        PlayerHealth hp = (player != null) ? player.GetComponent<PlayerHealth>() : null;
+        Player_Combat combat = (player != null) ? player.GetComponent<Player_Combat>() : null;
+        Rigidbody2D rb = (player != null) ? player.GetComponent<Rigidbody2D>() : null;
 
         if (isContinuing && currentSaveData != null)
         {
-            Vector3 targetPos = new Vector3(currentSaveData.playerPosX, currentSaveData.playerPosY, player.transform.position.z);
-            player.transform.position = targetPos;
-
-            if (rb != null)
+            // Ripristino Player
+            if (player != null)
             {
-                rb.position = targetPos;
-                rb.linearVelocity = Vector2.zero;
+                Vector3 targetPos = new Vector3(currentSaveData.playerPosX, currentSaveData.playerPosY, player.transform.position.z);
+                player.transform.position = targetPos;
+
+                if (rb != null)
+                {
+                    rb.position = targetPos;
+                    rb.linearVelocity = Vector2.zero;
+                }
+
+                if (hp != null)
+                {
+                    hp.maxHealth = currentSaveData.maxHealth;
+                    hp.currentHealth = currentSaveData.currentHealth;
+                }
+
+                if (combat != null)
+                {
+                    combat.storedWeapon = (WeaponType)currentSaveData.storedWeapon;
+                    combat.isWeaponDrawn = currentSaveData.isWeaponDrawn;
+                    combat.ApplyWeaponState();
+                }
             }
 
-            if (hp != null)
+            // Ripristino Nemici
+            EnemySaveable[] currentEnemies = Object.FindObjectsByType<EnemySaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (EnemySaveable enemy in currentEnemies)
             {
-                hp.maxHealth = currentSaveData.maxHealth;
-                hp.currentHealth = currentSaveData.currentHealth;
+                EnemySaveData savedEnemy = currentSaveData.enemiesData.Find(e => e.enemyID == enemy.enemyID);
+                if (savedEnemy != null)
+                {
+                    enemy.LoadData(savedEnemy);
+                }
             }
 
-            if (combat != null)
+            // Ripristino Armi a Terra
+            // 1. Rimuove i pickup presenti di default nella scena caricata
+            WeaponPickupSaveable[] existingWeapons = Object.FindObjectsByType<WeaponPickupSaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (WeaponPickupSaveable w in existingWeapons)
             {
-                combat.storedWeapon = (WeaponType)currentSaveData.storedWeapon;
-                combat.isWeaponDrawn = currentSaveData.isWeaponDrawn;
-                combat.ApplyWeaponState();
+                Destroy(w.gameObject);
+            }
+
+            // 2. Ricrea esattamente le armi registrate al momento del salvataggio
+            if (weaponPickupPrefabs != null && weaponPickupPrefabs.Length > 0)
+            {
+                foreach (DroppedWeaponSaveData drop in currentSaveData.droppedWeapons)
+                {
+                    // Cerca il prefab che corrisponde al tipo di arma salvato
+                    GameObject prefabToSpawn = null;
+                    foreach (GameObject p in weaponPickupPrefabs)
+                    {
+                        if (p != null)
+                        {
+                            WeaponPickupSaveable script = p.GetComponent<WeaponPickupSaveable>();
+                            if (script != null && (int)script.weaponType == drop.weaponType)
+                            {
+                                prefabToSpawn = p;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (prefabToSpawn != null)
+                    {
+                        Vector3 spawnPos = new Vector3(drop.posX, drop.posY, 0f);
+                        Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+                    }
+                }
             }
         }
 
@@ -186,8 +266,24 @@ public class SaveSystem : MonoBehaviour
             }
         }
     }
-    public bool IsContinuingGame()
+    // Registra una mela/pozione come consumata
+    public void RegisterConsumedItem(string itemID)
     {
-        return isContinuing;
-    }   
+        if (currentSaveData == null) currentSaveData = new SaveData();
+
+        if (!currentSaveData.consumedItems.Contains(itemID))
+        {
+            currentSaveData.consumedItems.Add(itemID);
+        }
+    }
+
+    // Controlla se la mela/pozione è già stata usata in questa partita
+    public bool IsItemConsumed(string itemID)
+    {
+        if (currentSaveData != null && currentSaveData.consumedItems != null)
+        {
+            return currentSaveData.consumedItems.Contains(itemID);
+        }
+        return false;
+    }
 }

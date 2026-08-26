@@ -3150,6 +3150,14 @@ MonoBehaviour:
     maxHealth: 5
     storedWeapon: 5
     isWeaponDrawn: 0
+    enemiesData: []
+    droppedWeapons: []
+  weaponPickupPrefabs:
+  - {fileID: 2465589001379539799, guid: 5fbd1c56891042b4990418e920a30937, type: 3}
+  - {fileID: 2778455210248024074, guid: eff172ee21531a244ab9030a1cd0e377, type: 3}
+  - {fileID: 379133184990739515, guid: aff0843707d2b0f4385cc784a6ca9e0e, type: 3}
+  - {fileID: 2008097554407966146, guid: 3279c5a74ac0a024fb77d719666f393c, type: 3}
+  - {fileID: 7515343532041900196, guid: de6b297e3042852428ca0ff54ed24127, type: 3}
 --- !u!4 &1944298115
 Transform:
   m_ObjectHideFlags: 0
