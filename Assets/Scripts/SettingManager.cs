@@ -5,8 +5,9 @@ using TMPro;
 
 public class SettingsManager : MonoBehaviour
 {
-    [Header("Audio Mixer")]
+    [Header("Audio Mixer & Effetti")]
     public AudioMixer mainMixer; 
+    public AudioClip buttonClickSound; // Trascina qui il file audio (es. Button-Sound_2)
 
     [Header("Riferimenti UI")]
     public Slider sliderSound;
@@ -17,7 +18,7 @@ public class SettingsManager : MonoBehaviour
 
     [Header("Gestione Visibilità Impostazioni")]
     public CanvasGroup mainSettingsCanvasGroup; 
-    public GameObject settingsTitle; // <--- Aggiunta variabile per il titolo
+    public GameObject settingsTitle;
 
     [Header("Pannelli Info Pop-up")]
     public GameObject ratePanel;
@@ -27,7 +28,7 @@ public class SettingsManager : MonoBehaviour
     void OnEnable()
     {
         CaricaImpostazioni();
-        CloseAllInfoPanels();
+        ResetPanelsWithoutSound(); 
     }
 
     void CaricaImpostazioni()
@@ -48,6 +49,19 @@ public class SettingsManager : MonoBehaviour
         {
             sliderLuminosita.value = PlayerPrefs.GetFloat("Luminosita", sliderLuminosita.maxValue);
             CambiaLuminosita(sliderLuminosita.value);
+        }
+    }
+
+    // --- RIPRODUZIONE AUDIO TRAMITE AUDIOMANAGER ---
+    public void PlayButtonSound()
+    {
+        if (AudioManager.Instance != null && buttonClickSound != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 1f);
+        }
+        else if (buttonClickSound == null)
+        {
+            Debug.LogWarning("Manca il clip audio 'buttonClickSound' nell'Inspector di SettingsManager!");
         }
     }
 
@@ -115,6 +129,7 @@ public class SettingsManager : MonoBehaviour
     // --- GESTIONE POP-UP (APERTURA) ---
     public void OpenRate()
     {
+        PlayButtonSound();
         HideAllPopups();
         SetMainSettingsVisible(false);
         if (ratePanel != null) ratePanel.SetActive(true);
@@ -122,6 +137,7 @@ public class SettingsManager : MonoBehaviour
 
     public void OpenAbout()
     {
+        PlayButtonSound();
         HideAllPopups();
         SetMainSettingsVisible(false);
         if (aboutPanel != null) aboutPanel.SetActive(true);
@@ -129,6 +145,7 @@ public class SettingsManager : MonoBehaviour
 
     public void OpenSupport()
     {
+        PlayButtonSound();
         HideAllPopups();
         SetMainSettingsVisible(false);
         if (supportPanel != null) supportPanel.SetActive(true);
@@ -136,6 +153,12 @@ public class SettingsManager : MonoBehaviour
 
     // --- GESTIONE POP-UP (CHIUSURA VIA TASTO X) ---
     public void CloseAllInfoPanels()
+    {
+        PlayButtonSound();
+        ResetPanelsWithoutSound();
+    }
+
+    private void ResetPanelsWithoutSound()
     {
         HideAllPopups();
         SetMainSettingsVisible(true);
@@ -157,10 +180,9 @@ public class SettingsManager : MonoBehaviour
             mainSettingsCanvasGroup.blocksRaycasts = visible;
         }
 
-        // Mostra o nasconde il titolo insieme al CanvasGroup
         if (settingsTitle != null)
         {
             settingsTitle.SetActive(visible);
         }
     }
-}
+}  

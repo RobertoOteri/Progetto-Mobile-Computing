@@ -282,7 +282,8 @@ public class SaveSystem : MonoBehaviour
     // Gestione automatica della musica durante il caricamento
     private void GestisciMusicaScena(string sceneName)
     {
-        if (sceneName == "Menu") return;
+        // Ignora sia il Menu che la Intro, altrimenti la Intro sovrappone bgmMusic all'ambient!
+        if (sceneName == "Menu" || sceneName == "Intro" || sceneName == "IntroSequence") return;
 
         if (AudioManager.Instance != null && !AudioManager.Instance.IsMusicPlaying())
         {
