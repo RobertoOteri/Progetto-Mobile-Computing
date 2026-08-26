@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private float walkPitch = 0.85f;
     
     private bool isWalking = false;
-    private Coroutine dieSoundCoroutine; // Per tracciare la coroutine del suono di morte
+    private Coroutine dieSoundCoroutine; 
     private Coroutine musicFadeCoroutine;
 
     private void Awake()
@@ -41,14 +41,12 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
         }
         else
         {
             Destroy(gameObject);
         }
     }
-
 
     private void Update()
     {
@@ -69,10 +67,19 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // METODI PER IL MANAGEMENT DELLA MUSICA
+    // --- METODI PER IL MANAGEMENT DELLA MUSICA ---
+
+    public bool IsMusicPlaying()
+    {
+        return musicSource != null && musicSource.isPlaying;
+    }
+
     public void PlayMusic(AudioClip clip, float volume = 0.5f)
     {
         if (musicSource == null || clip == null) return;
+
+        // Se la traccia è già in riproduzione, non la riavvia da capo
+        if (musicSource.isPlaying && musicSource.clip == clip) return;
 
         if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
 
@@ -113,20 +120,29 @@ public class AudioManager : MonoBehaviour
         musicSource.volume = startVolume;
     }
 
-    // Riproduzione SFX normali
+    // --- RIPRODUZIONE SFX ---
+
     public void PlaySFX(AudioClip clip)
     {
         if (clip != null && sfxSource != null)
         {
-            // Se c'era una coroutine del suono di morte attiva, fermala per evitare che resetti il pitch dopo
             if (dieSoundCoroutine != null)
             {
                 StopCoroutine(dieSoundCoroutine);
                 dieSoundCoroutine = null;
             }
 
-            sfxSource.pitch = 1f; // Forza la velocità e la tonalità originale 
+            sfxSource.pitch = 1f; 
             sfxSource.PlayOneShot(clip);
+        }
+    }
+
+    public void PlaySFXWithVolume(AudioClip clip, float volume)
+    {
+        if (clip != null && sfxSource != null)
+        {
+            sfxSource.pitch = 1f;
+            sfxSource.PlayOneShot(clip, volume);
         }
     }
 
@@ -169,7 +185,7 @@ public class AudioManager : MonoBehaviour
     {
         if (hurtSFX != null && sfxSource != null)
         {
-            PlaySFX(hurtSFX); // Riproduce il suono dell'impatto a volume/pitch standard
+            PlaySFX(hurtSFX);
         }
     }
     
@@ -185,7 +201,6 @@ public class AudioManager : MonoBehaviour
     {
         if (sfxSource != null && typewriterSound != null)
         {
-            // Se sta già riproducendo l'effetto audio, evita di sovrapporne un altro
             if (sfxSource.isPlaying && sfxSource.clip == typewriterSound)
                 return;
 
@@ -207,7 +222,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Fa iniziare il suono ambientale dell'intro
     public void PlayIntroAmbient()
     {
         if (sfxSource != null && introAmbientSource != null)
@@ -217,6 +231,7 @@ public class AudioManager : MonoBehaviour
             sfxSource.Play();
         }
     }
+
     public void FadeOutIntroAmbient(float duration)
     {
         if (sfxSource != null && sfxSource.isPlaying)
@@ -231,19 +246,16 @@ public class AudioManager : MonoBehaviour
 
         while (sfxSource.volume > 0)
         {
-            // Riduce il volume in base al tempo
             sfxSource.volume -= startVolume * (Time.deltaTime / duration);
             yield return null;
         }
 
-        // Quando il volume arriva a 0, ferma l'audio e ripristina i parametri
         sfxSource.Stop();
         sfxSource.loop = false;
         sfxSource.clip = null;
-        sfxSource.volume = startVolume; // Ripristina il volume per i suoni futuri
+        sfxSource.volume = startVolume;
     }
 
-    // Ferma il suono ambientale dell'intro
     public void StopIntroAmbient()
     {
         if (sfxSource != null && sfxSource.clip == introAmbientSource)
@@ -254,22 +266,14 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator PlaySFXWithSettings(AudioClip clip, float volume, float pitch)
+    private IEnumerator PlaySFXWithSettings(AudioClip clip, float volume, float pitch)
     {
         sfxSource.pitch = pitch;
         sfxSource.PlayOneShot(clip, volume);
 
         yield return new WaitForSeconds(clip.length / pitch);
 
-        sfxSource.pitch = 1f; // Ripristina il pitch standard a 1
+        sfxSource.pitch = 1f;
         dieSoundCoroutine = null;
-    }
-    public void PlaySFXWithVolume(AudioClip clip, float volume)
-    {
-        if (clip != null && sfxSource != null)
-        {
-            sfxSource.pitch = 1f; // Mantiene la tonalità corretta
-            sfxSource.PlayOneShot(clip, volume); // Riproduce la clip con il volume specifico passatogli
-        }
     }
 }

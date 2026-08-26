@@ -81,6 +81,7 @@ GameObject:
   - component: {fileID: 9219771301186535068}
   - component: {fileID: 682607381463780340}
   - component: {fileID: 2050519684050093749}
+  - component: {fileID: 1072772466082192976}
   m_Layer: 6
   m_Name: Enemy_Slime
   m_TagString: Untagged
@@ -468,3 +469,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1072772466082192976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340369853583597435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b9c96145bc7845439ba1b045843b39b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySaveable
+  enemyID: 
