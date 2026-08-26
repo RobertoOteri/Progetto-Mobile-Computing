@@ -8,10 +8,16 @@ public class PlayerSpawn : MonoBehaviour
 
     private void Start()
     {
+        // Se stiamo caricando una partita salvata da "Continua", lasciamo fare a SaveSystem
+        if (SaveSystem.Instance != null && SaveSystem.Instance.IsContinuingGame())
+        {
+            return;
+        }
+
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
         if (player == null) return;
 
-        // Controlla se siamo appena passati da una porta/teleport
+        // Controlla se siamo appena passati da una porta/teleport tra scene
         string targetSpawnName = PlayerPrefs.GetString("TargetSpawnPoint", "");
 
         if (!string.IsNullOrEmpty(targetSpawnName))
@@ -21,21 +27,21 @@ public class PlayerSpawn : MonoBehaviour
             {
                 player.transform.position = targetSpawn.transform.position;
             }
-            // Cancella subito la chiave per il prossimo avvio pulito
             PlayerPrefs.DeleteKey("TargetSpawnPoint");
+            PlayerPrefs.Save();
         }
         else if (defaultSpawnPoint != null)
         {
-            // Spawn standard vicino alla astronave
+            // Spawn standard vicino all'astronave (Nuova Partita)
             player.transform.position = defaultSpawnPoint.position;
         }
     }
 
-    // 🔴 AGGIUNGI QUESTO: Cancella la memoria vecchia premendo Clic Destro sullo script nell'Inspector
     [ContextMenu("Reset PlayerPrefs (Pulisci Salvataggi)")]
     public void ResetPrefs()
     {
         PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
         Debug.Log("PlayerPrefs completamente cancellati!");
     }
 }

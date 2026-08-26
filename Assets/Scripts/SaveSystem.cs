@@ -1,3 +1,4 @@
+using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -38,7 +39,6 @@ public class SaveSystem : MonoBehaviour
         return File.Exists(saveFilePath);
     }
 
-    // Cancella il file se vuoi resettare del tutto
     public void DeleteSaveFile()
     {
         if (File.Exists(saveFilePath))
@@ -47,7 +47,6 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    // Salva SOLO quando viene chiamato esplicitamente dal tasto Salva
     public void SaveGame()
     {
         if (currentSaveData == null) currentSaveData = new SaveData();
@@ -89,16 +88,29 @@ public class SaveSystem : MonoBehaviour
         return true;
     }
 
-    // NUOVA PARTITA: Non scrive il file subito, ma rimuove il vecchio
     public void NewGame(string firstSceneName)
     {
         isContinuing = false;
-        DeleteSaveFile(); // Elimina il vecchio salvataggio
+        DeleteSaveFile();
         currentSaveData = null;
+
+        // Salva le impostazioni per non perderle
+        float volMusica = PlayerPrefs.GetFloat("VolumeMusica", 10f);
+        float volSuoni = PlayerPrefs.GetFloat("VolumeSuoni", 10f);
+        float luminosita = PlayerPrefs.GetFloat("Luminosita", 1f);
+
+        // Reset completo di chiavi e trigger
+        PlayerPrefs.DeleteAll();
+
+        // Ripristina opzioni
+        PlayerPrefs.SetFloat("VolumeMusica", volMusica);
+        PlayerPrefs.SetFloat("VolumeSuoni", volSuoni);
+        PlayerPrefs.SetFloat("Luminosita", luminosita);
+        PlayerPrefs.Save();
+
         SceneManager.LoadScene(firstSceneName);
     }
 
-    // CONTINUA: Carica i dati e viaggia verso la scena salvata
     public void ContinueGame()
     {
         if (LoadGame())
@@ -110,21 +122,39 @@ public class SaveSystem : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (!isContinuing || currentSaveData == null) return;
+        StartCoroutine(RipristinaStatoScena(scene));
+    }
+
+    private IEnumerator RipristinaStatoScena(Scene scene)
+    {
+        yield return null;
+
+        GestisciMusicaScena(scene.name);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            player.transform.position = new Vector3(currentSaveData.playerPosX, currentSaveData.playerPosY, player.transform.position.z);
+        if (player == null) yield break;
 
-            PlayerHealth hp = player.GetComponent<PlayerHealth>();
+        PlayerHealth hp = player.GetComponent<PlayerHealth>();
+        Player_Combat combat = player.GetComponent<Player_Combat>();
+        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+
+        if (isContinuing && currentSaveData != null)
+        {
+            Vector3 targetPos = new Vector3(currentSaveData.playerPosX, currentSaveData.playerPosY, player.transform.position.z);
+            player.transform.position = targetPos;
+
+            if (rb != null)
+            {
+                rb.position = targetPos;
+                rb.linearVelocity = Vector2.zero;
+            }
+
             if (hp != null)
             {
                 hp.maxHealth = currentSaveData.maxHealth;
                 hp.currentHealth = currentSaveData.currentHealth;
             }
 
-            Player_Combat combat = player.GetComponent<Player_Combat>();
             if (combat != null)
             {
                 combat.storedWeapon = (WeaponType)currentSaveData.storedWeapon;
@@ -135,4 +165,29 @@ public class SaveSystem : MonoBehaviour
 
         isContinuing = false;
     }
+
+    private void GestisciMusicaScena(string sceneName)
+    {
+        if (sceneName == "Menu") return;
+
+        if (AudioManager.Instance != null && !AudioManager.Instance.IsMusicPlaying())
+        {
+            if (AudioManager.Instance.bgmMusic != null)
+            {
+                AudioManager.Instance.PlayMusic(AudioManager.Instance.bgmMusic, 0.5f);
+            }
+            else
+            {
+                AudioSource scenaMusic = Object.FindAnyObjectByType<AudioSource>();
+                if (scenaMusic != null && scenaMusic.clip != null)
+                {
+                    AudioManager.Instance.PlayMusic(scenaMusic.clip, 0.5f);
+                }
+            }
+        }
+    }
+    public bool IsContinuingGame()
+    {
+        return isContinuing;
+    }   
 }
