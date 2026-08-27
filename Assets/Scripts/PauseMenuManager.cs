@@ -72,44 +72,55 @@ public class PauseMenuManager : MonoBehaviour
 
     private void PausaCanvasFinder()
     {
-        // 1. Cerca il Canvas di Pausa e tutti i suoi elementi interni
+        // 1. Cerca il Canvas di Pausa (blur e contenitore pausa) - Struttura originale
         GameObject pausaCanvas = GameObject.Find("PausaCanvas");
         if (pausaCanvas != null)
         {
-            // Cerca BlurOverlay
             Transform blurT = pausaCanvas.transform.Find("BlurOverlay");
             if (blurT != null)
             {
                 blurOverlay = blurT.gameObject;
-                blurOverlay.SetActive(false); // Spegne subito il blur all'avvio
+                blurOverlay.SetActive(false);
             }
 
-            // Cerca Pannello Pausa
             Transform pauseCont = pausaCanvas.transform.Find("Pause_Container");
             if (pauseCont != null)
             {
                 pauseMenuPanel = pauseCont.gameObject;
                 pauseMenuPanel.SetActive(false);
             }
+        }
 
-            // Cerca Pannello Impostazioni
-            Transform settingsCont = pausaCanvas.transform.Find("SettingsCanvas");
-            if (settingsCont == null) settingsCont = pausaCanvas.transform.Find("SettingsContainer");
-            if (settingsCont != null)
+        // 2. Cerca SettingsCanvas (anche se disattivato nella scena)
+        GameObject settingsCanvas = GameObject.Find("SettingsCanvas");
+        if (settingsCanvas == null)
+        {
+            // Se disattivato, lo trova tra gli oggetti radice della scena
+            GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject root in rootObjects)
             {
-                settingsMenuPanel = settingsCont.gameObject;
-                settingsMenuPanel.SetActive(false);
+                if (root.name == "SettingsCanvas")
+                {
+                    settingsCanvas = root;
+                    break;
+                }
             }
         }
 
-        // 2. Cerca i comandi mobile touch
+        if (settingsCanvas != null)
+        {
+            settingsMenuPanel = settingsCanvas;
+            settingsMenuPanel.SetActive(false);
+        }
+
+        // 3. Cerca i comandi mobile touch
         if (mobileControlsCanvas == null)
         {
             mobileControlsCanvas = GameObject.Find("MobileButtonsCanvas");
             if (mobileControlsCanvas == null) mobileControlsCanvas = GameObject.Find("MobileControls");
         }
 
-        // 3. Cerca e assegna il pulsante Pausa
+        // 4. Cerca e assegna il pulsante Pausa
         GameObject b = GameObject.Find("BottonePausa");
         if (b == null) b = GameObject.Find("PauseButton");
         if (b != null)
@@ -120,7 +131,7 @@ public class PauseMenuManager : MonoBehaviour
             pauseButton.onClick.AddListener(Pause);
         }
 
-        // 4. Collega il tasto Salva e il feedback testuale
+        // 5. Collega il tasto Salva e il feedback testuale
         if (pauseMenuPanel != null)
         {
             Button[] buttons = pauseMenuPanel.GetComponentsInChildren<Button>(true);
@@ -194,7 +205,7 @@ public class PauseMenuManager : MonoBehaviour
         if (testoSalvataggioRiuscito != null) testoSalvataggioRiuscito.SetActive(false);
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
         if (settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
-        if (blurOverlay != null) blurOverlay.SetActive(false); // Spegne il blur
+        if (blurOverlay != null) blurOverlay.SetActive(false);
 
         // Riattiva i controlli mobile e il tasto pausa
         if (mobileControlsCanvas != null) mobileControlsCanvas.SetActive(true);
@@ -227,8 +238,25 @@ public class PauseMenuManager : MonoBehaviour
     public void OpenSettings()
     {
         PlayButtonSound();
+
+        if (settingsMenuPanel == null) PausaCanvasFinder();
+
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
-        if (settingsMenuPanel != null) settingsMenuPanel.SetActive(true);
+        
+        if (settingsMenuPanel != null) 
+        {
+            // 1. ATTIVA IL CANVAS PADRE (Questo è il punto fondamentale!)
+            settingsMenuPanel.SetActive(true); 
+
+            // 2. Resetta i pannelli interni mostrando solo le opzioni
+            SettingsManager sm = settingsMenuPanel.GetComponent<SettingsManager>();
+            if (sm == null) sm = settingsMenuPanel.GetComponentInChildren<SettingsManager>(true);
+            if (sm != null)
+            {
+                sm.CloseAllInfoPanels();
+            }
+        }
+
         if (blurOverlay != null) blurOverlay.SetActive(true);
     }
 

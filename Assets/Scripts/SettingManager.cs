@@ -7,7 +7,7 @@ public class SettingsManager : MonoBehaviour
 {
     [Header("Audio Mixer & Effetti")]
     public AudioMixer mainMixer; 
-    public AudioClip buttonClickSound; // Trascina qui il file audio (es. Button-Sound_2)
+    public AudioClip buttonClickSound; 
 
     [Header("Riferimenti UI")]
     public Slider sliderSound;
@@ -52,16 +52,11 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // --- RIPRODUZIONE AUDIO TRAMITE AUDIOMANAGER ---
     public void PlayButtonSound()
     {
         if (AudioManager.Instance != null && buttonClickSound != null)
         {
             AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 1f);
-        }
-        else if (buttonClickSound == null)
-        {
-            Debug.LogWarning("Manca il clip audio 'buttonClickSound' nell'Inspector di SettingsManager!");
         }
     }
 
@@ -75,7 +70,6 @@ public class SettingsManager : MonoBehaviour
         {
             float volNormalizzato = volume / sliderSound.maxValue;
             float dB = (volNormalizzato > 0.0001f) ? Mathf.Log10(volNormalizzato) * 20f : -80f;
-            
             mainMixer.SetFloat("SFXVol", dB);
         }
     }
@@ -89,7 +83,6 @@ public class SettingsManager : MonoBehaviour
         {
             float volNormalizzato = volume / sliderMusic.maxValue;
             float dB = (volNormalizzato > 0.0001f) ? Mathf.Log10(volNormalizzato) * 20f : -80f;
-
             mainMixer.SetFloat("MusicVol", dB);
         }
     }
@@ -103,10 +96,7 @@ public class SettingsManager : MonoBehaviour
         if (filtroLuminosita == null)
         {
             AutoLuminosita autoFiltro = FindObjectOfType<AutoLuminosita>();
-            if (autoFiltro != null)
-            {
-                filtroLuminosita = autoFiltro.GetComponent<Image>();
-            }
+            if (autoFiltro != null) filtroLuminosita = autoFiltro.GetComponent<Image>();
         }
 
         if (filtroLuminosita != null && sliderLuminosita != null)
@@ -118,12 +108,10 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // --- ALTRE IMPOSTAZIONI ---
     public void CambiaLingua(int indiceLingua) 
     { 
         PlayerPrefs.SetInt("Lingua", indiceLingua); 
         PlayerPrefs.Save();
-        Debug.Log("Lingua globale: " + indiceLingua); 
     }
 
     // --- GESTIONE POP-UP (APERTURA) ---
@@ -132,7 +120,11 @@ public class SettingsManager : MonoBehaviour
         PlayButtonSound();
         HideAllPopups();
         SetMainSettingsVisible(false);
-        if (ratePanel != null) ratePanel.SetActive(true);
+        
+        if (ratePanel != null) 
+        {
+            ratePanel.SetActive(true);
+        }
     }
 
     public void OpenAbout()
@@ -140,7 +132,11 @@ public class SettingsManager : MonoBehaviour
         PlayButtonSound();
         HideAllPopups();
         SetMainSettingsVisible(false);
-        if (aboutPanel != null) aboutPanel.SetActive(true);
+        
+        if (aboutPanel != null) 
+        {
+            aboutPanel.SetActive(true);
+        }
     }
 
     public void OpenSupport()
@@ -148,10 +144,14 @@ public class SettingsManager : MonoBehaviour
         PlayButtonSound();
         HideAllPopups();
         SetMainSettingsVisible(false);
-        if (supportPanel != null) supportPanel.SetActive(true);
+        
+        if (supportPanel != null) 
+        {
+            supportPanel.SetActive(true);
+        }
     }
 
-    // --- GESTIONE POP-UP (CHIUSURA VIA TASTO X) ---
+    // --- GESTIONE POP-UP (CHIUSURA) ---
     public void CloseAllInfoPanels()
     {
         PlayButtonSound();
@@ -185,4 +185,4 @@ public class SettingsManager : MonoBehaviour
             settingsTitle.SetActive(visible);
         }
     }
-}  
+}
