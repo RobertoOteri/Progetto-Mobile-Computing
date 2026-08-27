@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 1369024773015695850}
   - component: {fileID: 1199371188674927649}
   - component: {fileID: 4012694491415382841}
+  - component: {fileID: 1101992364222436906}
   m_Layer: 6
   m_Name: Enemy_Mimic
   m_TagString: Untagged
@@ -440,6 +441,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1101992364222436906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3500456153533261712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b9c96145bc7845439ba1b045843b39b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySaveable
+  enemyID: 
 --- !u!1 &4241132764301386071
 GameObject:
   m_ObjectHideFlags: 0

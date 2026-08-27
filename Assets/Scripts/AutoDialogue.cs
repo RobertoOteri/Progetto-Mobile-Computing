@@ -4,29 +4,43 @@ using UnityEngine;
 public class AutoDialogue : MonoBehaviour
 {
     [Header("Impostazioni Diario")]
-    public string speakerName = "Diario di Bordo";
+    public string speakerName = "Jack Orbit";
     public Sprite portrait;
 
     [TextArea(3, 5)]
     public string[] dialogueLines;
 
     [Header("Ritardo Iniziale")]
-    public float delayBeforeStart = 0.5f; // Mezzo secondo di attesa prima che appaia il testo
+    public float delayBeforeStart = 0.5f;
+
+    [Header("Chiave Salvataggio")]
+    public string saveKey = "GameIntroCompleted";
 
     private IEnumerator Start()
     {
-        // 🔴 CONTROLLO SICUREZZA: Se il gioco è già stato avviato o l'intro è completata, annulla il dialogo
-        if (PlayerPrefs.GetInt("GameIntroCompleted", 0) == 1 || NPCTriggerDialogue.HasHadFirstTalkSession)
+        // 1. Se stiamo caricando una partita salvata con "Continua", disattiva subito
+        if (SaveSystem.Instance != null && SaveSystem.Instance.IsContinuingGame())
         {
             gameObject.SetActive(false);
-            yield break; // Interrompe subito la Coroutine
+            yield break;
         }
 
-        // Aspetta una frazione di secondo (utile se c'è un fade-in all'avvio della scena)
+        // 2. Se è già stato completato in precedenza, disattiva
+        if (PlayerPrefs.GetInt(saveKey, 0) == 1)
+        {
+            gameObject.SetActive(false);
+            yield break;
+        }
+
+        // 3. Registra immediatamente il completamento su disco per non ripeterlo
+        PlayerPrefs.SetInt(saveKey, 1);
+        PlayerPrefs.Save();
+
+        // Attesa iniziale
         yield return new WaitForSeconds(delayBeforeStart);
 
-        // Fa partire il dialogo tramite il DialogueManager
-        if (DialogueManager.Instance != null)
+        // Avvio sequenza di dialogo
+        if (DialogueManager.Instance != null && dialogueLines.Length > 0)
         {
             DialogueManager.Instance.StartDialogue(speakerName, portrait, dialogueLines);
         }

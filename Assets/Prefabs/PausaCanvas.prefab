@@ -1827,7 +1827,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuManager
   pauseMenuPanel: {fileID: 3060743057468634914}
   settingsMenuPanel: {fileID: 8859720633374130392}
+  blurOverlay: {fileID: 0}
   pauseButton: {fileID: 0}
+  saveButton: {fileID: 0}
+  mobileControlsCanvas: {fileID: 0}
+  testoSalvataggioRiuscito: {fileID: 0}
+  buttonClickSFX: {fileID: 0}
   mainMenuSceneName: Menu
 --- !u!1001 &1643382904236962411
 PrefabInstance:

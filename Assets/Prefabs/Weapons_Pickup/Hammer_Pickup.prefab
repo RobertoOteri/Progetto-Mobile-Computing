@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6790555859286276030}
   - component: {fileID: 838969720126163222}
   - component: {fileID: 5214220409369294372}
+  - component: {fileID: 388799653155478699}
   m_Layer: 0
   m_Name: Hammer_Pickup
   m_TagString: Untagged
@@ -106,6 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd9d88dc3f0647c41bdcf02622f096ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
+  weaponID: 
   weaponToEquip: 1
   swordPickupPrefab: {fileID: 2465589001379539799, guid: 5fbd1c56891042b4990418e920a30937,
     type: 3}
@@ -116,6 +118,7 @@ MonoBehaviour:
     type: 3}
   bombPickupPrefab: {fileID: 7515343532041900196, guid: de6b297e3042852428ca0ff54ed24127,
     type: 3}
+  isRuntimeDropped: 0
 --- !u!61 &5214220409369294372
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -162,3 +165,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &388799653155478699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2778455210248024074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adbc102011128c442b4f0ec80b159879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponPickupSaveable
+  weaponType: 1

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7824388554818939106}
   - component: {fileID: 364957145962309392}
   - component: {fileID: 8177054929540677783}
+  - component: {fileID: 7647380056120429997}
   m_Layer: 0
   m_Name: Gun_Pickup
   m_TagString: Untagged
@@ -152,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd9d88dc3f0647c41bdcf02622f096ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
+  weaponID: 
   weaponToEquip: 3
   swordPickupPrefab: {fileID: 3141351738504115848, guid: 27b89302c7d00e344b06bd97c2e7e18d,
     type: 3}
@@ -162,3 +164,17 @@ MonoBehaviour:
   gunPickupPrefab: {fileID: 379133184990739515}
   bombPickupPrefab: {fileID: 7515343532041900196, guid: de6b297e3042852428ca0ff54ed24127,
     type: 3}
+  isRuntimeDropped: 0
+--- !u!114 &7647380056120429997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379133184990739515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adbc102011128c442b4f0ec80b159879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponPickupSaveable
+  weaponType: 3
