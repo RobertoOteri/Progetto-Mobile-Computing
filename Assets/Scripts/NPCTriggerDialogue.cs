@@ -17,6 +17,17 @@ public class NPCTriggerDialogue : MonoBehaviour
         }
     }
 
+    // Flag globale della sconfitta del Boss (salvata in PlayerPrefs)
+    public static bool IsBossDefeated
+    {
+        get => PlayerPrefs.GetInt("BossDefeatedState", 0) == 1;
+        set
+        {
+            PlayerPrefs.SetInt("BossDefeatedState", value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+    }
+
     [Header("Riferimenti Zone & UI")]
     [Tooltip("L'oggetto figlio con il trigger LARGO per il primo dialogo")]
     public GameObject firstContactZone;
@@ -27,8 +38,11 @@ public class NPCTriggerDialogue : MonoBehaviour
     [Header("1. Primo Dialogo (Automatico - Trigger Largo)")]
     public List<DialogueLine> firstConversation = new List<DialogueLine>();
 
-    [Header("2. Dialogo Ripetibile (Tasto E / Talk - Trigger Stretto)")]
+    [Header("2. Dialogo Ripetibile (Tasto E / Talk - Prima del Boss)")]
     public List<DialogueLine> repeatConversation = new List<DialogueLine>();
+
+    [Header("3. Dialogo Finale (Tasto E / Talk - Dopo la sconfitta del Boss)")]
+    public List<DialogueLine> bossDefeatedConversation = new List<DialogueLine>();
 
     private bool playerInRepeatZone = false;
 
@@ -45,6 +59,15 @@ public class NPCTriggerDialogue : MonoBehaviour
 
     private void Update()
     {
+        #if UNITY_EDITOR
+        // TASTO DI TEST: Premi B per attivare/disattivare lo stato del Boss sconfitto
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            IsBossDefeated = !IsBossDefeated;
+            Debug.Log($"<color=yellow>[TEST BOSS] Boss sconfitto impostato a: {IsBossDefeated}</color>");
+        }
+        #endif
+
         if (playerInRepeatZone && HasHadFirstTalkSession)
         {
             if (DialogueManager.Instance != null && DialogueManager.Instance.dialoguePanel != null && DialogueManager.Instance.dialoguePanel.activeSelf)
@@ -65,16 +88,29 @@ public class NPCTriggerDialogue : MonoBehaviour
         }
     }
 
-    // Metodo universale chiamato sia da tasto E che dal pulsante mobile TALK
+    // Metodo chiamato sia da tasto E che dal pulsante mobile TALK
     public void Interact()
     {
-        if (playerInRepeatZone && HasHadFirstTalkSession)
+        if (!playerInRepeatZone) return;
+
+        if (DialogueManager.Instance == null) return;
+
+        // SE IL BOSS È STATO SCONFITTO -> Avvia il Dialogo Finale
+        if (IsBossDefeated)
         {
-            if (DialogueManager.Instance != null && repeatConversation.Count > 0)
+            if (bossDefeatedConversation.Count > 0)
             {
                 if (interactPrompt != null) interactPrompt.SetActive(false);
-                DialogueManager.Instance.StartDialogueSequence(repeatConversation);
+                DialogueManager.Instance.StartDialogueSequence(bossDefeatedConversation);
             }
+            return;
+        }
+
+        // SE IL BOSS È ANCORA VIVO -> Avvia il Dialogo Ripetibile normale
+        if (HasHadFirstTalkSession && repeatConversation.Count > 0)
+        {
+            if (interactPrompt != null) interactPrompt.SetActive(false);
+            DialogueManager.Instance.StartDialogueSequence(repeatConversation);
         }
     }
 

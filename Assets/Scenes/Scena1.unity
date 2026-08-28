@@ -443,7 +443,7 @@ PrefabInstance:
     - target: {fileID: 6893879933630364204, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7495974499924518148, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
@@ -2794,6 +2794,80 @@ MonoBehaviour:
     isRightSide: 0
     sentence: "\"Ci sto lavorando, Kael. Torno da te non appena l'area circostante
       sar\xE0 ripulita.\""
+  bossDefeatedConversation:
+  - speakerName: Kael
+    portrait: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
+      type: 3}
+    isRightSide: 1
+    sentence: '"Non posso credere ai miei occhi... sei tornato vivo. E quella creatura...
+      l''hai annientata sul serio."'
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "\"\xC8 finita. Ho ripulito la zona, proprio come avevamo concordato.
+      Ora rispetta i patti: consegnami il modulo di navigazione per riparare la mia
+      navicella.\""
+  - speakerName: Kael
+    portrait: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
+      type: 3}
+    isRightSide: 1
+    sentence: "\"La tua navicella... ah, vedi, c'\xE8 stato un piccolo cambio di
+      programma, viaggiatore.\""
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: '"Cosa vorresti dire? Abbiamo un accordo!"'
+  - speakerName: Kael
+    portrait: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
+      type: 3}
+    isRightSide: 1
+    sentence: "\"Nessuno della nostra specie, in generazioni intere, \xE8 mai riuscito
+      nemmeno a scalfire la corazza di quei mostri. Tu invece li hai sconfitti in
+      pochi minuti.\""
+  - speakerName: Kael
+    portrait: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
+      type: 3}
+    isRightSide: 1
+    sentence: '"Sei un combattente eccezionale. Una risorsa bellica senza precedenti
+      per il nostro pianeta... e per la sopravvivenza della mia razza".'
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: '"Mi stai prendendo in osatggio? Non ho intenzione di rimanere bloccato
+      qui a fare il vostro soldato!"'
+  - speakerName: Kael
+    portrait: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
+      type: 3}
+    isRightSide: 1
+    sentence: "\"Purtroppo non \xE8 una richiesta. Il tuo pezzo di ricambio non lascer\xE0
+      mai questo pianeta... e nemmeno tu.\""
+  - speakerName: Kael
+    portrait: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
+      type: 3}
+    isRightSide: 1
+    sentence: '"Benvenuto nella tua nuova casa, Astronauta. Le nostre battaglie sono
+      appena cominciate."'
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: <i><color=#CCCCCC>"(Accidenti, mi ha fregato in pieno... Per ora devo
+      stare al suo gioco.)"</color></i>
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "<i><color=#CCCCCC>\"(Appena abbassa la guardia prender\xF2 quel cristallo
+      per riaccendere la nave e contattare la Terra.)\"</color></i>"
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "<i><color=#CCCCCC>\"(Ormai \xE8 deciso: questo pianeta diventer\xE0
+      la nostra prossima colonia.)\"</color></i>"
+  - speakerName: Kael
+    portrait: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
+      type: 3}
+    isRightSide: 1
+    sentence: '"Bene, umano. Ora cominciamo a parlare della prossima zona su cui
+      dovrai metterti al lavoro."'
 --- !u!1 &401500255
 GameObject:
   m_ObjectHideFlags: 0

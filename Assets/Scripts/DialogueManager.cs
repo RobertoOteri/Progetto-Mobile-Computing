@@ -142,7 +142,7 @@ public class DialogueManager : MonoBehaviour
     private void ResetJoystickInput()
     {
         Joystick joystick = FindFirstObjectByType<Joystick>(FindObjectsInactive.Include);
-        if (joystick != null)
+        if (joystick != null) 
         {
             // Simula il rilascio del tocco sul joystick per azzerare handle e coordinate
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
@@ -161,7 +161,12 @@ public class DialogueManager : MonoBehaviour
                 AudioManager.Instance.StopTypewriterSound();
             }
 
-            if (dialogueText != null) dialogueText.text = currentSentence;
+            if (dialogueText != null)
+            {
+                dialogueText.text = currentSentence;
+                dialogueText.maxVisibleCharacters = dialogueText.textInfo.characterCount;
+            }
+
             isTyping = false;
             return;
         }
@@ -204,24 +209,29 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator TypeSentence(string sentence)
     {
-        if (dialogueText != null) dialogueText.text = "";
         isTyping = true;
 
-        int charCount = 0;
-
-        foreach (char letter in sentence.ToCharArray())
+        if (dialogueText != null)
         {
-            if (dialogueText != null) dialogueText.text += letter;
+            dialogueText.text = sentence;
+            dialogueText.maxVisibleCharacters = 0;
+            dialogueText.ForceMeshUpdate();
+        }
 
-            if (letter != ' ' && charCount % 2 == 0)
+        int totalVisibleCharacters = dialogueText != null ? dialogueText.textInfo.characterCount : sentence.Length;
+
+        for (int i = 0; i <= totalVisibleCharacters; i++)
+        {
+            if (dialogueText != null)
             {
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.PlayTypewriterSound();
-                }
+                dialogueText.maxVisibleCharacters = i;
             }
 
-            charCount++;
+            if (i > 0 && i % 2 == 0 && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayTypewriterSound();
+            }
+
             yield return new WaitForSeconds(textSpeed);
         }
 
