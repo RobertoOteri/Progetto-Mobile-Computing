@@ -4,7 +4,6 @@ using UnityEngine;
 public class NPCTriggerDialogue : MonoBehaviour
 {
     [Header("Identificativo NPC")]
-    [Tooltip("Nome unico per salvare questo dialogo (es. NPC_Alieno_1)")]
     public string npcID = "NPC_Alieno_1";
 
     public static bool HasHadFirstTalkSession
@@ -17,7 +16,6 @@ public class NPCTriggerDialogue : MonoBehaviour
         }
     }
 
-    // Flag globale della sconfitta del Boss (salvata in PlayerPrefs)
     public static bool IsBossDefeated
     {
         get => PlayerPrefs.GetInt("BossDefeatedState", 0) == 1;
@@ -29,10 +27,7 @@ public class NPCTriggerDialogue : MonoBehaviour
     }
 
     [Header("Riferimenti Zone & UI")]
-    [Tooltip("L'oggetto figlio con il trigger LARGO per il primo dialogo")]
     public GameObject firstContactZone;
-    
-    [Tooltip("L'oggetto UI con il tasto [E]")]
     public GameObject interactPrompt;
 
     [Header("1. Primo Dialogo (Automatico - Trigger Largo)")]
@@ -60,11 +55,19 @@ public class NPCTriggerDialogue : MonoBehaviour
     private void Update()
     {
         #if UNITY_EDITOR
-        // TASTO DI TEST: Premi B per attivare/disattivare lo stato del Boss sconfitto
+        // B per invertire lo stato del boss
         if (Input.GetKeyDown(KeyCode.B))
         {
             IsBossDefeated = !IsBossDefeated;
             Debug.Log($"<color=yellow>[TEST BOSS] Boss sconfitto impostato a: {IsBossDefeated}</color>");
+        }
+
+        // C per cancellare tutti i salvataggi PlayerPrefs e ripartire da zero
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            Debug.Log("<color=cyan>[RESET] PlayerPrefs resettati! Partita nuova.</color>");
         }
         #endif
 
@@ -80,7 +83,6 @@ public class NPCTriggerDialogue : MonoBehaviour
                 if (interactPrompt != null) interactPrompt.SetActive(true);
             }
 
-            // Tasto E da tastiera su PC
             if (Input.GetKeyDown(KeyCode.E))
             {
                 Interact();
@@ -88,33 +90,29 @@ public class NPCTriggerDialogue : MonoBehaviour
         }
     }
 
-    // Metodo chiamato sia da tasto E che dal pulsante mobile TALK
     public void Interact()
     {
-        if (!playerInRepeatZone) return;
+        if (!playerInRepeatZone || DialogueManager.Instance == null) return;
 
-        if (DialogueManager.Instance == null) return;
-
-        // SE IL BOSS È STATO SCONFITTO -> Avvia il Dialogo Finale
+        // Se il boss è sconfitto -> avvia dialogo con flag di fine gioco = true
         if (IsBossDefeated)
         {
             if (bossDefeatedConversation.Count > 0)
             {
                 if (interactPrompt != null) interactPrompt.SetActive(false);
-                DialogueManager.Instance.StartDialogueSequence(bossDefeatedConversation);
+                DialogueManager.Instance.StartDialogueSequence(bossDefeatedConversation, true);
             }
             return;
         }
 
-        // SE IL BOSS È ANCORA VIVO -> Avvia il Dialogo Ripetibile normale
+        // Se il boss è vivo -> avvia dialogo ripetibile normale
         if (HasHadFirstTalkSession && repeatConversation.Count > 0)
         {
             if (interactPrompt != null) interactPrompt.SetActive(false);
-            DialogueManager.Instance.StartDialogueSequence(repeatConversation);
+            DialogueManager.Instance.StartDialogueSequence(repeatConversation, false);
         }
     }
 
-    // Chiamato quando il player entra nella zona LARGA
     public void OnFirstContactTrigger()
     {
         if (HasHadFirstTalkSession) return;
@@ -123,14 +121,13 @@ public class NPCTriggerDialogue : MonoBehaviour
         {
             HasHadFirstTalkSession = true;
             DialogueManager.Instance.EnableHintOnNextDialogueEnd();
-            DialogueManager.Instance.StartDialogueSequence(firstConversation);
+            DialogueManager.Instance.StartDialogueSequence(firstConversation, false);
 
             if (firstContactZone != null)
                 firstContactZone.SetActive(false);
         }
     }
 
-    // Chiamato quando il player entra/esce dalla zona STRETTA
     public void SetPlayerInRepeatZone(bool inZone)
     {
         playerInRepeatZone = inZone;

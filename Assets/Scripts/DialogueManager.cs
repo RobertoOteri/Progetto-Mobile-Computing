@@ -49,6 +49,7 @@ public class DialogueManager : MonoBehaviour
     private PlayerMovement playerMovement;
     private bool justOpened = false;
     private bool triggerGunHint = false;
+    private bool isCurrentDialogueEndingCutscene = false;
 
     private void Awake()
     {
@@ -98,18 +99,18 @@ public class DialogueManager : MonoBehaviour
             sequence.Add(dl);
         }
 
-        StartDialogueSequence(sequence);
+        StartDialogueSequence(sequence, false);
     }
 
-    public void StartDialogueSequence(List<DialogueLine> lines)
+    public void StartDialogueSequence(List<DialogueLine> lines, bool isEndingSequence = false)
     {
+        isCurrentDialogueEndingCutscene = isEndingSequence;
+
         if (dialoguePanel != null)
             dialoguePanel.SetActive(true);
 
-        // 1. FORZA IL RESET DEL JOYSTICK PRIMA DI NASCONDERLO
         ResetJoystickInput();
 
-        // 2. NASCONDE I COMANDI TOUCH DURANTE IL DIALOGO
         if (mobileControls != null)
             mobileControls.SetActive(false);
 
@@ -118,7 +119,6 @@ public class DialogueManager : MonoBehaviour
         if (playerMovement == null)
             FindPlayerComponents();
 
-        // 3. FERMA IL PLAYER E FORZA L'IDLE
         if (playerMovement != null)
         {
             playerMovement.ForceIdleAndStop();
@@ -144,7 +144,6 @@ public class DialogueManager : MonoBehaviour
         Joystick joystick = FindFirstObjectByType<Joystick>(FindObjectsInactive.Include);
         if (joystick != null) 
         {
-            // Simula il rilascio del tocco sul joystick per azzerare handle e coordinate
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
             joystick.OnPointerUp(pointerData);
         }
@@ -253,7 +252,15 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
-        // RIATTIVA I COMANDI TOUCH ALLA FINE DEL DIALOGO
+        // Si attiva SOLO se era il dialogo conclusivo post-boss
+        if (isCurrentDialogueEndingCutscene && EndGameManager.Instance != null)
+        {
+            isCurrentDialogueEndingCutscene = false;
+            EndGameManager.Instance.StartEndingSequence();
+            return;
+        }
+
+        // Dialoghi normali
         if (mobileControls != null)
             mobileControls.SetActive(true);
 
