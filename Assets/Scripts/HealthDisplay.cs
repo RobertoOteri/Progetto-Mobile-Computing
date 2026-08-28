@@ -36,22 +36,13 @@ public class HealthDisplay : MonoBehaviour
 
     void Update()
     {
-        if (playerHealth == null) return;
-
-        health = playerHealth.currentHealth;
-        maxHealth = playerHealth.maxHealth;
-
-        if (health < previousHealth)
-        {
-            StopAllCoroutines();
-            StartCoroutine(ShakeHearts());
-        }
-        previousHealth = health;
-
         int totalHeartsVisible = maxHealth / 2;
 
         for (int i = 0; i < hearts.Length; i++)
         {
+            // AGGIUNGI QUESTA RIGA: Se lo slot del cuore è vuoto, saltalo e passa al prossimo!
+            if (hearts[i] == null) continue; 
+
             int heartValue = (i + 1) * 2;
 
             if (health >= heartValue)

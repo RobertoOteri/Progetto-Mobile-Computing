@@ -1,188 +1,320 @@
 using UnityEngine;
 
+/// <summary>
+/// Controller del boss 2D top-down: gestisce lo stato dell'IA (idle, inseguimento,
+/// ritirata, attacco, danno, morte) e pilota l'Animator impostando dei parametri
+/// (Enraged, Inverted, Moving, Running, Retreating, Spawn, Attack, Hurt, Death).
+///
+/// NB: i nomi dei parametri qui sotto sono un'ipotesi ragionevole basata sugli stati
+/// visti nell'Animator (walk / walk inverted / walk back / walk back inv, run e varianti,
+/// attack e varianti, idle "arrabbiato", spawn, hurt, death). Se nel tuo Animator i
+/// parametri si chiamano diversamente, basta cambiare le stringhe negli StringToHash
+/// qui sotto: il resto dello script non cambia.
+/// </summary>
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class BossController : MonoBehaviour
 {
-    // Stati logici del Boss
-    public enum BossState { Spawning, Idle, Chasing, Running, Attacking, Hurt, Dead }
-    public BossState currentState = BossState.Spawning;
+    public enum BossState { Spawn, Idle, Chase, Retreat, Attack, Hurt, Dead }
 
-    [Header("Target e Movimento")]
-    public Transform player;
-    public float attackRange = 2f;
-    public float aggroRange = 10f;
-    public float walkSpeed = 2f;
-    public float runSpeed = 4.5f;
+    [Header("Riferimenti")]
+    [Tooltip("Di solito il Transform del player")]
+    [SerializeField] private Transform target;
 
-    [Header("Fasi Boss")]
-    public bool isAngry = false; // Se true, userà "idle angry" e correrà invece di camminare
-
-    private Animator anim;
+    private Animator animator;
     private Rigidbody2D rb;
-    private Vector2 facingDirection = Vector2.down; // Direzione in cui guarda (di default in basso)
-    
-    // Variabile per tenere traccia dell'animazione attualmente in riproduzione
-    private string currentAnimName = "";
 
-    void Start()
+    [Header("Statistiche")]
+    [SerializeField] private int maxHealth = 300;
+    [SerializeField, Range(0f, 1f)] private float enrageThreshold = 0.5f;
+
+    [Header("Movimento")]
+    [SerializeField] private float walkSpeed = 2f;
+    [SerializeField] private float runSpeed = 4.5f;
+    [SerializeField] private float chaseRange = 8f;
+    [SerializeField] private float attackRange = 1.5f;
+    [SerializeField] private float retreatRange = 0.8f;
+
+    [Header("Attacco")]
+    [SerializeField] private float attackCooldown = 2f;
+    [SerializeField] private int attackDamage = 20;
+    [SerializeField] private float attackDuration = 0.8f;
+
+    [Header("Timing di fallback (usati anche senza Animation Event collegati)")]
+    [SerializeField] private float spawnDuration = 1f;
+    [SerializeField] private float hurtDuration = 0.4f;
+
+    [Header("Debug (sola lettura)")]
+    [SerializeField] private BossState currentState = BossState.Spawn;
+
+    private int currentHealth;
+    private bool isEnraged;
+    private bool isDead;
+    private float attackTimer;
+    private float stateTimer;
+    private Vector2 moveDirection;
+    private float currentSpeed;
+
+    // Parametri Animator: usare gli hash è più efficiente di passare stringhe ogni frame
+    private static readonly int ParamEnraged  = Animator.StringToHash("Enraged");
+    private static readonly int ParamInverted = Animator.StringToHash("Inverted");
+    private static readonly int ParamMoving   = Animator.StringToHash("Moving");
+    private static readonly int ParamRunning  = Animator.StringToHash("Running");
+    private static readonly int ParamRetreat  = Animator.StringToHash("Retreating");
+    private static readonly int TrigSpawn     = Animator.StringToHash("Spawn");
+    private static readonly int TrigAttack    = Animator.StringToHash("Attack");
+    private static readonly int TrigHurt      = Animator.StringToHash("Hurt");
+    private static readonly int TrigDeath     = Animator.StringToHash("Death");
+
+    private void Awake()
     {
-        anim = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        
-        if (player == null)
-        {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if(p != null) player = p.transform;
-        }
-
-        // Iniziamo con l'animazione di spawn
-        ChangeState(BossState.Spawning);
-        // Simuliamo la fine dello spawn dopo 2 secondi (modifica in base alla durata reale dell'animazione)
-        Invoke("FinishSpawn", 2f); 
+        currentHealth = maxHealth;
     }
 
-    void Update()
+    private void Start()
     {
-        if (currentState == BossState.Dead || currentState == BossState.Spawning || currentState == BossState.Hurt) 
-            return;
-
-        // Calcola la direzione in cui si trova il player per sapere dove guardare
-        if (player != null)
-        {
-            facingDirection = (player.position - transform.position).normalized;
-        }
+        ChangeState(BossState.Spawn);
     }
 
-    void FixedUpdate()
+    private void Update()
     {
-        if (currentState == BossState.Dead || currentState == BossState.Spawning || 
-            currentState == BossState.Attacking || currentState == BossState.Hurt) 
+        if (isDead) return;
+
+        UpdateFacing();
+
+        switch (currentState)
         {
-            UpdateAnimation(); // Aggiorna solo l'aspetto visivo
+            case BossState.Spawn:   TickSpawn();   break;
+            case BossState.Idle:    TickIdle();    break;
+            case BossState.Chase:   TickChase();   break;
+            case BossState.Retreat: TickRetreat(); break;
+            case BossState.Attack:  TickAttack();  break;
+            case BossState.Hurt:    TickHurt();    break;
+            // Dead: nessuna logica da far girare, si esce già sopra con isDead
+        }
+
+        if (attackTimer > 0f)
+            attackTimer -= Time.deltaTime;
+
+        if (stateTimer > 0f)
+            stateTimer -= Time.deltaTime;
+    }
+
+    private void FixedUpdate()
+    {
+        if (isDead) return;
+
+        bool canMove = currentState == BossState.Chase || currentState == BossState.Retreat;
+        Vector2 velocity = canMove ? moveDirection * currentSpeed : Vector2.zero;
+        rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
+    }
+
+    // ---------------- LOGICA DEGLI STATI ----------------
+
+    private void TickIdle()
+    {
+        animator.SetBool(ParamMoving, false);
+
+        if (target == null) return;
+
+        if (Vector2.Distance(transform.position, target.position) <= chaseRange)
+            ChangeState(BossState.Chase);
+    }
+
+    private void TickChase()
+    {
+        float distance = Vector2.Distance(transform.position, target.position);
+
+        if (distance <= retreatRange)
+        {
+            ChangeState(BossState.Retreat);
             return;
         }
-
-        float distance = Vector2.Distance(transform.position, player.position);
-
-        if (distance <= attackRange)
+        if (distance <= attackRange && attackTimer <= 0f)
         {
-            ChangeState(BossState.Attacking);
-            Attack();
+            ChangeState(BossState.Attack);
+            return;
         }
-        else if (distance < aggroRange)
-        {
-            // Se il boss è arrabbiato corre, altrimenti cammina
-            ChangeState(isAngry ? BossState.Running : BossState.Chasing);
-            
-            float currentSpeed = isAngry ? runSpeed : walkSpeed;
-            Vector2 newPosition = rb.position + facingDirection * currentSpeed * Time.fixedDeltaTime;
-            rb.MovePosition(newPosition);
-        }
-        else
+        if (distance > chaseRange)
         {
             ChangeState(BossState.Idle);
+            return;
         }
 
-        UpdateAnimation();
+        SetMovement(target.position - transform.position, forward: true);
     }
 
-    // --- GESTORE DELLE ANIMAZIONI ---
-    // Questa funzione decide quale stringa chiamare in base allo stato e alla direzione
-    void UpdateAnimation()
+    private void TickRetreat()
     {
-        string animToPlay = "";
+        float distance = Vector2.Distance(transform.position, target.position);
 
-        // Condizioni base (non dipendono dalla direzione)
-        if (currentState == BossState.Dead) { animToPlay = "DEATH"; }
-        else if (currentState == BossState.Hurt) { animToPlay = "hurt"; }
-        else if (currentState == BossState.Spawning) { animToPlay = "spawn"; }
-        else
+        if (distance > retreatRange)
         {
-            // Determiniamo la direzione principale
-            // Usiamo 0.1f e -0.1f come soglie per capire se si sta muovendo prevalentemente su/giù o destra/sinistra
-            bool isFacingBack = facingDirection.y > 0.1f; // Sta guardando in SU
-            bool isFacingInverted = facingDirection.x < -0.1f; // Sta guardando a SINISTRA
-
-            switch (currentState)
-            {
-                case BossState.Idle:
-                    animToPlay = isAngry ? "idle angry" : "idle";
-                    break;
-
-                case BossState.Chasing: // Camminata
-                    if (isFacingBack && isFacingInverted) animToPlay = "walk back inv";
-                    else if (isFacingBack) animToPlay = "walk back";
-                    else if (isFacingInverted) animToPlay = "walk inverted";
-                    else animToPlay = "walk";
-                    break;
-
-                case BossState.Running: // Corsa
-                    if (isFacingBack && isFacingInverted) animToPlay = "run back inverted";
-                    else if (isFacingBack) animToPlay = "run back";
-                    else if (isFacingInverted) animToPlay = "run inverted";
-                    else animToPlay = "run";
-                    break;
-
-                case BossState.Attacking:
-                    // Nell'immagine non c'è "attack back inv", quindi se guarda su e sinistra usiamo "attack back"
-                    if (isFacingBack) animToPlay = "attack back";
-                    else if (isFacingInverted) animToPlay = "attack inv";
-                    else animToPlay = "attack";
-                    break;
-            }
+            ChangeState(BossState.Chase);
+            return;
         }
 
-        // Riproduce l'animazione solo se non è già in riproduzione
-        PlayAnimation(animToPlay);
+        SetMovement(target.position - transform.position, forward: false);
     }
 
-    // Metodo fondamentale per non resettare l'animazione ad ogni frame
-    void PlayAnimation(string newAnimName)
+    // Questi tre Tick sono il fallback a tempo: fanno avanzare la FSM da soli,
+    // anche se non hai ancora collegato nessun Animation Event nell'Animator.
+    // Se colleghi OnSpawnAnimationEnd/OnAttackAnimationEnd/OnHurtAnimationEnd,
+    // quelli scattano prima (timing preciso) e questi diventano ridondanti ma innocui.
+
+    private void TickSpawn()
     {
-        if (currentAnimName == newAnimName) return; // Se sta già riproducendo questa animazione, fermati
-
-        anim.Play(newAnimName);
-        currentAnimName = newAnimName;
+        if (stateTimer <= 0f)
+            ChangeState(BossState.Idle);
     }
 
-    // --- FUNZIONI DI SERVIZIO ---
-    
-    void ChangeState(BossState newState)
+    private void TickAttack()
+    {
+        if (stateTimer <= 0f)
+            ChangeState(BossState.Chase);
+    }
+
+    private void TickHurt()
+    {
+        if (stateTimer <= 0f)
+            ChangeState(BossState.Chase);
+    }
+
+    /// <summary>
+    /// Imposta direzione/velocità di movimento e i parametri Animator corrispondenti.
+    /// forward = true  -> il boss avanza verso il target (walk / run)
+    /// forward = false -> il boss arretra (walk back / run back)
+    /// </summary>
+    private void SetMovement(Vector2 towardTarget, bool forward)
+    {
+        moveDirection = (forward ? towardTarget : -towardTarget).normalized;
+        currentSpeed = isEnraged ? runSpeed : walkSpeed;
+
+        animator.SetBool(ParamMoving, true);
+        animator.SetBool(ParamRunning, isEnraged);
+        animator.SetBool(ParamRetreat, !forward);
+    }
+
+    private void UpdateFacing()
+    {
+        if (target == null) return;
+        // true quando il target è a sinistra del boss -> usa le clip "inverted"
+        animator.SetBool(ParamInverted, target.position.x < transform.position.x);
+    }
+
+    // ---------------- TRANSIZIONI DI STATO ----------------
+
+    private void ChangeState(BossState newState)
     {
         currentState = newState;
+
+        switch (newState)
+        {
+            case BossState.Spawn:
+                animator.SetTrigger(TrigSpawn);
+                stateTimer = spawnDuration;
+                break;
+            case BossState.Attack:
+                animator.SetBool(ParamMoving, false);
+                animator.SetTrigger(TrigAttack);
+                attackTimer = attackCooldown;
+                stateTimer = attackDuration;
+                break;
+            case BossState.Hurt:
+                animator.SetBool(ParamMoving, false);
+                animator.SetTrigger(TrigHurt);
+                stateTimer = hurtDuration;
+                break;
+            case BossState.Dead:
+                animator.SetBool(ParamMoving, false);
+                animator.SetTrigger(TrigDeath);
+                break;
+        }
     }
 
-    void FinishSpawn()
+    // ---------------- ANIMATION EVENTS (opzionali) ----------------
+    // La FSM ora avanza da sola grazie al fallback a tempo (spawnDuration /
+    // attackDuration / hurtDuration + stateTimer), quindi il boss funziona anche
+    // senza questi eventi collegati. Aggiungili solo quando vuoi un timing preciso
+    // sincronizzato ai frame delle clip (click destro sulla clip in finestra
+    // Animation -> Add Animation Event): se scattano prima del timer, hanno la
+    // precedenza; se non li colleghi, ci pensa il timer.
+
+    /// <summary>Da agganciare all'ultimo frame della clip "spawn".</summary>
+    public void OnSpawnAnimationEnd()
     {
-        ChangeState(BossState.Idle);
+        if (currentState == BossState.Spawn)
+            ChangeState(BossState.Idle);
     }
 
-    void Attack()
+    /// <summary>Da agganciare al frame di impatto delle clip "attack".</summary>
+    public void OnAttackHit()
     {
-        // Ferma il movimento durante l'attacco
-        rb.linearVelocity = Vector2.zero; 
-        
-        // Aspetta la fine dell'attacco prima di tornare a muoversi
-        // Modifica 1.5f con la durata reale della tua animazione di attacco
-        Invoke("ResetAfterAction", 1.5f); 
+        if (target == null) return;
+
+        if (Vector2.Distance(transform.position, target.position) <= attackRange * 1.2f)
+        {
+            // Sostituisci con la tua interfaccia/metodo di danno per il player, es.:
+            // target.GetComponent<IDamageable>()?.TakeDamage(attackDamage);
+        }
     }
 
-    public void TakeDamage(int damage)
+    /// <summary>Da agganciare all'ultimo frame delle clip "attack".</summary>
+    public void OnAttackAnimationEnd()
     {
-        if (currentState == BossState.Dead || currentState == BossState.Spawning) return;
+        if (currentState == BossState.Attack)
+            ChangeState(BossState.Chase);
+    }
 
-        // Logica vita... (es. health -= damage)
-        // Se health < 50%, puoi settare: isAngry = true;
+    /// <summary>Da agganciare all'ultimo frame della clip "hurt".</summary>
+    public void OnHurtAnimationEnd()
+    {
+        if (currentState == BossState.Hurt && !isDead)
+            ChangeState(BossState.Chase);
+    }
+
+    // ---------------- DANNO / MORTE ----------------
+
+    public void TakeDamage(int amount)
+    {
+        if (isDead) return;
+
+        currentHealth = Mathf.Max(0, currentHealth - amount);
+
+        if (!isEnraged && currentHealth <= maxHealth * enrageThreshold)
+        {
+            isEnraged = true;
+            animator.SetBool(ParamEnraged, true);
+        }
+
+        if (currentHealth <= 0)
+        {
+            Die();
+            return;
+        }
 
         ChangeState(BossState.Hurt);
-        CancelInvoke("ResetAfterAction"); // Ferma eventuali timer di attacco
-        Invoke("ResetAfterAction", 0.5f); // Modifica 0.5f con la durata dell'animazione "hurt"
     }
 
-    void ResetAfterAction()
+    private void Die()
     {
-        if (currentState != BossState.Dead)
-        {
-            ChangeState(BossState.Idle);
-        }
+        isDead = true;
+        ChangeState(BossState.Dead);
+        // Es: disabilita collider / questo componente dopo l'animazione tramite
+        // un ultimo Animation Event, oppure Destroy(gameObject, delay).
+    }
+
+    // ---------------- DEBUG ----------------
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, chaseRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, retreatRange);
     }
 }
