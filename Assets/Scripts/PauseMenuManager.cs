@@ -163,7 +163,7 @@ public class PauseMenuManager : MonoBehaviour
     {
         if (AudioManager.Instance != null && buttonClickSFX != null)
         {
-            AudioManager.Instance.PlaySFXWithVolume(buttonClickSFX, 0.5f);
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSFX, 0.3f);
         }
     }
 
@@ -242,7 +242,7 @@ public class PauseMenuManager : MonoBehaviour
             if (sm == null) sm = settingsMenuPanel.GetComponentInChildren<SettingsManager>(true);
             if (sm != null)
             {
-                sm.CloseAllInfoPanels();
+                sm.ResetPanelsWithoutSound(); // Invece di CloseAllInfoPanels()
             }
         }
 
