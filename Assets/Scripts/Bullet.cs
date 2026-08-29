@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-
     public Rigidbody2D rb;
     public Vector2 direction = Vector2.right;
     public float lifeSpan = 2;
@@ -13,13 +12,11 @@ public class Bullet : MonoBehaviour
     public float knockbackTime;
     public float stunTime;
 
-
     public LayerMask enemyLayer;
     public LayerMask obstacleLayer;
 
     public SpriteRenderer sr;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb.linearVelocity = direction * speed;
@@ -35,16 +32,30 @@ public class Bullet : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if((enemyLayer.value & (1 << collision.gameObject.layer)) > 0)
+        // Se colpisce un oggetto che fa parte dell'Enemy Layer
+        if ((enemyLayer.value & (1 << collision.gameObject.layer)) > 0)
         {
-            collision.gameObject.GetComponent<Enemy_Health>().ChangeHealth(-damage);
-            collision.gameObject.GetComponent<Enemy_Knockback>().Knockback(transform, knockbackForce, knockbackTime, stunTime);
+            // 1. Controlla se è un nemico normale (ha lo script Enemy_Health)
+            Enemy_Health enemyHealth = collision.gameObject.GetComponent<Enemy_Health>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.ChangeHealth(-damage);
+                
+                // Opzionale: applica il knockback
+                Enemy_Knockback knockback = collision.gameObject.GetComponent<Enemy_Knockback>();
+                if (knockback != null)
+                {
+                    knockback.Knockback(transform, knockbackForce, knockbackTime, stunTime);
+                }
+            }
+
+            // Distruggi il proiettile dopo aver colpito un nemico o il boss
             Destroy(gameObject);
         }
+        // Se colpisce un ostacolo (es. Muro)
         else if ((obstacleLayer.value & (1 << collision.gameObject.layer)) > 0)
         {
             Destroy(gameObject);
         }
     }
-
 }
