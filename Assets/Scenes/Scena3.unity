@@ -44096,7 +44096,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   player: {fileID: 1227068895}
   speed: 2
-  stopDistance: 1.5
+  stopDistance: 3
 --- !u!114 &156177405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45756,26 +45756,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: a84a307368f2a4c4fb52593e32e86cf4, type: 2}
+      objectReference: {fileID: 9100000, guid: ff9b11384b6fb0a468704b88fae7282f, type: 2}
     - target: {fileID: 5751640006339109612, guid: 3a212a96634fdfc4ba5de3eb22b9efa8,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 9.677791
+      value: 6.815127
       objectReference: {fileID: 0}
     - target: {fileID: 5751640006339109612, guid: 3a212a96634fdfc4ba5de3eb22b9efa8,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 9.104371
+      value: 5.707098
       objectReference: {fileID: 0}
     - target: {fileID: 5751640006339109612, guid: 3a212a96634fdfc4ba5de3eb22b9efa8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.31
+      value: -9.66
       objectReference: {fileID: 0}
     - target: {fileID: 5751640006339109612, guid: 3a212a96634fdfc4ba5de3eb22b9efa8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 69.83
+      value: 64.2
       objectReference: {fileID: 0}
     - target: {fileID: 5751640006339109612, guid: 3a212a96634fdfc4ba5de3eb22b9efa8,
         type: 3}

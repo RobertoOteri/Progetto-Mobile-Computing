@@ -2,21 +2,29 @@ using UnityEngine;
 
 public class BossBase : MonoBehaviour
 {
+    [Header("Movimento")]
     public Transform player;
     public float speed = 2f;
-    public float stopDistance = 1.5f;
+    
+    // LA SOLUZIONE AL TREMOLIO: La doppia distanza
+    public float stopDistance = 1.5f;   // Distanza a cui si ferma
+    public float resumeDistance = 1.8f; // Distanza a cui riparte (DEVE essere maggiore di stopDistance!)
+
+    [Header("Attacco")]
+    public float attackDuration = 1f; 
+    public float attackCooldown = 2f; 
+    
+    private float nextAttackTime = 0f; 
+    private float attackEndTime = 0f; 
 
     private Rigidbody2D rb;
     private Animator anim;
-    
     private Vector3 startScale; 
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        
-        // Salviamo la grandezza originale
         startScale = transform.localScale; 
 
         if (player == null)
@@ -29,40 +37,62 @@ public class BossBase : MonoBehaviour
     void FixedUpdate()
     {
         if (player == null) return;
+        
+        // Lucchetto: se sta attaccando, ignora tutto il resto
+        if (Time.time < attackEndTime) return; 
 
         float distance = Vector2.Distance(transform.position, player.position);
 
-        if (distance > stopDistance)
+        // Controllo: Stiamo già camminando?
+        if (anim.GetBool("Moving") == true)
         {
-            Vector2 direction = (player.position - transform.position).normalized;
-            
-            // Si muove fisicamente
-            rb.MovePosition(rb.position + direction * speed * Time.fixedDeltaTime);
-            
-            // Attiva l'animazione con il parametro esatto richiesto
-            anim.SetBool("Moving", true);
+            if (distance <= stopDistance)
+            {
+                // Arrivati! Ci fermiamo
+                rb.linearVelocity = Vector2.zero;
+                anim.SetBool("Moving", false);
+            }
+            else
+            {
+                // Continuiamo l'inseguimento
+                ChasePlayer();
+            }
+        }
+        else // Controllo: Siamo fermi?
+        {
+            if (distance > resumeDistance)
+            {
+                // Il player è scappato lontano, ripartiamo!
+                anim.SetBool("Moving", true);
+            }
+            else
+            {
+                // Siamo vicini e fermi. Assicuriamoci che non scivoli
+                rb.linearVelocity = Vector2.zero;
 
-            // Capovolge il modello passando la direzione sull'asse X
-            Flip(direction.x);
+                // Attacchiamo se il timer è pronto
+                if (Time.time >= nextAttackTime)
+                {
+                    anim.SetTrigger("Attack"); 
+                    attackEndTime = Time.time + attackDuration; 
+                    nextAttackTime = Time.time + attackCooldown; 
+                }
+            }
         }
-        else
-        {
-            // Si ferma
-            anim.SetBool("Moving", false);
-        }
+    }
+
+    void ChasePlayer()
+    {
+        Vector2 direction = (player.position - transform.position).normalized;
+        rb.linearVelocity = direction * speed; 
+        Flip(direction.x);
     }
 
     void Flip(float moveDirectionX)
     {
-        if (moveDirectionX < 0)
-        {
-            // Sinistra
+        if (moveDirectionX < -0.1f)
             transform.localScale = new Vector3(-Mathf.Abs(startScale.x), startScale.y, startScale.z);
-        }
-        else if (moveDirectionX > 0)
-        {
-            // Destra
+        else if (moveDirectionX > 0.1f)
             transform.localScale = new Vector3(Mathf.Abs(startScale.x), startScale.y, startScale.z);
-        }
     }
 }
