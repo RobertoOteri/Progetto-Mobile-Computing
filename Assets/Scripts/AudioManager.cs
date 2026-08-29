@@ -206,7 +206,7 @@ public class AudioManager : MonoBehaviour
 
             sfxSource.pitch = Random.Range(0.85f, 1.15f);
             sfxSource.clip = typewriterSound;
-            sfxSource.PlayOneShot(typewriterSound, 2f);
+            sfxSource.PlayOneShot(typewriterSound, 8f);
         }
     }
 
