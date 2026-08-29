@@ -10,12 +10,12 @@ public class PauseMenuManager : MonoBehaviour
     [Header("Navigazione UI")]
     public GameObject pauseMenuPanel;
     public GameObject settingsMenuPanel;
-    public GameObject blurOverlay; // Il BlurOverlay dentro PausaCanvas
+    public GameObject blurOverlay; 
     public Button pauseButton;
     public Button saveButton;
 
     [Header("HUD / Gioco")]
-    public GameObject healthCanvas; // Canvas dei cuori/salute
+    public GameObject healthCanvas; 
 
     [Header("Comandi Mobile")]
     public GameObject mobileControlsCanvas;
@@ -32,122 +32,96 @@ public class PauseMenuManager : MonoBehaviour
 
     void Awake()
     {
-        // Imposta il frame rate a 60 FPS e disattiva il VSync per eliminare il blocco a 30 FPS su Android
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
 
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        instance = this;
     }
 
-    void OnDestroy()
+    void Start()
     {
-        if (instance == this)
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (scene.name == mainMenuSceneName)
-        {
-            pauseMenuPanel = null;
-            settingsMenuPanel = null;
-            blurOverlay = null;
-            pauseButton = null;
-            saveButton = null;
-            testoSalvataggioRiuscito = null;
-            mobileControlsCanvas = null;
-            healthCanvas = null;
-            return;
-        }
-
         PausaCanvasFinder();
+        ForceCloseAll();
+    }
 
+    private void ForceCloseAll()
+    {
         Time.timeScale = 1f;
         isPaused = false;
+
+        if (blurOverlay != null) blurOverlay.SetActive(false);
+        if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
+        if (settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
+        if (testoSalvataggioRiuscito != null) testoSalvataggioRiuscito.SetActive(false);
+
+        if (mobileControlsCanvas != null) mobileControlsCanvas.SetActive(true);
+        if (pauseButton != null) pauseButton.gameObject.SetActive(true);
+        if (healthCanvas != null) healthCanvas.SetActive(true);
     }
 
-    private void PausaCanvasFinder()
+    public void PausaCanvasFinder()
     {
-        // 1. Cerca il Canvas di Pausa (blur e contenitore pausa)
-        GameObject pausaCanvas = GameObject.Find("PausaCanvas");
-        if (pausaCanvas != null)
-        {
-            Transform blurT = pausaCanvas.transform.Find("BlurOverlay");
-            if (blurT != null)
-            {
-                blurOverlay = blurT.gameObject;
-                blurOverlay.SetActive(false);
-            }
+        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
 
-            Transform pauseCont = pausaCanvas.transform.Find("Pause_Container");
-            if (pauseCont != null)
+        // 1. Cerca PausaCanvas
+        foreach (GameObject root in rootObjects)
+        {
+            if (root.name == "PausaCanvas")
             {
-                pauseMenuPanel = pauseCont.gameObject;
-                pauseMenuPanel.SetActive(false);
+                Transform blurT = root.transform.Find("BlurOverlay");
+                if (blurT != null) blurOverlay = blurT.gameObject;
+
+                Transform pauseCont = root.transform.Find("Pause_Container");
+                if (pauseCont != null) pauseMenuPanel = pauseCont.gameObject;
+                break;
             }
         }
 
-        // 2. Cerca SettingsCanvas (anche se disattivato nella scena)
-        GameObject settingsCanvas = GameObject.Find("SettingsCanvas");
-        if (settingsCanvas == null)
+        // 2. Cerca SettingsCanvas
+        foreach (GameObject root in rootObjects)
         {
-            GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject root in rootObjects)
+            if (root.name == "SettingsCanvas")
             {
-                if (root.name == "SettingsCanvas")
-                {
-                    settingsCanvas = root;
-                    break;
-                }
+                settingsMenuPanel = root;
+                break;
             }
         }
 
-        if (settingsCanvas != null)
+        // 3. Cerca controlli mobile
+        foreach (GameObject root in rootObjects)
         {
-            settingsMenuPanel = settingsCanvas;
-            settingsMenuPanel.SetActive(false);
+            if (root.name == "MobileButtonsCanvas" || root.name == "MobileControls")
+            {
+                mobileControlsCanvas = root;
+                break;
+            }
         }
 
-        // 3. Cerca i comandi mobile touch
-        if (mobileControlsCanvas == null)
+        // 4. Cerca HealthCanvas
+        foreach (GameObject root in rootObjects)
         {
-            mobileControlsCanvas = GameObject.Find("MobileButtonsCanvas");
-            if (mobileControlsCanvas == null) mobileControlsCanvas = GameObject.Find("MobileControls");
+            if (root.name == "HealthCanvas" || root.name == "HealthBarCanvas" || 
+                root.name == "HeartsCanvas" || root.name == "HUDCanvas")
+            {
+                healthCanvas = root;
+                break;
+            }
         }
 
-        // 4. Cerca l'Health Canvas / Cuori (se ha un nome diverso, aggiungilo qui)
-        if (healthCanvas == null)
-        {
-            healthCanvas = GameObject.Find("HealthCanvas");
-            if (healthCanvas == null) healthCanvas = GameObject.Find("HealthBarCanvas");
-            if (healthCanvas == null) healthCanvas = GameObject.Find("HeartsCanvas");
-            if (healthCanvas == null) healthCanvas = GameObject.Find("HUDCanvas");
-        }
-
-        // 5. Cerca e assegna il pulsante Pausa
+        // 5. Cerca Tasto Pausa (anche dentro Canvas o gerarchia)
         GameObject b = GameObject.Find("BottonePausa");
         if (b == null) b = GameObject.Find("PauseButton");
         if (b != null)
         {
             pauseButton = b.GetComponent<Button>();
-            pauseButton.gameObject.SetActive(true);
-            pauseButton.onClick.RemoveAllListeners();
-            pauseButton.onClick.AddListener(Pause);
+            if (pauseButton != null)
+            {
+                pauseButton.onClick.RemoveAllListeners();
+                pauseButton.onClick.AddListener(Pause);
+            }
         }
 
-        // 6. Collega il tasto Salva e il feedback testuale
+        // 6. Collega Tasto Salva
         if (pauseMenuPanel != null)
         {
             Button[] buttons = pauseMenuPanel.GetComponentsInChildren<Button>(true);
@@ -163,11 +137,7 @@ public class PauseMenuManager : MonoBehaviour
             }
 
             Transform fb = pauseMenuPanel.transform.Find("SaveSuccess_TXT");
-            if (fb != null)
-            {
-                testoSalvataggioRiuscito = fb.gameObject;
-                testoSalvataggioRiuscito.SetActive(false);
-            }
+            if (fb != null) testoSalvataggioRiuscito = fb.gameObject;
         }
     }
 
@@ -197,7 +167,6 @@ public class PauseMenuManager : MonoBehaviour
         if (SaveSystem.Instance != null)
         {
             SaveSystem.Instance.SaveGame();
-            Debug.Log("Partita salvata con successo!");
 
             if (testoSalvataggioRiuscito != null)
             {
@@ -223,7 +192,6 @@ public class PauseMenuManager : MonoBehaviour
         if (settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
         if (blurOverlay != null) blurOverlay.SetActive(false);
 
-        // Riattiva i controlli mobile, il tasto pausa e i cuori
         if (mobileControlsCanvas != null) mobileControlsCanvas.SetActive(true);
         if (pauseButton != null) pauseButton.gameObject.SetActive(true);
         if (healthCanvas != null) healthCanvas.SetActive(true);
@@ -238,14 +206,12 @@ public class PauseMenuManager : MonoBehaviour
 
         if (pauseMenuPanel == null || blurOverlay == null) PausaCanvasFinder();
 
-        // Nasconde i comandi touch, il tasto pausa e i cuori
         if (mobileControlsCanvas != null) mobileControlsCanvas.SetActive(false);
         if (pauseButton != null) pauseButton.gameObject.SetActive(false);
         if (healthCanvas != null) healthCanvas.SetActive(false);
 
         if (testoSalvataggioRiuscito != null) testoSalvataggioRiuscito.SetActive(false);
         
-        // Attiva il blur e il pannello di pausa
         if (blurOverlay != null) blurOverlay.SetActive(true);
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(true);
 
@@ -286,12 +252,6 @@ public class PauseMenuManager : MonoBehaviour
     public void QuitToMainMenu()
     {
         PlayButtonSound();
-
-        if (blurOverlay != null) blurOverlay.SetActive(false);
-        if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
-        if (settingsMenuPanel != null) settingsMenuPanel.SetActive(false);
-        if (pauseButton != null) pauseButton.gameObject.SetActive(false);
-        if (healthCanvas != null) healthCanvas.SetActive(false);
 
         Time.timeScale = 1f;
         isPaused = false;
