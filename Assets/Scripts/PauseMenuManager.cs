@@ -32,6 +32,10 @@ public class PauseMenuManager : MonoBehaviour
 
     void Awake()
     {
+        // Imposta il frame rate a 60 FPS e disattiva il VSync per eliminare il blocco a 30 FPS su Android
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+
         if (instance == null)
         {
             instance = this;

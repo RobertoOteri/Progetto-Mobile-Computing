@@ -30,6 +30,10 @@ public class MainMenuManager : MonoBehaviour
 
     private void Awake()
     {
+        // Sblocca il frame rate fin dall'avvio del gioco
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+
         // Spegne subito i Canvas secondari prima ancora del primo frame di rendering
         if (pannelloImpostazioni != null) pannelloImpostazioni.SetActive(false);
         if (pannelloSelezionePartita != null) pannelloSelezionePartita.SetActive(false);
