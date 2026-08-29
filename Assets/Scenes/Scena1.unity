@@ -24007,7 +24007,8 @@ MonoBehaviour:
   returnToMenuButton: {fileID: 2036484687}
   fadeDuration: 2
   mainMenuSceneName: Menu
-  endingMusicOrStinger: {fileID: 0}
+  endingMusicOrStinger: {fileID: 8300000, guid: ecdfcddf9f2ccec44b054a4a1c4e490a,
+    type: 3}
 --- !u!1 &1125408050
 GameObject:
   m_ObjectHideFlags: 0

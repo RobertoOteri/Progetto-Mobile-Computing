@@ -1690,6 +1690,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2605371155573325979}
     m_Modifications:
+    - target: {fileID: 594647170598041094, guid: df36a9dbd78f3fc45bcb934e459b67a1,
+        type: 3}
+      propertyPath: m_text
+      value: '<align=center><font-weight=700><size=120%><color=#FFAA00>CREDITI
+
+
+        <color=#80D0FF>Un
+        gioco creato da:
+
+        <color=#FFFFFF>Roberto Oteri
+
+        Valerio Di
+        Fusco
+
+        Antonio Coco
+
+        Patrizio Villa
+
+
+
+        <size=90%><color=#888888>Grazie
+        per aver giocato!'
+      objectReference: {fileID: 0}
+    - target: {fileID: 594647170598041094, guid: df36a9dbd78f3fc45bcb934e459b67a1,
+        type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 762148471843747449, guid: df36a9dbd78f3fc45bcb934e459b67a1,
         type: 3}
       propertyPath: m_Name
