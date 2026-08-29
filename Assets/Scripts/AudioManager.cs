@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("--- Settings Camminata ---")]
     [SerializeField] private float fadeSpeed = 8f;
-    [SerializeField] private float walkMaxVolume = 0.6f;
+    [SerializeField] private float walkMaxVolume = 2f;
     
     [Tooltip("Imposta es. 0.85 per rallentare. L'Audio Mixer correggerà la tonalità!")]
     [SerializeField] private float walkPitch = 0.85f;
@@ -206,7 +206,7 @@ public class AudioManager : MonoBehaviour
 
             sfxSource.pitch = Random.Range(0.85f, 1.15f);
             sfxSource.clip = typewriterSound;
-            sfxSource.PlayOneShot(typewriterSound, 16f);
+            sfxSource.PlayOneShot(typewriterSound, 24f);
         }
     }
 
@@ -224,7 +224,7 @@ public class AudioManager : MonoBehaviour
 
     // --- INTRO AMBIENT (Aggiornato con introSource) ---
 
-    public void PlayIntroAmbient(float volume = 1f)
+    public void PlayIntroAmbient(float volume = 1.5f)
     {
         if (introSource != null && introAmbientSource != null)
         {

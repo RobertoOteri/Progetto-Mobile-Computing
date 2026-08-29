@@ -34,7 +34,7 @@ public class IntroSequence : MonoBehaviour
     {
         if (AudioManager.Instance != null)
         {
-            AudioManager.Instance.PlayIntroAmbient();
+            AudioManager.Instance.PlayIntroAmbient(10f);
         }
 
         currentRoutine = StartCoroutine(PlayIntro());
