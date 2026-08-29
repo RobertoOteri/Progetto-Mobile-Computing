@@ -60,7 +60,7 @@ public class MainMenuManager : MonoBehaviour
         // 3. Avvio musica Menu
         if (AudioManager.Instance != null && menuBGM != null)
         {
-            AudioManager.Instance.PlayMusic(menuBGM, 15f);
+            AudioManager.Instance.PlayMusic(menuBGM, 25f);
         }
     }
 
@@ -68,7 +68,7 @@ public class MainMenuManager : MonoBehaviour
     {
         if (AudioManager.Instance != null && buttonClickSFX != null)
         {
-            AudioManager.Instance.PlaySFXWithVolume(buttonClickSFX, 0.5f);
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSFX, 0.3f);
         }
     }
 

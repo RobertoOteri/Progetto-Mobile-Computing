@@ -56,7 +56,7 @@ public class SettingsManager : MonoBehaviour
     {
         if (AudioManager.Instance != null && buttonClickSound != null)
         {
-            AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 1f);
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 0.3f);
         }
     }
 
@@ -158,12 +158,11 @@ public class SettingsManager : MonoBehaviour
         ResetPanelsWithoutSound();
     }
 
-    private void ResetPanelsWithoutSound()
+    public void ResetPanelsWithoutSound()
     {
         HideAllPopups();
         SetMainSettingsVisible(true);
     }
-
     private void HideAllPopups()
     {
         if (ratePanel != null) ratePanel.SetActive(false);
