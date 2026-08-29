@@ -94,7 +94,7 @@ public class PlayerHealth : MonoBehaviour
         // 1. Suona l'effetto sonoro di morte
         if (deathSound != null && AudioManager.Instance != null)
         {
-            AudioManager.Instance.PlaySFX(deathSound);
+            AudioManager.Instance.PlaySFXWithVolume(deathSound, 3f);
         }
         else if (AudioManager.Instance != null)
         {
