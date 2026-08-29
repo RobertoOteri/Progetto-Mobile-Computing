@@ -19772,8 +19772,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\"Jack Orbit \xE8 ora costretto a servire la nuova specie, \r\nin attesa
-    di sferrare il suo contrattacco verso il cielo...\""
+  m_text: "\"Jack Orbit \xE8 ora costretto a servire la nuova specie, in attesa di
+    sferrare il colpo decisivo.\"\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 71dcb53d110c8a24e87baabecf86c95e, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 9bb4ee95e91d0b14dbddad96ec8c77fe, type: 2}
@@ -28615,6 +28615,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FiltroNeroCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 212583469239143665, guid: 29758754dad722c478231679df006310,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7490316424838298390, guid: 29758754dad722c478231679df006310,
         type: 3}
