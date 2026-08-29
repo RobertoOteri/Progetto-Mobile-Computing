@@ -156,7 +156,7 @@ public class PauseMenuManager : MonoBehaviour
     {
         if (AudioManager.Instance != null && buttonClickSFX != null)
         {
-            AudioManager.Instance.PlaySFXWithVolume(buttonClickSFX, 1f);
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSFX, 0.7f);
         }
     }
 

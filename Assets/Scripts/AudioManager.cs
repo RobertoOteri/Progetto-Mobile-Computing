@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource walkSource;
     [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource introSource;
 
     [Header("--- Audio Clips ---")]
     public AudioClip walkSFX;
@@ -78,7 +79,6 @@ public class AudioManager : MonoBehaviour
     {
         if (musicSource == null || clip == null) return;
 
-        // Se la traccia è già in riproduzione, non la riavvia da capo
         if (musicSource.isPlaying && musicSource.clip == clip) return;
 
         if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
@@ -206,7 +206,7 @@ public class AudioManager : MonoBehaviour
 
             sfxSource.pitch = Random.Range(0.85f, 1.15f);
             sfxSource.clip = typewriterSound;
-            sfxSource.PlayOneShot(typewriterSound, 2f);
+            sfxSource.PlayOneShot(typewriterSound, 8f);
         }
     }
 
@@ -222,47 +222,50 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayIntroAmbient()
+    // --- INTRO AMBIENT (Aggiornato con introSource) ---
+
+    public void PlayIntroAmbient(float volume = 1f)
     {
-        if (sfxSource != null && introAmbientSource != null)
+        if (introSource != null && introAmbientSource != null)
         {
-            sfxSource.clip = introAmbientSource;
-            sfxSource.loop = true; 
-            sfxSource.Play();
+            introSource.clip = introAmbientSource;
+            introSource.loop = true; 
+            introSource.volume = volume;
+            introSource.Play();
         }
     }
 
     public void FadeOutIntroAmbient(float duration)
     {
-        if (sfxSource != null && sfxSource.isPlaying)
+        if (introSource != null && introSource.isPlaying)
         {
-            StartCoroutine(FadeOutRoutine(duration));
+            StartCoroutine(FadeOutIntroRoutine(duration));
         }
     }
 
-    private IEnumerator FadeOutRoutine(float duration)
+    private IEnumerator FadeOutIntroRoutine(float duration)
     {
-        float startVolume = sfxSource.volume;
+        float startVolume = introSource.volume;
 
-        while (sfxSource.volume > 0)
+        while (introSource.volume > 0)
         {
-            sfxSource.volume -= startVolume * (Time.deltaTime / duration);
+            introSource.volume -= startVolume * (Time.deltaTime / duration);
             yield return null;
         }
 
-        sfxSource.Stop();
-        sfxSource.loop = false;
-        sfxSource.clip = null;
-        sfxSource.volume = startVolume;
+        introSource.Stop();
+        introSource.loop = false;
+        introSource.clip = null;
+        introSource.volume = startVolume;
     }
 
     public void StopIntroAmbient()
     {
-        if (sfxSource != null && sfxSource.clip == introAmbientSource)
+        if (introSource != null && introSource.clip == introAmbientSource)
         {
-            sfxSource.Stop();
-            sfxSource.loop = false; 
-            sfxSource.clip = null;
+            introSource.Stop();
+            introSource.loop = false; 
+            introSource.clip = null;
         }
     }
 

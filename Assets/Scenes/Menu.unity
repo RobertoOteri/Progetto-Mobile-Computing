@@ -1690,6 +1690,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2605371155573325979}
     m_Modifications:
+    - target: {fileID: 594647170598041094, guid: df36a9dbd78f3fc45bcb934e459b67a1,
+        type: 3}
+      propertyPath: m_text
+      value: '<align=center><font-weight=700><size=120%><color=#FFAA00>CREDITI
+
+
+        <color=#80D0FF>Un
+        gioco creato da:
+
+        <color=#FFFFFF>Roberto Oteri
+
+        Valerio Di
+        Fusco
+
+        Antonio Coco
+
+        Patrizio Villa
+
+
+
+        <size=90%><color=#888888>Grazie
+        per aver giocato!'
+      objectReference: {fileID: 0}
+    - target: {fileID: 594647170598041094, guid: df36a9dbd78f3fc45bcb934e459b67a1,
+        type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 762148471843747449, guid: df36a9dbd78f3fc45bcb934e459b67a1,
         type: 3}
       propertyPath: m_Name
@@ -3420,6 +3448,7 @@ GameObject:
   - component: {fileID: 1941723606}
   - component: {fileID: 1941723605}
   - component: {fileID: 1941723604}
+  - component: {fileID: 1941723609}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -3736,6 +3765,7 @@ MonoBehaviour:
   sfxSource: {fileID: 1941723605}
   walkSource: {fileID: 1941723606}
   musicSource: {fileID: 1941723604}
+  introSource: {fileID: 1941723609}
   walkSFX: {fileID: 8300000, guid: 8e6c6867a1b46c1438d21954ce5891c7, type: 3}
   dieSFX: {fileID: 8300000, guid: b8a2c22df6fc15d4b9ee52325b66b65f, type: 3}
   pickupSFX: {fileID: 8300000, guid: 5d4345d2546fbae4e9b2bfa3dd16681e, type: 3}
@@ -3766,6 +3796,104 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1941723609
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941723603}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -6128005740634949895, guid: ef0c4ccd3b3e2134085c35e511300037,
+    type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1944298113
 GameObject:
   m_ObjectHideFlags: 0
