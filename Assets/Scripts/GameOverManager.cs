@@ -166,6 +166,7 @@ public class GameOverManager : MonoBehaviour
         {
             gameOverAudioSource.clip = gameOverMusicClip;
             gameOverAudioSource.loop = false;
+            gameOverAudioSource.volume = 5f;
             gameOverAudioSource.Play();
         }
     }
@@ -174,7 +175,7 @@ public class GameOverManager : MonoBehaviour
     {
         if (AudioManager.Instance != null && buttonClickSound != null)
         {
-            AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 1f);
+            AudioManager.Instance.PlaySFXWithVolume(buttonClickSound, 0.5f);
         }
     }
 
