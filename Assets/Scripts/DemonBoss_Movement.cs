@@ -24,6 +24,7 @@ public class DemonBoss_Movement : Enemy_Movement
         if (enemyHealth != null)
         {
             previousHealth = enemyHealth.currentHealth;
+            Debug.Log($"[DEBUG] Start: Health iniziale = {previousHealth}");
         }
 
         anim.SetBool("IsChasing", false);
@@ -34,7 +35,6 @@ public class DemonBoss_Movement : Enemy_Movement
 
     private void Update()
     {
-        // Controlla autonomamente se la vita è diminuita
         CheckHealthAndTriggerHit();
 
         if (enemyState != EnemyState.Knockback && !isTransforming)
@@ -52,22 +52,36 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         if (enemyHealth == null) return;
 
-        // Se la salute attuale è inferiore alla precedente, il boss è stato colpito
+        // DEBUG: Stampa se la vita cambia
+        if (enemyHealth.currentHealth != previousHealth)
+        {
+            Debug.Log($"[DEBUG] Vita cambiata! Vecchia: {previousHealth}, Nuova: {enemyHealth.currentHealth}");
+        }
+
         if (enemyHealth.currentHealth < previousHealth)
         {
             previousHealth = enemyHealth.currentHealth;
             
-            // Fa partire l'animazione hurt1
             if (anim != null)
             {
-                anim.SetTrigger("hit");
+                if (isFlamePhase)
+                {
+                    Debug.Log("[DEBUG] Trigger animazione 'hit' (Fase 1)");
+                    anim.SetTrigger("hit");
+                }
+                else
+                {
+                    Debug.Log("[DEBUG] Trigger animazione 'demonHit' (Fase 2)");
+                    anim.SetTrigger("demonHit");
+                }
             }
+        }
 
-            // Controlla se deve trasformarsi
-            if (isFlamePhase && !isTransforming && enemyHealth.currentHealth <= healthThresholdToTransform)
-            {
-                StartTransformation();
-            }
+        // Controllo trasformazione sicuro (eseguito una sola volta)
+        if (isFlamePhase && !isTransforming && enemyHealth.currentHealth <= healthThresholdToTransform)
+        {
+            Debug.Log("[DEBUG] Condizione di trasformazione raggiunta! Avvio StartTransformation()");
+            StartTransformation();
         }
     }
 
@@ -98,13 +112,18 @@ public class DemonBoss_Movement : Enemy_Movement
 
             if (enemyState != EnemyState.Chasing)
             {
+                Debug.Log($"[DEBUG] Player rilevato! Cambio stato a Chasing. Fase Fiamma: {isFlamePhase}");
                 ChangeState(EnemyState.Chasing);
             }
         }
         else
         {
             rb.linearVelocity = Vector2.zero;
-            ChangeState(EnemyState.Idle);
+            if (enemyState != EnemyState.Idle)
+            {
+                Debug.Log($"[DEBUG] Player perso. Cambio stato a Idle. Fase Fiamma: {isFlamePhase}");
+                ChangeState(EnemyState.Idle);
+            }
         }
     }
 
@@ -116,6 +135,7 @@ public class DemonBoss_Movement : Enemy_Movement
         anim.SetBool("IsFlameIdle", false);
         anim.SetBool("IsChasing", false);
         anim.SetBool("IsTransforming", true);
+        Debug.Log("[DEBUG] Animazione di trasformazione avviata (IsTransforming = true)");
     }
 
     public void OnTransformationFinished()
@@ -125,7 +145,13 @@ public class DemonBoss_Movement : Enemy_Movement
         speed = transformedSpeed; 
 
         anim.SetBool("IsTransforming", false);
+        
+        // Forziamo lo stato logico su Idle e resettiamo/impostiamo correttamente i parametri
+        enemyState = EnemyState.Idle;
         anim.SetBool("IsDemonIdle", true);
+        anim.SetBool("IsDemonChasing", false);
+        
+        Debug.Log("[DEBUG] Trasformazione completata! Passato a Fase 2 (Demon). IsDemonIdle = true");
     }
 
     public override void ChangeState(EnemyState newState)
@@ -145,11 +171,27 @@ public class DemonBoss_Movement : Enemy_Movement
         }
         else
         {
-            if (enemyState == EnemyState.Idle) anim.SetBool("IsDemonIdle", true);
-            else anim.SetBool("IsDemonIdle", false);
+            if (enemyState == EnemyState.Idle) 
+            {
+                anim.SetBool("IsDemonIdle", true);
+                anim.SetBool("IsDemonChasing", false);
+                Debug.Log("[DEBUG] Animator: IsDemonIdle = TRUE, IsDemonChasing = FALSE");
+            }
+            else 
+            {
+                anim.SetBool("IsDemonIdle", false);
+            }
 
-            if (enemyState == EnemyState.Chasing) anim.SetBool("IsDemonChasing", true);
-            else anim.SetBool("IsDemonChasing", false);
+            if (enemyState == EnemyState.Chasing) 
+            {
+                anim.SetBool("IsDemonChasing", true);
+                anim.SetBool("IsDemonIdle", false);
+                Debug.Log("[DEBUG] Animator: IsDemonChasing = TRUE, IsDemonIdle = FALSE");
+            }
+            else 
+            {
+                anim.SetBool("IsDemonChasing", false);
+            }
         }
     }
 

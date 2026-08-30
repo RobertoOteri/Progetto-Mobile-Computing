@@ -54498,6 +54498,7 @@ GameObject:
   - component: {fileID: 1551780280}
   - component: {fileID: 1551780281}
   - component: {fileID: 1551780282}
+  - component: {fileID: 1551780283}
   m_Layer: 6
   m_Name: Boss2
   m_TagString: Untagged
@@ -54778,6 +54779,18 @@ MonoBehaviour:
   hitSoundVolume: 0.5
   deathSound: {fileID: 0}
   deathSoundVolume: 0.5
+--- !u!114 &1551780283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551780273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d746568c76681cc4e9f2ef5e18261b1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy_Knockback
 --- !u!1001 &1552619825
 PrefabInstance:
   m_ObjectHideFlags: 0
