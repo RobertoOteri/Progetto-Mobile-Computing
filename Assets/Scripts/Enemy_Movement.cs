@@ -60,7 +60,7 @@ public class Enemy_Movement : MonoBehaviour
         rb.linearVelocity = direction * speed;
     }
 
-    protected void Flip()
+    protected virtual void Flip()
     {
         facingDirection *= -1;
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
