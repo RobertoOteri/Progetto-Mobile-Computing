@@ -4,21 +4,42 @@ public class DemonBoss_Movement : Enemy_Movement
 {
     private bool isFlamePhase = true;
     private bool isTransforming = false;
+    private bool audioInitialized = false;
     private SpriteRenderer spriteRenderer;
     private Enemy_Health enemyHealth;
     private Enemy_Combat enemyCombat;
     private int previousHealth;
     private float attackTimer = 0f;
+    private bool isQuitting = false;
 
     [Header("Phase 2 Settings")]
     public float transformedSpeed = 4f; 
     public int healthThresholdToTransform = 2;
+
+    [Header("Audio Settings - Attacks")]
+    public AudioSource audioSource;
+    public AudioClip soundAttack1;
+    public AudioClip soundAttack2;
+    public AudioClip soundAttack3;
+    [Range(0f, 1f)] public float attackVolume = 0.2f;
+
+    [Header("Audio Settings - Loops & States")]
+    public AudioSource loopAudioSource; 
+    public AudioClip soundTransform;
+    [Range(0f, 1f)] public float transformVolume = 0.5f;
+    
+    public AudioClip soundPhase1Idle;
+    public AudioClip soundPhase1Walk;
+    public AudioClip soundPhase2Walk;
+    [Range(0f, 1f)] public float movementAudioVolume = 0.3f;
 
     protected override void Start()
     {
         base.Start();
         isFlamePhase = true;
         isTransforming = false;
+        audioInitialized = false;
+        isQuitting = false;
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         enemyHealth = GetComponent<Enemy_Health>();
@@ -38,6 +59,12 @@ public class DemonBoss_Movement : Enemy_Movement
 
     private void Update()
     {
+        if (!audioInitialized)
+        {
+            ChangeState(enemyState);
+            audioInitialized = true;
+        }
+
         CheckHealthAndTriggerHit();
 
         if (enemyState != EnemyState.Knockback && !isTransforming)
@@ -51,15 +78,12 @@ public class DemonBoss_Movement : Enemy_Movement
 
                 if (!isFlamePhase)
                 {
-                    // --- FASE 2: Logica del Demone ---
-                    attackTimer -= Time.deltaTime; // Scala continuamente il timer indipendentemente dallo stato
+                    attackTimer -= Time.deltaTime; 
 
-                    // Può attaccare solo se il timer è sceso a zero o meno
                     if (attackTimer <= 0f)
                     {
-                        rb.linearVelocity = Vector2.zero; // Ferma subito il movimento
+                        rb.linearVelocity = Vector2.zero; 
 
-                        // --- CORRETTO: Gira verso il player PRIMA di scegliere l'attacco ---
                         if ((player.position.x > transform.position.x && facingDirection == -1) || 
                             (player.position.x < transform.position.x && facingDirection == 1))
                         {
@@ -67,7 +91,7 @@ public class DemonBoss_Movement : Enemy_Movement
                         }
 
                         ChooseRandomAttack();
-                        attackTimer = 3f; // Pausa di 3 secondi esatti prima del prossimo attacco
+                        attackTimer = 3f; 
                     }
                     else
                     {
@@ -80,7 +104,6 @@ public class DemonBoss_Movement : Enemy_Movement
                 }
                 else
                 {
-                    // --- FASE 1: Logica standard ereditata ---
                     if (enemyState == EnemyState.Chasing)
                     {
                         Chase();
@@ -122,10 +145,39 @@ public class DemonBoss_Movement : Enemy_Movement
             }
         }
 
+        // Se la vita arriva a 0 o meno, consideriamo il boss sconfitto
+        if (enemyHealth.currentHealth <= 0)
+        {
+            if (BossMusicManager.Instance != null)
+            {
+                BossMusicManager.Instance.StopBossMusicWithFade();
+            }
+        }
+
         if (isFlamePhase && !isTransforming && enemyHealth.currentHealth <= healthThresholdToTransform)
         {
             Debug.Log("[DEBUG] Condizione di trasformazione raggiunta! Avvio StartTransformation()");
             StartTransformation();
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
+
+    private void OnDestroy()
+    {
+        // Se l'applicazione si chiude non facciamo partire il fade della musica
+        if (isQuitting) return;
+
+        // Se il boss viene distrutto e la sua vita è a 0 (o il componente salute non esiste più perché distrutto), spegne la musica
+        if (enemyHealth == null || enemyHealth.currentHealth <= 0)
+        {
+            if (BossMusicManager.Instance != null)
+            {
+                BossMusicManager.Instance.StopBossMusicWithFade();
+            }
         }
     }
 
@@ -148,7 +200,6 @@ public class DemonBoss_Movement : Enemy_Movement
 
             player = hits[0].transform;
 
-            // Gira sempre il boss verso il player se si trova sul lato opposto
             if ((player.position.x > transform.position.x && facingDirection == -1) || 
                 (player.position.x < transform.position.x && facingDirection == 1))
             {
@@ -186,10 +237,18 @@ public class DemonBoss_Movement : Enemy_Movement
             }
         }
     }
+
     private void StartTransformation()
     {
         isTransforming = true;
         rb.linearVelocity = Vector2.zero;
+
+        if (loopAudioSource != null) loopAudioSource.Stop();
+
+        if (audioSource != null && soundTransform != null)
+        {
+            audioSource.PlayOneShot(soundTransform, transformVolume);
+        }
 
         anim.SetBool("IsFlameIdle", false);
         anim.SetBool("IsChasing", false);
@@ -202,7 +261,7 @@ public class DemonBoss_Movement : Enemy_Movement
         isTransforming = false;
         isFlamePhase = false;
         speed = transformedSpeed; 
-        attackTimer = 3f; // Imposta il cooldown iniziale dopo la trasformazione
+        attackTimer = 3f; 
 
         anim.SetBool("IsTransforming", false);
         
@@ -219,6 +278,8 @@ public class DemonBoss_Movement : Enemy_Movement
         if (isTransforming) return; 
 
         enemyState = newState;
+
+        HandleStateAudio();
 
         if (isFlamePhase)
         {
@@ -255,25 +316,80 @@ public class DemonBoss_Movement : Enemy_Movement
         }
     }
 
+    private void HandleStateAudio()
+    {
+        if (loopAudioSource == null)
+        {
+            loopAudioSource = GetComponent<AudioSource>();
+            if (loopAudioSource == null)
+            {
+                loopAudioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        AudioClip targetClip = null;
+
+        if (isFlamePhase)
+        {
+            if (enemyState == EnemyState.Idle) targetClip = soundPhase1Idle;
+            else if (enemyState == EnemyState.Chasing) targetClip = soundPhase1Walk;
+        }
+        else
+        {
+            if (enemyState == EnemyState.Chasing) targetClip = soundPhase2Walk;
+        }
+
+        if (targetClip != null)
+        {
+            if (loopAudioSource.clip != targetClip || !loopAudioSource.isPlaying)
+            {
+                loopAudioSource.clip = targetClip;
+                loopAudioSource.loop = true;
+                loopAudioSource.volume = movementAudioVolume;
+                loopAudioSource.Play();
+                Debug.Log($"[DEBUG AUDIO] Avviato loop per: {targetClip.name}");
+            }
+        }
+        else
+        {
+            if (loopAudioSource.isPlaying)
+            {
+                loopAudioSource.Stop();
+                loopAudioSource.clip = null;
+            }
+        }
+    }
+
     public void ChooseRandomAttack()
     {
         if (isTransforming || player == null) return;
 
         int randomAttack = Random.Range(1, 4); 
 
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
         switch (randomAttack)
         {
             case 1:
                 anim.SetTrigger("Attack1");
                 Debug.Log("[DEBUG] Attacco scelto: Fire Breath");
+                if (audioSource != null && soundAttack1 != null) 
+                    audioSource.PlayOneShot(soundAttack1, attackVolume);
                 break;
             case 2:
                 anim.SetTrigger("Attack2");
                 Debug.Log("[DEBUG] Attacco scelto: Cleave");
+                if (audioSource != null && soundAttack2 != null) 
+                    audioSource.PlayOneShot(soundAttack2, attackVolume);
                 break;
             case 3:
                 anim.SetTrigger("Attack3");
                 Debug.Log("[DEBUG] Attacco scelto: Smash");
+                if (audioSource != null && soundAttack3 != null) 
+                    audioSource.PlayOneShot(soundAttack3, attackVolume);
                 break;
         }
     }
@@ -291,8 +407,7 @@ public class DemonBoss_Movement : Enemy_Movement
         facingDirection *= -1;
         Vector3 scale = transform.localScale;
         scale.x *= -1; 
-        transform.localScale = scale; // Corretto da transform.Scale a transform.localScale
-
+        transform.localScale = scale; 
     }
 
     protected override void Chase()

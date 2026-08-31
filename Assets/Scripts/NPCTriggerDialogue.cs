@@ -55,14 +55,12 @@ public class NPCTriggerDialogue : MonoBehaviour
     private void Update()
     {
         #if UNITY_EDITOR
-        // B per invertire lo stato del boss
         if (Input.GetKeyDown(KeyCode.B))
         {
             IsBossDefeated = !IsBossDefeated;
             Debug.Log($"<color=yellow>[TEST BOSS] Boss sconfitto impostato a: {IsBossDefeated}</color>");
         }
 
-        // C per cancellare tutti i salvataggi PlayerPrefs e ripartire da zero
         if (Input.GetKeyDown(KeyCode.C))
         {
             PlayerPrefs.DeleteAll();
@@ -94,7 +92,6 @@ public class NPCTriggerDialogue : MonoBehaviour
     {
         if (!playerInRepeatZone || DialogueManager.Instance == null) return;
 
-        // Se il boss è sconfitto -> avvia dialogo con flag di fine gioco = true
         if (IsBossDefeated)
         {
             if (bossDefeatedConversation.Count > 0)
@@ -105,7 +102,6 @@ public class NPCTriggerDialogue : MonoBehaviour
             return;
         }
 
-        // Se il boss è vivo -> avvia dialogo ripetibile normale
         if (HasHadFirstTalkSession && repeatConversation.Count > 0)
         {
             if (interactPrompt != null) interactPrompt.SetActive(false);
@@ -125,6 +121,12 @@ public class NPCTriggerDialogue : MonoBehaviour
 
             if (firstContactZone != null)
                 firstContactZone.SetActive(false);
+
+            // ---> AVVIA LA MUSICA DEL BOSS QUI (o alla fine del dialogo)
+            if (BossMusicManager.Instance != null)
+            {
+                BossMusicManager.Instance.PlayBossMusic();
+            }
         }
     }
 

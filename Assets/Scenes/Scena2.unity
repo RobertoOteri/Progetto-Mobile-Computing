@@ -16091,6 +16091,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BottoneCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5773916647359891848, guid: adc31eafae65f5d40bad54810bc83dc6,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9063358752790742751, guid: adc31eafae65f5d40bad54810bc83dc6,
         type: 3}
       propertyPath: m_Pivot.x
