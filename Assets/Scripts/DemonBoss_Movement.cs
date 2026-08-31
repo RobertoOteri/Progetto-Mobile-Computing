@@ -8,6 +8,7 @@ public class DemonBoss_Movement : Enemy_Movement
     private Enemy_Health enemyHealth;
     private Enemy_Combat enemyCombat;
     private int previousHealth;
+    private float attackTimer = 0f;
 
     [Header("Phase 2 Settings")]
     public float transformedSpeed = 4f; 
@@ -43,19 +44,51 @@ public class DemonBoss_Movement : Enemy_Movement
         {
             CheckForPlayer();
 
-            if (enemyState == EnemyState.Chasing && player != null)
+            if (player != null)
             {
                 float currentAttackRange = (enemyCombat != null) ? enemyCombat.weaponRange : 1.5f;
                 float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-                if (!isFlamePhase && distanceToPlayer <= currentAttackRange)
+                if (!isFlamePhase)
                 {
-                    rb.linearVelocity = Vector2.zero;
-                    ChooseRandomAttack();
+                    // --- FASE 2: Logica del Demone ---
+                    attackTimer -= Time.deltaTime; // Scala continuamente il timer indipendentemente dallo stato
+
+                    // Può attaccare solo se il timer è sceso a zero o meno
+                    if (attackTimer <= 0f)
+                    {
+                        rb.linearVelocity = Vector2.zero; // Ferma subito il movimento
+
+                        // --- CORRETTO: Gira verso il player PRIMA di scegliere l'attacco ---
+                        if ((player.position.x > transform.position.x && facingDirection == -1) || 
+                            (player.position.x < transform.position.x && facingDirection == 1))
+                        {
+                            Flip();
+                        }
+
+                        ChooseRandomAttack();
+                        attackTimer = 3f; // Pausa di 3 secondi esatti prima del prossimo attacco
+                    }
+                    else
+                    {
+                        if (enemyState != EnemyState.Chasing)
+                        {
+                            ChangeState(EnemyState.Chasing);
+                        }
+                        Chase();
+                    }
                 }
                 else
                 {
-                    Chase();
+                    // --- FASE 1: Logica standard ereditata ---
+                    if (enemyState == EnemyState.Chasing)
+                    {
+                        Chase();
+                    }
+                    else
+                    {
+                        rb.linearVelocity = Vector2.zero;
+                    }
                 }
             }
         }
@@ -115,29 +148,44 @@ public class DemonBoss_Movement : Enemy_Movement
 
             player = hits[0].transform;
 
+            // Gira sempre il boss verso il player se si trova sul lato opposto
             if ((player.position.x > transform.position.x && facingDirection == -1) || 
                 (player.position.x < transform.position.x && facingDirection == 1))
             {
                 Flip();
             }
 
-            if (enemyState != EnemyState.Chasing)
+            if (isFlamePhase)
             {
-                Debug.Log($"[DEBUG] Player rilevato! Cambio stato a Chasing. Fase Fiamma: {isFlamePhase}");
-                ChangeState(EnemyState.Chasing);
+                float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+                
+                if (distanceToPlayer <= attackRange)
+                {
+                    rb.linearVelocity = Vector2.zero;
+                    if (enemyState != EnemyState.Attacking)
+                    {
+                        ChangeState(EnemyState.Attacking);
+                    }
+                }
+                else
+                {
+                    if (enemyState != EnemyState.Chasing)
+                    {
+                        ChangeState(EnemyState.Chasing);
+                    }
+                }
             }
         }
         else
         {
+            player = null;
             rb.linearVelocity = Vector2.zero;
             if (enemyState != EnemyState.Idle)
             {
-                Debug.Log($"[DEBUG] Player perso. Cambio stato a Idle. Fase Fiamma: {isFlamePhase}");
                 ChangeState(EnemyState.Idle);
             }
         }
     }
-
     private void StartTransformation()
     {
         isTransforming = true;
@@ -154,6 +202,7 @@ public class DemonBoss_Movement : Enemy_Movement
         isTransforming = false;
         isFlamePhase = false;
         speed = transformedSpeed; 
+        attackTimer = 3f; // Imposta il cooldown iniziale dopo la trasformazione
 
         anim.SetBool("IsTransforming", false);
         
@@ -181,6 +230,9 @@ public class DemonBoss_Movement : Enemy_Movement
         }
         else
         {
+            anim.SetBool("IsFlameIdle", false);
+            anim.SetBool("IsChasing", false);
+
             if (enemyState == EnemyState.Idle) 
             {
                 anim.SetBool("IsDemonIdle", true);
@@ -205,7 +257,7 @@ public class DemonBoss_Movement : Enemy_Movement
 
     public void ChooseRandomAttack()
     {
-        if (isTransforming) return;
+        if (isTransforming || player == null) return;
 
         int randomAttack = Random.Range(1, 4); 
 
@@ -239,7 +291,8 @@ public class DemonBoss_Movement : Enemy_Movement
         facingDirection *= -1;
         Vector3 scale = transform.localScale;
         scale.x *= -1; 
-        transform.localScale = scale;
+        transform.localScale = scale; // Corretto da transform.Scale a transform.localScale
+
     }
 
     protected override void Chase()
