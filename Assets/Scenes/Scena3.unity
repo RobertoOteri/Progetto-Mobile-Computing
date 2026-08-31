@@ -44607,12 +44607,12 @@ PrefabInstance:
     - target: {fileID: 864048726025452736, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 864048726025452736, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 979320675144658602, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
@@ -44893,12 +44893,12 @@ PrefabInstance:
     - target: {fileID: 6748634482120487123, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6748634482120487123, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7073731994968110459, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
@@ -44943,7 +44943,7 @@ PrefabInstance:
     - target: {fileID: 7798674291595719347, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7912474951279799009, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
@@ -45033,12 +45033,12 @@ PrefabInstance:
     - target: {fileID: 8445957915536178723, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8445957915536178723, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8924774229374095927, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
@@ -45261,7 +45261,7 @@ Transform:
   m_GameObject: {fileID: 415912829}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.44, y: 56.32, z: -10}
+  m_LocalPosition: {x: -8.34, y: 23.27, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -45684,7 +45684,7 @@ Transform:
   m_GameObject: {fileID: 621454660}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.44, y: 56.32, z: -10}
+  m_LocalPosition: {x: -8.34, y: 23.27, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46224,7 +46224,7 @@ PrefabInstance:
     - target: {fileID: 6893879933630364204, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7495974499924518148, guid: 2371cc7e1690a0e4fae77069f4431a8b,
         type: 3}
@@ -46448,6 +46448,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PausaCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8239947887533452984, guid: 69cef8c3435c79f45bcb021e5a9f1cbc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -47650,7 +47655,7 @@ Transform:
   m_GameObject: {fileID: 1227068882}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.44, y: 56.32, z: 0}
+  m_LocalPosition: {x: -8.34, y: 23.27, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -47720,7 +47725,7 @@ PrefabInstance:
     - target: {fileID: 4969346051552495667, guid: 49331f782a8f8f24e969d1d9c8487f47,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5364411051448740314, guid: 49331f782a8f8f24e969d1d9c8487f47,
         type: 3}
@@ -54499,6 +54504,7 @@ GameObject:
   - component: {fileID: 1551780281}
   - component: {fileID: 1551780282}
   - component: {fileID: 1551780283}
+  - component: {fileID: 1551780284}
   m_Layer: 6
   m_Name: Boss2
   m_TagString: Untagged
@@ -54598,12 +54604,13 @@ Transform:
   m_GameObject: {fileID: 1551780273}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.88, y: 60.09, z: 0}
+  m_LocalPosition: {x: -9.4, y: 68.2, z: 0}
   m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 589139456}
   - {fileID: 1791481422}
+  - {fileID: 1631279401}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &1551780277
@@ -54792,6 +54799,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d746568c76681cc4e9f2ef5e18261b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Knockback
+--- !u!114 &1551780284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551780273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 186803d2d9e1f3443800f38f50855412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCTriggerDialogue
+  npcID: Boss2_Scena3
+  firstContactZone: {fileID: 1631279400}
+  interactPrompt: {fileID: 0}
+  firstConversation:
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "<i><color=#CCCCCC>\"(Che diavolo \xE8 quella cosa...? Sembra una fiammella
+      fluttuante, eppure emana un'energia mostruosa)\"</color></i>"
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "<i><color=#CCCCCC>\"(Poco importa: se voglio il favore di Kael e mettere
+      le mani sul cristallo, dovr\xF2 distruggerla)\"</color></i>"
+  - speakerName: ???
+    portrait: {fileID: 21300000, guid: 1ebbeb1a688646346b5729929f948e7b, type: 3}
+    isRightSide: 1
+    sentence: '"Inutile che bisbigli nella tua mente, terrestre. Sento ogni singola
+      vibrazione dei tuoi pensieri."'
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: '"Cosa?! Tu... puoi parlare?! E riesci a sentirmi?!"'
+  - speakerName: Ignis
+    portrait: {fileID: 21300000, guid: 1ebbeb1a688646346b5729929f948e7b, type: 3}
+    isRightSide: 1
+    sentence: "\"Io sono Ignis, custode di queste terre e comandante a cui \xE8 stato
+      affidato questo settore.\""
+  - speakerName: Ignis
+    portrait: {fileID: 21300000, guid: 1ebbeb1a688646346b5729929f948e7b, type: 3}
+    isRightSide: 1
+    sentence: '"Conosco bene la vostra brama di conquista. Ma sei arrivato troppo
+      tardi per piantare la tua bandiera su questo mondo."'
+  - speakerName: Ignis
+    portrait: {fileID: 21300000, guid: 1ebbeb1a688646346b5729929f948e7b, type: 3}
+    isRightSide: 1
+    sentence: '"Finirai ridotto in cenere prima ancora di poter toccare quel cristallo.
+      Preparati, umano!"'
+  repeatConversation: []
+  bossDefeatedConversation: []
 --- !u!1001 &1552619825
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54933,7 +54992,7 @@ PrefabInstance:
     - target: {fileID: 3980822029979183439, guid: adc31eafae65f5d40bad54810bc83dc6,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5773916647359891848, guid: adc31eafae65f5d40bad54810bc83dc6,
         type: 3}
@@ -55087,6 +55146,99 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!1 &1631279400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1631279401}
+  - component: {fileID: 1631279402}
+  - component: {fileID: 1631279403}
+  m_Layer: 6
+  m_Name: Zone_FirstContact
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1631279401
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631279400}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0}
+  m_LocalScale: {x: 1.9551612, y: 1.3124146, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1551780276}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1631279402
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631279400}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &1631279403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631279400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6afe2356da1b2c84dab5f506c27e7e25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCZoneTrigger
+  zoneType: 0
+  parentDialogue: {fileID: 1551780284}
 --- !u!1001 &1658437193
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55300,17 +55452,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1680847573}
-  m_LocalRotation: {x: 0.20302938, y: 0.0019025739, z: -0.006834906, w: 0.9791469}
-  m_LocalPosition: {x: 0, y: 0, z: 15}
-  m_LocalScale: {x: 0.88, y: 0.85, z: 1}
+  m_LocalRotation: {x: 0.20303832, y: 0.000044677174, z: 0.0021250478, w: 0.97916853}
+  m_LocalPosition: {x: 0, y: 0, z: 43}
+  m_LocalScale: {x: 0.92219704, y: 1.0989676, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 645851849}
-  m_LocalEulerAnglesHint: {x: 23.429, y: 0.059, z: -0.788}
+  m_LocalEulerAnglesHint: {x: 23.429, y: 0.059, z: 0.261}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7, y: -17}
-  m_SizeDelta: {x: 790, y: 660}
+  m_AnchoredPosition: {x: 24, y: 48}
+  m_SizeDelta: {x: 790, y: 909.6821}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1680847575
 CanvasRenderer:
@@ -55340,8 +55492,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5739209855161057367, guid: e40539ef1a368ab409ed0e98db025d8e,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1ebbeb1a688646346b5729929f948e7b, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
