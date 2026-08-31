@@ -15,6 +15,7 @@ public class Enemy_Health : MonoBehaviour
     public float hitSoundVolume = 0.5f;
 
     [Space]
+    public float deathDelay = 0.7f;
     public AudioClip deathSound; 
     public float deathSoundVolume = 0.5f; 
 
@@ -81,25 +82,28 @@ public class Enemy_Health : MonoBehaviour
 
     private void Die()
     {
-        if (flashCoroutine != null) StopCoroutine(flashCoroutine);
-        if (sr != null) sr.color = originalColor;
-
-        Enemy_Movement movement = GetComponent<Enemy_Movement>();
-        if (movement != null) 
         {
-            movement.enabled = false;
-        }
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+            if (sr != null) sr.color = originalColor;
 
-        if (anim != null)
-        {
-            anim.SetTrigger("die");
-        }
+            Enemy_Movement movement = GetComponent<Enemy_Movement>();
+            if (movement != null) 
+            {
+                movement.enabled = false;
+            }
 
-        if (deathSound != null && AudioManager.Instance != null)
-        {
-            AudioManager.Instance.PlaySFXWithVolume(deathSound, deathSoundVolume);
-        }
+            if (anim != null)
+            {
+                anim.SetTrigger("die");
+            }
 
-        Destroy(gameObject, 0.7f);
+            if (deathSound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFXWithVolume(deathSound, deathSoundVolume);
+            }
+
+            // Usa la variabile pubblica invece di un numero fisso
+            Destroy(gameObject, deathDelay);
+        }
     }
 }

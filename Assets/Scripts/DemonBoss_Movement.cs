@@ -6,6 +6,7 @@ public class DemonBoss_Movement : Enemy_Movement
     private bool isTransforming = false;
     private SpriteRenderer spriteRenderer;
     private Enemy_Health enemyHealth;
+    private Enemy_Combat enemyCombat;
     private int previousHealth;
 
     [Header("Phase 2 Settings")]
@@ -20,6 +21,7 @@ public class DemonBoss_Movement : Enemy_Movement
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         enemyHealth = GetComponent<Enemy_Health>();
+        enemyCombat = GetComponent<Enemy_Combat>();
 
         if (enemyHealth != null)
         {
@@ -41,9 +43,20 @@ public class DemonBoss_Movement : Enemy_Movement
         {
             CheckForPlayer();
 
-            if (enemyState == EnemyState.Chasing)
+            if (enemyState == EnemyState.Chasing && player != null)
             {
-                Chase();
+                float currentAttackRange = (enemyCombat != null) ? enemyCombat.weaponRange : 1.5f;
+                float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+
+                if (!isFlamePhase && distanceToPlayer <= currentAttackRange)
+                {
+                    rb.linearVelocity = Vector2.zero;
+                    ChooseRandomAttack();
+                }
+                else
+                {
+                    Chase();
+                }
             }
         }
     }
@@ -52,7 +65,6 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         if (enemyHealth == null) return;
 
-        // DEBUG: Stampa se la vita cambia
         if (enemyHealth.currentHealth != previousHealth)
         {
             Debug.Log($"[DEBUG] Vita cambiata! Vecchia: {previousHealth}, Nuova: {enemyHealth.currentHealth}");
@@ -77,7 +89,6 @@ public class DemonBoss_Movement : Enemy_Movement
             }
         }
 
-        // Controllo trasformazione sicuro (eseguito una sola volta)
         if (isFlamePhase && !isTransforming && enemyHealth.currentHealth <= healthThresholdToTransform)
         {
             Debug.Log("[DEBUG] Condizione di trasformazione raggiunta! Avvio StartTransformation()");
@@ -146,7 +157,6 @@ public class DemonBoss_Movement : Enemy_Movement
 
         anim.SetBool("IsTransforming", false);
         
-        // Forziamo lo stato logico su Idle e resettiamo/impostiamo correttamente i parametri
         enemyState = EnemyState.Idle;
         anim.SetBool("IsDemonIdle", true);
         anim.SetBool("IsDemonChasing", false);
@@ -175,7 +185,6 @@ public class DemonBoss_Movement : Enemy_Movement
             {
                 anim.SetBool("IsDemonIdle", true);
                 anim.SetBool("IsDemonChasing", false);
-                Debug.Log("[DEBUG] Animator: IsDemonIdle = TRUE, IsDemonChasing = FALSE");
             }
             else 
             {
@@ -186,12 +195,42 @@ public class DemonBoss_Movement : Enemy_Movement
             {
                 anim.SetBool("IsDemonChasing", true);
                 anim.SetBool("IsDemonIdle", false);
-                Debug.Log("[DEBUG] Animator: IsDemonChasing = TRUE, IsDemonIdle = FALSE");
             }
             else 
             {
                 anim.SetBool("IsDemonChasing", false);
             }
+        }
+    }
+
+    public void ChooseRandomAttack()
+    {
+        if (isTransforming) return;
+
+        int randomAttack = Random.Range(1, 4); 
+
+        switch (randomAttack)
+        {
+            case 1:
+                anim.SetTrigger("Attack1");
+                Debug.Log("[DEBUG] Attacco scelto: Fire Breath");
+                break;
+            case 2:
+                anim.SetTrigger("Attack2");
+                Debug.Log("[DEBUG] Attacco scelto: Cleave");
+                break;
+            case 3:
+                anim.SetTrigger("Attack3");
+                Debug.Log("[DEBUG] Attacco scelto: Smash");
+                break;
+        }
+    }
+
+    public void TriggerCombatAttack()
+    {
+        if (enemyCombat != null)
+        {
+            enemyCombat.Attack();
         }
     }
 
