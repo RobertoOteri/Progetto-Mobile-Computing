@@ -139,6 +139,21 @@ public class DialogueManager : MonoBehaviour
         DisplayNextSentence();
     }
 
+    // Metodo con delay sicuro gestito direttamente da DialogueManager
+    public void StartDialogueSequenceWithDelay(List<DialogueLine> lines, bool isEndingSequence, float delay)
+    {
+        StartCoroutine(StartDialogueDelayedRoutine(lines, isEndingSequence, delay));
+    }
+
+    private IEnumerator StartDialogueDelayedRoutine(List<DialogueLine> lines, bool isEndingSequence, float delay)
+    {
+        if (delay > 0f)
+        {
+            yield return new WaitForSeconds(delay);
+        }
+        StartDialogueSequence(lines, isEndingSequence);
+    }
+
     private void ResetJoystickInput()
     {
         Joystick joystick = FindFirstObjectByType<Joystick>(FindObjectsInactive.Include);
@@ -206,7 +221,7 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(TypeSentence(currentSentence));
     }
 
-    IEnumerator TypeSentence(string sentence)
+    private IEnumerator TypeSentence(string sentence)
     {
         isTyping = true;
 
@@ -252,7 +267,7 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
-        // Si attiva SOLO se era il dialogo conclusivo post-boss
+        // Se è la cutscene finale post-boss avvia EndGameManager
         if (isCurrentDialogueEndingCutscene && EndGameManager.Instance != null)
         {
             isCurrentDialogueEndingCutscene = false;
@@ -260,7 +275,6 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // Dialoghi normali
         if (mobileControls != null)
             mobileControls.SetActive(true);
 

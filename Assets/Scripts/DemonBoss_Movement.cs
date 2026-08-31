@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class DemonBoss_Movement : Enemy_Movement
 {
@@ -14,6 +15,11 @@ public class DemonBoss_Movement : Enemy_Movement
     public float transformedSpeed = 4f; 
     public int healthThresholdToTransform = 2;
 
+    [Header("Dialogo Post-Morte")]
+    [Tooltip("Tempo di attesa (secondi) per l'animazione di morte prima del dialogo")]
+    public float postDeathDelay = 3f;
+    public List<DialogueLine> postBossDialogue = new List<DialogueLine>();
+
     protected override void Start()
     {
         base.Start();
@@ -27,6 +33,7 @@ public class DemonBoss_Movement : Enemy_Movement
         if (enemyHealth != null)
         {
             previousHealth = enemyHealth.currentHealth;
+            enemyHealth.OnDeath += OnBossDefeated;
             Debug.Log($"[DEBUG] Start: Health iniziale = {previousHealth}");
         }
 
@@ -34,6 +41,30 @@ public class DemonBoss_Movement : Enemy_Movement
         anim.SetBool("IsTransforming", false);
         anim.SetBool("IsDemonIdle", false);
         anim.SetBool("IsDemonChasing", false);
+    }
+
+    private void OnDestroy()
+    {
+        if (enemyHealth != null)
+        {
+            enemyHealth.OnDeath -= OnBossDefeated;
+        }
+    }
+
+    private void OnBossDefeated()
+    {
+        Debug.Log($"<color=green>[BOSS] Boss sconfitto! Avvio sequenza con delay sicuro di {postDeathDelay}s.</color>");
+
+        NPCTriggerDialogue.IsBossDefeated = true;
+
+        if (DialogueManager.Instance != null && postBossDialogue.Count > 0)
+        {
+            DialogueManager.Instance.StartDialogueSequenceWithDelay(postBossDialogue, true, postDeathDelay);
+        }
+        else
+        {
+            Debug.LogWarning("[BOSS] DialogueManager non trovato o lista postBossDialogue vuota in DemonBoss_Movement!");
+        }
     }
 
     private void Update()
@@ -52,14 +83,12 @@ public class DemonBoss_Movement : Enemy_Movement
                 if (!isFlamePhase)
                 {
                     // --- FASE 2: Logica del Demone ---
-                    attackTimer -= Time.deltaTime; // Scala continuamente il timer indipendentemente dallo stato
+                    attackTimer -= Time.deltaTime;
 
-                    // Può attaccare solo se il timer è sceso a zero o meno
                     if (attackTimer <= 0f)
                     {
-                        rb.linearVelocity = Vector2.zero; // Ferma subito il movimento
+                        rb.linearVelocity = Vector2.zero;
 
-                        // --- CORRETTO: Gira verso il player PRIMA di scegliere l'attacco ---
                         if ((player.position.x > transform.position.x && facingDirection == -1) || 
                             (player.position.x < transform.position.x && facingDirection == 1))
                         {
@@ -67,7 +96,7 @@ public class DemonBoss_Movement : Enemy_Movement
                         }
 
                         ChooseRandomAttack();
-                        attackTimer = 3f; // Pausa di 3 secondi esatti prima del prossimo attacco
+                        attackTimer = 3f;
                     }
                     else
                     {
@@ -98,12 +127,7 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         if (enemyHealth == null) return;
 
-        if (enemyHealth.currentHealth != previousHealth)
-        {
-            Debug.Log($"[DEBUG] Vita cambiata! Vecchia: {previousHealth}, Nuova: {enemyHealth.currentHealth}");
-        }
-
-        if (enemyHealth.currentHealth < previousHealth)
+        if (enemyHealth.currentHealth < previousHealth && enemyHealth.currentHealth > 0)
         {
             previousHealth = enemyHealth.currentHealth;
             
@@ -148,7 +172,6 @@ public class DemonBoss_Movement : Enemy_Movement
 
             player = hits[0].transform;
 
-            // Gira sempre il boss verso il player se si trova sul lato opposto
             if ((player.position.x > transform.position.x && facingDirection == -1) || 
                 (player.position.x < transform.position.x && facingDirection == 1))
             {
@@ -186,6 +209,7 @@ public class DemonBoss_Movement : Enemy_Movement
             }
         }
     }
+
     private void StartTransformation()
     {
         isTransforming = true;
@@ -202,7 +226,7 @@ public class DemonBoss_Movement : Enemy_Movement
         isTransforming = false;
         isFlamePhase = false;
         speed = transformedSpeed; 
-        attackTimer = 3f; // Imposta il cooldown iniziale dopo la trasformazione
+        attackTimer = 3f;
 
         anim.SetBool("IsTransforming", false);
         
@@ -215,8 +239,7 @@ public class DemonBoss_Movement : Enemy_Movement
 
     public override void ChangeState(EnemyState newState)
     {
-        if (anim == null) return;
-        if (isTransforming) return; 
+        if (anim == null || isTransforming) return;
 
         enemyState = newState;
 
@@ -291,8 +314,7 @@ public class DemonBoss_Movement : Enemy_Movement
         facingDirection *= -1;
         Vector3 scale = transform.localScale;
         scale.x *= -1; 
-        transform.localScale = scale; // Corretto da transform.Scale a transform.localScale
-
+        transform.localScale = scale;
     }
 
     protected override void Chase()
