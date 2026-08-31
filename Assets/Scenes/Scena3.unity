@@ -54647,8 +54647,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.174738, y: 0.1350001}
-  m_Radius: 0.51942354
+  m_Offset: {x: -0.21397598, y: 0.1448474}
+  m_Radius: 0.847972
 --- !u!61 &1551780278
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -54758,7 +54758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Combat
   damage: 1
   attackPoint: {fileID: 1791481422}
-  weaponRange: 0.8
+  weaponRange: 5
   knockbackForce: 8
   stunTime: 0.8
   playerLayer:
@@ -55665,8 +55665,8 @@ Transform:
   m_GameObject: {fileID: 1791481421}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.157, y: 0.054, z: 0}
-  m_LocalScale: {x: 0.5714285, y: 0.57142854, z: 0}
+  m_LocalPosition: {x: 0.054, y: 0.054, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1551780276}
