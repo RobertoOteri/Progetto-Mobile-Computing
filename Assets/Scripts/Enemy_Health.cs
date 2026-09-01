@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class Enemy_Health : MonoBehaviour
 {
@@ -19,11 +20,15 @@ public class Enemy_Health : MonoBehaviour
     public AudioClip deathSound; 
     public float deathSoundVolume = 0.5f; 
 
+    // Notifica ad altri script (come il Boss) che questo nemico è morto
+    public event Action OnDeath;
+
     private Animator anim;
     private Collider2D col;
     private SpriteRenderer sr;
     private Color originalColor;
     private Coroutine flashCoroutine;
+    private bool isDead = false;
 
     private void Start()
     {
@@ -40,6 +45,8 @@ public class Enemy_Health : MonoBehaviour
 
     public void ChangeHealth(int amount)
     {
+        if (isDead) return;
+
         currentHealth += amount;
 
         // Se ha subito danno ed è ancora vivo
@@ -82,28 +89,34 @@ public class Enemy_Health : MonoBehaviour
 
     private void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
+        // Avvisa chiunque sia in ascolto (es. il Boss)
+        OnDeath?.Invoke();
+
+        if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+        if (sr != null) sr.color = originalColor;
+
+        if (col != null) col.enabled = false;
+
+        Enemy_Movement movement = GetComponent<Enemy_Movement>();
+        if (movement != null) 
         {
-            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
-            if (sr != null) sr.color = originalColor;
-
-            Enemy_Movement movement = GetComponent<Enemy_Movement>();
-            if (movement != null) 
-            {
-                movement.enabled = false;
-            }
-
-            if (anim != null)
-            {
-                anim.SetTrigger("die");
-            }
-
-            if (deathSound != null && AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlaySFXWithVolume(deathSound, deathSoundVolume);
-            }
-
-            // Usa la variabile pubblica invece di un numero fisso
-            Destroy(gameObject, deathDelay);
+            movement.enabled = false;
         }
+
+        if (anim != null)
+        {
+            anim.SetTrigger("die");
+        }
+
+        if (deathSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFXWithVolume(deathSound, deathSoundVolume);
+        }
+
+        // Distruzione standard per tutti i nemici
+        Destroy(gameObject, deathDelay);
     }
 }
