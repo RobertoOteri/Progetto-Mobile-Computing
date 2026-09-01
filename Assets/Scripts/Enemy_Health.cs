@@ -20,8 +20,9 @@ public class Enemy_Health : MonoBehaviour
     public AudioClip deathSound; 
     public float deathSoundVolume = 0.5f; 
 
-    // Notifica ad altri script (come il Boss) che questo nemico è morto
+    // Notifiche eventi per il Boss e per la UI
     public event Action OnDeath;
+    public event Action<int, int> OnHealthChanged; // Parametri: currentHealth, maxHealth
 
     private Animator anim;
     private Collider2D col;
@@ -47,14 +48,14 @@ public class Enemy_Health : MonoBehaviour
     {
         if (isDead) return;
 
-        // CONTROLLO IMMUNITÀ TRASFORMAZIONE BOSS
-        if (amount < 0) // Se sta subendo danno
+        // IMMUNITÀ TRASFORMAZIONE BOSS
+        if (amount < 0)
         {
             DemonBoss_Movement bossMovement = GetComponent<DemonBoss_Movement>();
             if (bossMovement != null && bossMovement.IsTransforming)
             {
                 Debug.Log("[DEBUG] Il boss è in fase di trasformazione ed è immune ai colpi!");
-                return; // Esce senza scalare la vita o attivare effetti di danno
+                return;
             }
         }
 
@@ -68,7 +69,6 @@ public class Enemy_Health : MonoBehaviour
                 anim.SetTrigger("hit");
             }
 
-            // Avvia il flash rosso
             if (sr != null)
             {
                 if (flashCoroutine != null) StopCoroutine(flashCoroutine);
@@ -85,7 +85,11 @@ public class Enemy_Health : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
-        else if (currentHealth <= 0)
+
+        // Notifica alla UI il nuovo valore della vita
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        if (currentHealth <= 0)
         {
             Die(); 
         }
@@ -103,13 +107,11 @@ public class Enemy_Health : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        // CONTROLLO DIRETTO: Se questo nemico ha il componente DemonBoss_Movement, è il boss!
         if (GetComponent<DemonBoss_Movement>() != null)
         {
             NPCTriggerDialogue.IsBossDefeated = true;
         }
 
-        // Avvisa chiunque sia in ascolto
         OnDeath?.Invoke();
 
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);

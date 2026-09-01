@@ -88,10 +88,8 @@ public class DemonBoss_Movement : Enemy_Movement
             AudioManager.Instance.Invoke("PlayRegularBGM", 1.5f); 
         }
 
-        // Avvia il monologo di Jack tramite il DialogueManager dopo il delay specificato
         if (DialogueManager.Instance != null && postBossDialogue.Count > 0)
         {
-            // false = non fa partire l'EndGameCanvas in Scena 3 (partirà da Kael in Scena 1)
             DialogueManager.Instance.StartDialogueSequenceWithDelay(postBossDialogue, false, postDeathDelay);
         }
         else
@@ -186,9 +184,20 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         canChase = true;
         Debug.Log("[DEBUG] Dialogo terminato: il boss è sbloccato e può inseguire il player.");
+        
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayBossMusic();
+        }
+
+        if (SongPopupUI.Instance != null)
+        {
+            SongPopupUI.Instance.ShowSongPopup();
+        }
+
+        if (BossHealthBarUI.Instance != null && enemyHealth != null)
+        {
+            BossHealthBarUI.Instance.InitializeBossBar(enemyHealth);
         }
     }
 
@@ -261,7 +270,6 @@ public class DemonBoss_Movement : Enemy_Movement
         {
             enemyHealth.OnDeath -= HandleBossDeath;
         }
-
     }
 
     protected override void CheckForPlayer()
@@ -510,6 +518,7 @@ public class DemonBoss_Movement : Enemy_Movement
             base.Chase();
         }
     }
+
     public void FillBossSaveData(EnemySaveData data)
     {
         data.isFlamePhase = isFlamePhase;
@@ -518,11 +527,10 @@ public class DemonBoss_Movement : Enemy_Movement
         data.isBossActive = canChase && (GetComponent<Enemy_Health>() != null && GetComponent<Enemy_Health>().currentHealth > 0);
     }
 
-    // Ripristina lo stato del boss quando si carica la partita
     public void LoadBossData(EnemySaveData data)
     {
         isFlamePhase = data.isFlamePhase;
-        isTransforming = data.isTransforming;
+        data.isTransforming = isTransforming;
         canChase = data.canChase;
 
         if (data.isBossActive)
@@ -533,7 +541,6 @@ public class DemonBoss_Movement : Enemy_Movement
             }
         }
 
-        // Se era già in Fase 2, adatta velocità e animazioni istantaneamente
         if (!isFlamePhase)
         {
             speed = transformedSpeed;
