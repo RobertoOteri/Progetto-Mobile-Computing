@@ -47,6 +47,17 @@ public class Enemy_Health : MonoBehaviour
     {
         if (isDead) return;
 
+        // CONTROLLO IMMUNITÀ TRASFORMAZIONE BOSS
+        if (amount < 0) // Se sta subendo danno
+        {
+            DemonBoss_Movement bossMovement = GetComponent<DemonBoss_Movement>();
+            if (bossMovement != null && bossMovement.IsTransforming)
+            {
+                Debug.Log("[DEBUG] Il boss è in fase di trasformazione ed è immune ai colpi!");
+                return; // Esce senza scalare la vita o attivare effetti di danno
+            }
+        }
+
         currentHealth += amount;
 
         // Se ha subito danno ed è ancora vivo

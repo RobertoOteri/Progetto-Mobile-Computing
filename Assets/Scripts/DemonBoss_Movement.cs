@@ -11,6 +11,8 @@ public class DemonBoss_Movement : Enemy_Movement
     private int previousHealth;
     private float attackTimer = 0f;
     private bool isQuitting = false;
+    [Header("Transform Status")]
+    public bool IsTransforming => isTransforming;
 
     [Header("Dialogue Control")]
     public bool canChase = false; // Il boss non insegue finché il dialogo non finisce
