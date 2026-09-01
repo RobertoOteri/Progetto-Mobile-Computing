@@ -3,15 +3,25 @@ using UnityEngine;
 
 public class NPCTriggerDialogue : MonoBehaviour
 {
+    [Header("Configurazione Tipo")]
+    [Tooltip("Spunta se questo script è attaccato al Boss")]
+    public bool isBoss = false;
+
     [Header("Identificativo NPC")]
     public string npcID = "NPC_Alieno_1";
 
-    public static bool HasHadFirstTalkSession
+    // Proprietà dinamica per i salvataggi (unica per ogni NPC o per il Boss)
+    public bool HasHadFirstTalkSession
     {
-        get => PlayerPrefs.GetInt("NPC_FirstTalkDone", 0) == 1;
+        get
+        {
+            string key = isBoss ? "Boss_FirstTalkDone" : $"{npcID}_FirstTalkDone";
+            return PlayerPrefs.GetInt(key, 0) == 1;
+        }
         set
         {
-            PlayerPrefs.SetInt("NPC_FirstTalkDone", value ? 1 : 0);
+            string key = isBoss ? "Boss_FirstTalkDone" : $"{npcID}_FirstTalkDone";
+            PlayerPrefs.SetInt(key, value ? 1 : 0);
             PlayerPrefs.Save();
         }
     }
@@ -22,7 +32,8 @@ public class NPCTriggerDialogue : MonoBehaviour
         set
         {
             PlayerPrefs.SetInt("BossDefeatedState", value ? 1 : 0);
-            PlayerPrefs.Save();
+            PlayerPrefs.Save(); // Forza la scrittura immediata su disco
+            Debug.Log($"[DEBUG SALVATAGGIO] IsBossDefeated salvato come: {value}");
         }
     }
 
@@ -40,6 +51,7 @@ public class NPCTriggerDialogue : MonoBehaviour
     public List<DialogueLine> bossDefeatedConversation = new List<DialogueLine>();
 
     private bool playerInRepeatZone = false;
+    private bool waitingForDialogueToEnd = false; // Serve per sbloccare il boss alla fine del testo
 
     private void Start()
     {
@@ -68,6 +80,26 @@ public class NPCTriggerDialogue : MonoBehaviour
             Debug.Log("<color=cyan>[RESET] PlayerPrefs resettati! Partita nuova.</color>");
         }
         #endif
+
+        // CONTROLLO PER SBLOCCARE IL BOSS APPENA FINISCE IL PRIMO DIALOGO
+        if (isBoss && waitingForDialogueToEnd)
+        {
+            bool isDialogueActive = DialogueManager.Instance != null && 
+                                     DialogueManager.Instance.dialoguePanel != null && 
+                                     DialogueManager.Instance.dialoguePanel.activeSelf;
+
+            // Se il dialogo era attivo ma ora si è chiuso, sblocchiamo il boss!
+            if (!isDialogueActive)
+            {
+                waitingForDialogueToEnd = false;
+                DemonBoss_Movement bossMovement = FindFirstObjectByType<DemonBoss_Movement>();
+                if (bossMovement != null)
+                {
+                    bossMovement.EnableBossChase();
+                    Debug.Log("[DEBUG] Dialogo del boss terminato: adesso parte l'inseguimento!");
+                }
+            }
+        }
 
         if (playerInRepeatZone && HasHadFirstTalkSession)
         {
@@ -122,10 +154,16 @@ public class NPCTriggerDialogue : MonoBehaviour
             if (firstContactZone != null)
                 firstContactZone.SetActive(false);
 
-            // ---> AVVIA LA MUSICA DEL BOSS QUI (o alla fine del dialogo)
-            if (BossMusicManager.Instance != null)
+            if (isBoss)
             {
-                BossMusicManager.Instance.PlayBossMusic();
+                // Mettiamo in ascolto il controllo per sbloccare il boss a fine dialogo
+                waitingForDialogueToEnd = true;
+
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.FadeOutMusic(1.0f); // Ferma la BGM con un fade out di 1 secondo
+                    AudioManager.Instance.Invoke("PlayBossMusic", 1.0f); // Fa partire la musica del boss subito dopo il fade
+                }
             }
         }
     }

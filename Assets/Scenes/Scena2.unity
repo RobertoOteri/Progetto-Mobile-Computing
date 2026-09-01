@@ -66578,6 +66578,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1879117088}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1357125162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1357125164}
+  - component: {fileID: 1357125163}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1357125163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357125162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16e8d079a367b904ea0d12f49025b211, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawn
+  defaultSpawnPoint: {fileID: 0}
+  playerTag: Player
+--- !u!4 &1357125164
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357125162}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.97, y: 65.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1364521153
 GameObject:
   m_ObjectHideFlags: 0
@@ -66984,6 +67030,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9dc365b245e38c40953349ac79aa390, type: 3}
+--- !u!1 &1459836500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1459836501}
+  m_Layer: 0
+  m_Name: SpawnPointFromScena3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1459836501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459836500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.33, y: -18.93, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1505629316 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1399284247946387004, guid: f2b549c8c3562c644bf087d7e84596bc,
@@ -68537,7 +68614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6deb7558922ae740a03423d486de6cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneChanger
-  sceneToLoad: Scena2
+  sceneToLoad: Scena3
   fadeAnim: {fileID: 1631643183}
   fadeTime: 0.8
   targetSpawnPointName: 
@@ -219612,3 +219689,5 @@ SceneRoots:
   - {fileID: 477011976}
   - {fileID: 1559118933}
   - {fileID: 1872696850}
+  - {fileID: 1459836501}
+  - {fileID: 1357125164}

@@ -24,6 +24,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip typewriterSound;
     public AudioClip introAmbientSource;
     public AudioClip bgmMusic;
+    public AudioClip bossMusicClip;
 
     [Header("--- Settings Camminata ---")]
     [SerializeField] private float fadeSpeed = 8f;
@@ -279,4 +280,21 @@ public class AudioManager : MonoBehaviour
         sfxSource.pitch = 1f;
         dieSoundCoroutine = null;
     }
+
+    public void PlayBossMusic()
+    {
+        PlayMusic(bossMusicClip, 0.5f);
+    }
+
+    public void PlayRegularBGM()
+    {
+        PlayMusic(bgmMusic, 0.5f);
+    }
+
+    public void StopBossMusic(float duration = 1.5f)
+    {
+        FadeOutMusic(duration);
+    }
+
+    
 }

@@ -92,7 +92,13 @@ public class Enemy_Health : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        // Avvisa chiunque sia in ascolto (es. il Boss)
+        // CONTROLLO DIRETTO: Se questo nemico ha il componente DemonBoss_Movement, è il boss!
+        if (GetComponent<DemonBoss_Movement>() != null)
+        {
+            NPCTriggerDialogue.IsBossDefeated = true;
+        }
+
+        // Avvisa chiunque sia in ascolto
         OnDeath?.Invoke();
 
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
@@ -116,7 +122,6 @@ public class Enemy_Health : MonoBehaviour
             AudioManager.Instance.PlaySFXWithVolume(deathSound, deathSoundVolume);
         }
 
-        // Distruzione standard per tutti i nemici
         Destroy(gameObject, deathDelay);
     }
 }
