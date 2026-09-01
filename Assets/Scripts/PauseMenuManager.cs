@@ -222,6 +222,13 @@ public class PauseMenuManager : MonoBehaviour
         if (blurOverlay != null) blurOverlay.SetActive(true);
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(true);
 
+        if (AudioManager.Instance != null)
+        {
+            // Ferma direttamente il suono della camminata tramite il manager audio se esiste un metodo apposito, 
+            // oppure azzera/ferma le sorgenti di effetti sonori.
+            AudioManager.Instance.StopAllSFX(); 
+        }
+
         Time.timeScale = 0f;
         isPaused = true;
     }

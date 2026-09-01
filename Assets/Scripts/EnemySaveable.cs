@@ -27,9 +27,16 @@ public class EnemySaveable : MonoBehaviour
         data.posY = transform.position.y;
         data.isDead = !gameObject.activeSelf;
 
-        // Se hai uno script di salute del nemico (es. EnemyHealth), leggi la vita qui:
-        // EnemyHealth hp = GetComponent<EnemyHealth>();
-        // if (hp != null) data.currentHealth = hp.currentHealth;
+        // Salva la vita corrente se ha il componente Enemy_Health
+        Enemy_Health hp = GetComponent<Enemy_Health>();
+        if (hp != null) data.currentHealth = hp.currentHealth;
+
+        // Se questo script appartiene al Boss, salva anche i suoi dati specifici
+        DemonBoss_Movement boss = GetComponent<DemonBoss_Movement>();
+        if (boss != null)
+        {
+            boss.FillBossSaveData(data);
+        }
 
         return data;
     }
@@ -51,8 +58,15 @@ public class EnemySaveable : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
         }
 
-        // Se hai uno script di salute del nemico, ripristina la vita qui:
-        // EnemyHealth hp = GetComponent<EnemyHealth>();
-        // if (hp != null) hp.currentHealth = data.currentHealth;
+        // Ripristina la vita
+        Enemy_Health hp = GetComponent<Enemy_Health>();
+        if (hp != null) hp.currentHealth = data.currentHealth;
+
+        // Se è il boss, ripristina la fase e lo stato di movimento
+        DemonBoss_Movement boss = GetComponent<DemonBoss_Movement>();
+        if (boss != null)
+        {
+            boss.LoadBossData(data);
+        }
     }
 }

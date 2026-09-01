@@ -3778,6 +3778,7 @@ MonoBehaviour:
   typewriterSound: {fileID: 8300000, guid: 657a059e686451b449732ac1e080a350, type: 3}
   introAmbientSource: {fileID: 8300000, guid: a310059970799564d8fb01729debdf52, type: 3}
   bgmMusic: {fileID: 8300000, guid: 6e165077f2d273341ba534ae362fa18e, type: 3}
+  bossMusicClip: {fileID: 8300000, guid: 4a420aed4efb3874cad493917794b3b6, type: 3}
   fadeSpeed: 4
   walkMaxVolume: 0.3
   walkPitch: 0.6

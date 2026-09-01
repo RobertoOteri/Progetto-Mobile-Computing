@@ -270,6 +270,23 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void StopAllSFX()
+    {
+        // Ferma la sorgente principale degli effetti sonori (colpi, spari, tasti, ecc.)
+        if (sfxSource != null)
+        {
+            sfxSource.Stop();
+        }
+
+        // Ferma e azzera il suono della camminata
+        isWalking = false;
+        if (walkSource != null)
+        {
+            walkSource.volume = 0f;
+            walkSource.Stop();
+        }
+    }
+
     private IEnumerator PlaySFXWithSettings(AudioClip clip, float volume, float pitch)
     {
         sfxSource.pitch = pitch;
@@ -283,7 +300,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBossMusic()
     {
-        PlayMusic(bossMusicClip, 0.5f);
+        PlayMusic(bossMusicClip, 0.3f);
     }
 
     public void PlayRegularBGM()

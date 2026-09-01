@@ -8,6 +8,11 @@ public class EnemySaveData
     public float posY;
     public int currentHealth;
     public bool isDead;
+
+    public bool isFlamePhase = true;
+    public bool isTransforming = false;
+    public bool canChase = false;
+    public bool isBossActive;
 }
 
 [System.Serializable]

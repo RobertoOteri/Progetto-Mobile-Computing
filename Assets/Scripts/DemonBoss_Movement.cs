@@ -186,6 +186,10 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         canChase = true;
         Debug.Log("[DEBUG] Dialogo terminato: il boss è sbloccato e può inseguire il player.");
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayBossMusic();
+        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -258,13 +262,6 @@ public class DemonBoss_Movement : Enemy_Movement
             enemyHealth.OnDeath -= HandleBossDeath;
         }
 
-        if (enemyHealth == null || enemyHealth.currentHealth <= 0)
-        {
-            if (BossMusicManager.Instance != null)
-            {
-                BossMusicManager.Instance.StopBossMusicWithFade();
-            }
-        }
     }
 
     protected override void CheckForPlayer()
@@ -511,6 +508,46 @@ public class DemonBoss_Movement : Enemy_Movement
         else
         {
             base.Chase();
+        }
+    }
+    public void FillBossSaveData(EnemySaveData data)
+    {
+        data.isFlamePhase = isFlamePhase;
+        data.isTransforming = isTransforming;
+        data.canChase = canChase;
+        data.isBossActive = canChase && (GetComponent<Enemy_Health>() != null && GetComponent<Enemy_Health>().currentHealth > 0);
+    }
+
+    // Ripristina lo stato del boss quando si carica la partita
+    public void LoadBossData(EnemySaveData data)
+    {
+        isFlamePhase = data.isFlamePhase;
+        isTransforming = data.isTransforming;
+        canChase = data.canChase;
+
+        if (data.isBossActive)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayBossMusic();
+            }
+        }
+
+        // Se era già in Fase 2, adatta velocità e animazioni istantaneamente
+        if (!isFlamePhase)
+        {
+            speed = transformedSpeed;
+            anim.SetBool("IsFlameIdle", false);
+            anim.SetBool("IsChasing", false);
+            anim.SetBool("IsDemonIdle", true);
+        }
+        else if (isTransforming)
+        {
+            anim.SetBool("IsTransforming", true);
+        }
+        else
+        {
+            anim.SetBool("IsFlameIdle", true);
         }
     }
 }

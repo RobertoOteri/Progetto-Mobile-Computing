@@ -1839,6 +1839,7 @@ MonoBehaviour:
   typewriterSound: {fileID: 0}
   introAmbientSource: {fileID: 0}
   bgmMusic: {fileID: 8300000, guid: 6e165077f2d273341ba534ae362fa18e, type: 3}
+  bossMusicClip: {fileID: 0}
   fadeSpeed: 4
   walkMaxVolume: 0.3
   walkPitch: 0.6
@@ -2429,7 +2430,7 @@ Transform:
   m_GameObject: {fileID: 242118713}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.90227, y: 60.981155, z: -10}
+  m_LocalPosition: {x: -6.8, y: -10.1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16519,7 +16520,7 @@ Transform:
   m_GameObject: {fileID: 545743926}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.92, y: 65.63, z: 0}
+  m_LocalPosition: {x: -6.8, y: -10.1, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16857,7 +16858,7 @@ Transform:
   m_GameObject: {fileID: 611129721}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.92, y: 65.63, z: -10}
+  m_LocalPosition: {x: -6.8, y: -10.1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
