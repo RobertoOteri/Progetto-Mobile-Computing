@@ -55417,6 +55417,28 @@ MonoBehaviour:
   damageCooldown: 1
   transformedSpeed: 4
   healthThresholdToTransform: 2
+  postDeathDelay: 2.7
+  postBossDialogue:
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "<i><color=#CCCCCC>*pant... pant...*</color></i> \"\xC8 stata una battaglia
+      durissima... Quella creatura aveva una potenza devastante.\""
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "\"Ma ce l'ho fatta. Il settore ora \xE8 ripulito e la minaccia \xE8
+      stata neutralizzata.\""
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "\"Non c'\xE8 tempo da perdere. Devo raggiungere subito Kael e riferirgli
+      che il guardiano \xE8 caduto...\""
+  - speakerName: Jack Orbit
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
+    isRightSide: 0
+    sentence: "\"\xC8 il momento di scoprire cosa nasconde davvero questo pianeta
+      e riscuotere la mia ricompensa.\""
   audioSource: {fileID: 1551780286}
   soundAttack1: {fileID: 8300000, guid: 40221051fe159e1419ed8282d803b8f2, type: 3}
   soundAttack2: {fileID: 8300000, guid: 3b3d144bcf647194685132e98de23d9a, type: 3}
@@ -55538,22 +55560,22 @@ MonoBehaviour:
   repeatConversation: []
   bossDefeatedConversation:
   - speakerName: Jack Orbit
-    portrait: {fileID: 0}
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
     isRightSide: 0
     sentence: "<i><color=#CCCCCC>*pant... pant...*</color></i> \"\xC8 stata una battaglia
       durissima... Quella creatura aveva una potenza devastante.\""
   - speakerName: Jack Orbit
-    portrait: {fileID: 0}
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
     isRightSide: 0
     sentence: "\"Ma ce l'ho fatta. Il settore ora \xE8 ripulito e la minaccia \xE8
       stata neutralizzata.\""
   - speakerName: Jack Orbit
-    portrait: {fileID: 0}
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
     isRightSide: 0
     sentence: "\"Non c'\xE8 tempo da perdere. Devo raggiungere subito Kael e riferirgli
       che il guardiano \xE8 caduto...\""
   - speakerName: Jack Orbit
-    portrait: {fileID: 0}
+    portrait: {fileID: 21300000, guid: ce7b3baa5bac4c5f908f345eea062c67, type: 3}
     isRightSide: 0
     sentence: "\"\xC8 il momento di scoprire cosa nasconde davvero questo pianeta
       e riscuotere la mia ricompensa.\""
