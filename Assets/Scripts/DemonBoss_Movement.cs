@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class DemonBoss_Movement : Enemy_Movement
 {
@@ -11,11 +12,12 @@ public class DemonBoss_Movement : Enemy_Movement
     private int previousHealth;
     private float attackTimer = 0f;
     private bool isQuitting = false;
+
     [Header("Transform Status")]
     public bool IsTransforming => isTransforming;
 
     [Header("Dialogue Control")]
-    public bool canChase = false; // Il boss non insegue finché il dialogo non finisce
+    public bool canChase = false;
 
     [Header("Phase 1 Collision Damage")]
     public float damageCooldown = 1f; 
@@ -24,6 +26,12 @@ public class DemonBoss_Movement : Enemy_Movement
     [Header("Phase 2 Settings")]
     public float transformedSpeed = 4f; 
     public int healthThresholdToTransform = 2;
+
+    [Header("Dialogo Post-Morte")]
+    [Tooltip("Tempo di attesa (secondi) per far finire l'animazione di morte prima del monologo di Jack")]
+    public float postDeathDelay = 3f;
+    [Tooltip("Frasi di Jack dopo aver abbattuto il Boss")]
+    public List<DialogueLine> postBossDialogue = new List<DialogueLine>();
 
     [Header("Audio Settings - Attacks")]
     public AudioSource audioSource;
@@ -49,7 +57,7 @@ public class DemonBoss_Movement : Enemy_Movement
         isTransforming = false;
         audioInitialized = false;
         isQuitting = false;
-        canChase = false; // Forziamo esplicitamente a false all'avvio
+        canChase = false;
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         enemyHealth = GetComponent<Enemy_Health>();
@@ -60,7 +68,6 @@ public class DemonBoss_Movement : Enemy_Movement
             previousHealth = enemyHealth.currentHealth;
             Debug.Log($"[DEBUG] Start: Health iniziale = {previousHealth}");
 
-            // Registriamo l'evento di morte del boss tramite Enemy_Health
             enemyHealth.OnDeath += HandleBossDeath;
         }
 
@@ -70,23 +77,31 @@ public class DemonBoss_Movement : Enemy_Movement
         anim.SetBool("IsDemonChasing", false);
     }
 
-    // Metodo eseguito automaticamente quando Enemy_Health invoca l'evento di morte
     private void HandleBossDeath()
     {
-        // IMPOSTA IL BOSS COME SCONFITTO E SALVA SU DISCO
         NPCTriggerDialogue.IsBossDefeated = true;
-        Debug.Log("<color=green>[DEBUG] Evento OnDeath catturato: Boss sconfitto! IsBossDefeated impostato a true.</color>");
+        Debug.Log("<color=green>[DEBUG] Evento OnDeath: Boss sconfitto! IsBossDefeated = true</color>");
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.StopBossMusic(1.5f); 
             AudioManager.Instance.Invoke("PlayRegularBGM", 1.5f); 
         }
+
+        // Avvia il monologo di Jack tramite il DialogueManager dopo il delay specificato
+        if (DialogueManager.Instance != null && postBossDialogue.Count > 0)
+        {
+            // false = non fa partire l'EndGameCanvas in Scena 3 (partirà da Kael in Scena 1)
+            DialogueManager.Instance.StartDialogueSequenceWithDelay(postBossDialogue, false, postDeathDelay);
+        }
+        else
+        {
+            Debug.LogWarning("[BOSS] DialogueManager non trovato o lista postBossDialogue vuota!");
+        }
     }
 
     private void Update()
     {
-        // BLOCCO TOTALE: Se il boss non può muoversi (dialogo in corso), ferma tutto qui!
         if (!canChase)
         {
             if (rb != null)
@@ -157,7 +172,7 @@ public class DemonBoss_Movement : Enemy_Movement
                 }
                 else
                 {
-                    if (enemyState != EnemyState.Chasing)
+                    if (enemyState == EnemyState.Chasing)
                     {
                         ChangeState(EnemyState.Chasing);
                     }
@@ -167,11 +182,10 @@ public class DemonBoss_Movement : Enemy_Movement
         }
     }
 
-    // Metodo pubblico richiamato dal sistema di dialogo alla fine della conversazione
     public void EnableBossChase()
     {
         canChase = true;
-        Debug.Log("[DEBUG] Dialogo terminato: il boss è ora sbloccato e può inseguire il player.");
+        Debug.Log("[DEBUG] Dialogo terminato: il boss è sbloccato e può inseguire il player.");
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -239,7 +253,6 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         if (isQuitting) return;
 
-        // Rimuoviamo la registrazione dell'evento per evitare memory leak
         if (enemyHealth != null)
         {
             enemyHealth.OnDeath -= HandleBossDeath;
@@ -256,7 +269,6 @@ public class DemonBoss_Movement : Enemy_Movement
 
     protected override void CheckForPlayer()
     {
-        // Se il dialogo non è ancora finito o sta trasformando/attaccando, non fare nulla
         if (!canChase || isTransforming || enemyState == EnemyState.Attacking) return;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(detectionPoint.position, playerDetectRange, playerLayer);
