@@ -12,6 +12,10 @@ public class DemonBoss_Movement : Enemy_Movement
     private float attackTimer = 0f;
     private bool isQuitting = false;
 
+    [Header("Phase 1 Collision Damage")]
+    public float damageCooldown = 1f; 
+    private float lastDamageTime = 0f;
+
     [Header("Phase 2 Settings")]
     public float transformedSpeed = 4f; 
     public int healthThresholdToTransform = 2;
@@ -69,13 +73,16 @@ public class DemonBoss_Movement : Enemy_Movement
 
         if (enemyState != EnemyState.Knockback && !isTransforming)
         {
+            if (enemyState == EnemyState.Attacking)
+            {
+                rb.linearVelocity = Vector2.zero;
+                return; 
+            }
+
             CheckForPlayer();
 
             if (player != null)
             {
-                float currentAttackRange = (enemyCombat != null) ? enemyCombat.weaponRange : 1.5f;
-                float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
                 if (!isFlamePhase)
                 {
                     attackTimer -= Time.deltaTime; 
@@ -84,12 +91,21 @@ public class DemonBoss_Movement : Enemy_Movement
                     {
                         rb.linearVelocity = Vector2.zero; 
 
-                        if ((player.position.x > transform.position.x && facingDirection == -1) || 
-                            (player.position.x < transform.position.x && facingDirection == 1))
+                        float directionToPlayer = player.position.x - transform.position.x;
+                        Vector3 localScale = transform.localScale;
+                        if (directionToPlayer > 0)
                         {
-                            Flip();
+                            localScale.x = -Mathf.Abs(localScale.x);
+                            facingDirection = 1;
                         }
+                        else if (directionToPlayer < 0)
+                        {
+                            localScale.x = Mathf.Abs(localScale.x);
+                            facingDirection = -1;
+                        }
+                        transform.localScale = localScale;
 
+                        ChangeState(EnemyState.Attacking);
                         ChooseRandomAttack();
                         attackTimer = 3f; 
                     }
@@ -104,13 +120,31 @@ public class DemonBoss_Movement : Enemy_Movement
                 }
                 else
                 {
-                    if (enemyState == EnemyState.Chasing)
+                    if (enemyState != EnemyState.Chasing)
                     {
-                        Chase();
+                        ChangeState(EnemyState.Chasing);
                     }
-                    else
+                    Chase();
+                }
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (isFlamePhase && !isTransforming && enemyState != EnemyState.Knockback)
+        {
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                if (Time.time >= lastDamageTime + damageCooldown)
+                {
+                    PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+                    
+                    if (playerHealth != null)
                     {
-                        rb.linearVelocity = Vector2.zero;
+                        playerHealth.TakeDamage(1);
+                        lastDamageTime = Time.time;
+                        Debug.Log("[DEBUG] Il boss ha urtato il player in Fase 1 infliggendo danno da collisione!");
                     }
                 }
             }
@@ -145,7 +179,6 @@ public class DemonBoss_Movement : Enemy_Movement
             }
         }
 
-        // Se la vita arriva a 0 o meno, consideriamo il boss sconfitto
         if (enemyHealth.currentHealth <= 0)
         {
             if (BossMusicManager.Instance != null)
@@ -168,10 +201,8 @@ public class DemonBoss_Movement : Enemy_Movement
 
     private void OnDestroy()
     {
-        // Se l'applicazione si chiude non facciamo partire il fade della musica
         if (isQuitting) return;
 
-        // Se il boss viene distrutto e la sua vita è a 0 (o il componente salute non esiste più perché distrutto), spegne la musica
         if (enemyHealth == null || enemyHealth.currentHealth <= 0)
         {
             if (BossMusicManager.Instance != null)
@@ -183,7 +214,7 @@ public class DemonBoss_Movement : Enemy_Movement
 
     protected override void CheckForPlayer()
     {
-        if (isTransforming) return;
+        if (isTransforming || enemyState == EnemyState.Attacking) return;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(detectionPoint.position, playerDetectRange, playerLayer);
 
@@ -204,27 +235,6 @@ public class DemonBoss_Movement : Enemy_Movement
                 (player.position.x < transform.position.x && facingDirection == 1))
             {
                 Flip();
-            }
-
-            if (isFlamePhase)
-            {
-                float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-                
-                if (distanceToPlayer <= attackRange)
-                {
-                    rb.linearVelocity = Vector2.zero;
-                    if (enemyState != EnemyState.Attacking)
-                    {
-                        ChangeState(EnemyState.Attacking);
-                    }
-                }
-                else
-                {
-                    if (enemyState != EnemyState.Chasing)
-                    {
-                        ChangeState(EnemyState.Chasing);
-                    }
-                }
             }
         }
         else
@@ -394,6 +404,15 @@ public class DemonBoss_Movement : Enemy_Movement
         }
     }
 
+    public void OnAttackFinished()
+    {
+        if (!isFlamePhase)
+        {
+            ChangeState(EnemyState.Chasing);
+            Debug.Log("[DEBUG] Attacco terminato, il boss riprende a inseguire il player.");
+        }
+    }
+
     public void TriggerCombatAttack()
     {
         if (enemyCombat != null)
@@ -414,13 +433,31 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         if (player == null) return;
 
-        if ((player.position.x > transform.position.x && facingDirection == 1) || 
-            (player.position.x < transform.position.x && facingDirection == -1))
+        if (isFlamePhase)
         {
-            Flip();
-        }
+            // Corretto per la Fase 1: applica la logica personalizzata speculare
+            float directionToPlayer = player.position.x - transform.position.x;
+            Vector3 localScale = transform.localScale;
 
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.linearVelocity = direction * speed;
+            if (directionToPlayer > 0)
+            {
+                localScale.x = -Mathf.Abs(localScale.x);
+                facingDirection = 1;
+            }
+            else if (directionToPlayer < 0)
+            {
+                localScale.x = Mathf.Abs(localScale.x);
+                facingDirection = -1;
+            }
+            transform.localScale = localScale;
+
+            Vector2 direction = (player.position - transform.position).normalized;
+            rb.linearVelocity = direction * speed;
+        }
+        else
+        {
+            // Lascia invariato o usa il base per la Fase 2
+            base.Chase();
+        }
     }
 }
