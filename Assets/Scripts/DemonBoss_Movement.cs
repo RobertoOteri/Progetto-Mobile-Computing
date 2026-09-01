@@ -88,10 +88,8 @@ public class DemonBoss_Movement : Enemy_Movement
             AudioManager.Instance.Invoke("PlayRegularBGM", 1.5f); 
         }
 
-        // Avvia il monologo di Jack tramite il DialogueManager dopo il delay specificato
         if (DialogueManager.Instance != null && postBossDialogue.Count > 0)
         {
-            // false = non fa partire l'EndGameCanvas in Scena 3 (partirà da Kael in Scena 1)
             DialogueManager.Instance.StartDialogueSequenceWithDelay(postBossDialogue, false, postDeathDelay);
         }
         else
@@ -182,10 +180,17 @@ public class DemonBoss_Movement : Enemy_Movement
         }
     }
 
+    // Richiamato alla fine del dialogo iniziale
     public void EnableBossChase()
     {
         canChase = true;
-        Debug.Log("[DEBUG] Dialogo terminato: il boss è sbloccato e può inseguire il player.");
+        Debug.Log("[DEBUG] Dialogo terminato: il boss è sbloccato e parte il combattimento!");
+
+        // Mostra il banner / copertina della canzone a sinistra
+        if (SongPopupUI.Instance != null)
+        {
+            SongPopupUI.Instance.ShowSongPopup();
+        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
