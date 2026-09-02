@@ -196,7 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BombProjectile
   fuseTime: 1.8
   explosionRadius: 2
-  explosionDamage: 3
+  explosionDamage: 5
   knockbackForce: 30
   enemyLayer:
     serializedVersion: 2

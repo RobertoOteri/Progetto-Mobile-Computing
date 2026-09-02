@@ -2952,6 +2952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 186803d2d9e1f3443800f38f50855412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCTriggerDialogue
+  isBoss: 0
   npcID: NPC_Alieno_1
   firstContactZone: {fileID: 1091497819}
   interactPrompt: {fileID: 616819378}
@@ -3555,6 +3556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45c56eba62dbaae4799cb6753533d10a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  audioMixer: {fileID: 0}
   sfxSource: {fileID: 408526982}
   walkSource: {fileID: 408526983}
   musicSource: {fileID: 408526986}
@@ -3571,6 +3573,7 @@ MonoBehaviour:
   typewriterSound: {fileID: 8300000, guid: 657a059e686451b449732ac1e080a350, type: 3}
   introAmbientSource: {fileID: 0}
   bgmMusic: {fileID: 8300000, guid: 6e165077f2d273341ba534ae362fa18e, type: 3}
+  bossMusicClip: {fileID: 0}
   fadeSpeed: 4
   walkMaxVolume: 0.3
   walkPitch: 0.6
@@ -32146,6 +32149,13 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8713642890388513113, guid: 22860e5e0685c6f4487c67dfc8ae94df,
+        type: 3}
+      propertyPath: m_text
+      value: 'Supporto
+
+'
+      objectReference: {fileID: 0}
     - target: {fileID: 8924774229374095927, guid: 22860e5e0685c6f4487c67dfc8ae94df,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
@@ -32667,6 +32677,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   damage: 1
+  swordDamage: 1
+  hammerDamage: 3
   meleeAttackDuration: 0.65
   anim: {fileID: 1795376250}
   playerRifle: {fileID: 0}
