@@ -5,6 +5,9 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
+    [Header("--- Audio Mixer ---")]
+    [SerializeField] private UnityEngine.Audio.AudioMixer audioMixer;
+
     [Header("--- Audio Sources ---")]
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource walkSource;
@@ -69,8 +72,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // --- METODI PER IL MANAGEMENT DELLA MUSICA ---
-
     public bool IsMusicPlaying()
     {
         return musicSource != null && musicSource.isPlaying;
@@ -121,7 +122,6 @@ public class AudioManager : MonoBehaviour
         musicSource.volume = startVolume;
     }
 
-    // --- RIPRODUZIONE SFX ---
 
     public void PlaySFX(AudioClip clip)
     {
@@ -223,8 +223,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // --- INTRO AMBIENT (Aggiornato con introSource) ---
-
     public void PlayIntroAmbient(float volume = 1.5f)
     {
         if (introSource != null && introAmbientSource != null)
@@ -272,18 +270,29 @@ public class AudioManager : MonoBehaviour
 
     public void StopAllSFX()
     {
-        // Ferma la sorgente principale degli effetti sonori (colpi, spari, tasti, ecc.)
         if (sfxSource != null)
         {
             sfxSource.Stop();
         }
 
-        // Ferma e azzera il suono della camminata
         isWalking = false;
         if (walkSource != null)
         {
             walkSource.volume = 0f;
             walkSource.Stop();
+        }
+
+        if (audioMixer != null)
+        {
+            audioMixer.SetFloat("BatGroupParam", -80f); 
+        }
+    }
+
+    public void RestoreBatGroupParam()
+    {
+        if (audioMixer != null)
+        {
+            audioMixer.SetFloat("BatGroupParam", 3f); 
         }
     }
 

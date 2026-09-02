@@ -122,7 +122,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: 6925981976626110918, guid: 6d28207c9ad3ccd42beec6ce517f81c3,
     type: 3}
@@ -257,10 +257,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db348109516efe24786d6d0c47c44d3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Combat
-  damage: 1
+  damage: 2
   attackPoint: {fileID: 7873434168901347508}
   weaponRange: 0.8
-  knockbackForce: 8
+  knockbackForce: 6
   stunTime: 0.8
   playerLayer:
     serializedVersion: 2
@@ -279,12 +279,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2022e0a9cdbb134480e5abeb5a0980e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
-  currentHealth: 4
-  maxHealth: 4
+  currentHealth: 8
+  maxHealth: 8
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.12
   hitSound: {fileID: 8300000, guid: 0bda6b4969403c24795f31f1d17860ab, type: 3}
   hitSoundVolume: 0.5
+  deathDelay: 0.7
   deathSound: {fileID: 8300000, guid: f898ca4d3c042b74aa3879d3dba958ee, type: 3}
   deathSoundVolume: 1.5
 --- !u!114 &4983277821248722478

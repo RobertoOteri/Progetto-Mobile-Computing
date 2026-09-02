@@ -256,7 +256,7 @@ MonoBehaviour:
   damage: 1
   attackPoint: {fileID: 1478146091932594416}
   weaponRange: 1.1
-  knockbackForce: 5
+  knockbackForce: 3
   stunTime: 0.5
   playerLayer:
     serializedVersion: 2
@@ -359,6 +359,7 @@ MonoBehaviour:
   flashDuration: 0.12
   hitSound: {fileID: 8300000, guid: 0bda6b4969403c24795f31f1d17860ab, type: 3}
   hitSoundVolume: 0.5
+  deathDelay: 0.7
   deathSound: {fileID: 8300000, guid: f898ca4d3c042b74aa3879d3dba958ee, type: 3}
   deathSoundVolume: 1.5
 --- !u!114 &8085126445077768859

@@ -63,7 +63,6 @@ public class PauseMenuManager : MonoBehaviour
     {
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
 
-        // 1. Cerca PausaCanvas
         foreach (GameObject root in rootObjects)
         {
             if (root.name == "PausaCanvas")
@@ -87,7 +86,6 @@ public class PauseMenuManager : MonoBehaviour
             }
         }
 
-        // 2. Cerca SettingsCanvas
         foreach (GameObject root in rootObjects)
         {
             if (root.name == "SettingsCanvas")
@@ -97,7 +95,6 @@ public class PauseMenuManager : MonoBehaviour
             }
         }
 
-        // 3. Cerca controlli mobile
         foreach (GameObject root in rootObjects)
         {
             if (root.name == "MobileButtonsCanvas" || root.name == "MobileControls")
@@ -107,7 +104,6 @@ public class PauseMenuManager : MonoBehaviour
             }
         }
 
-        // 4. Cerca HealthCanvas
         foreach (GameObject root in rootObjects)
         {
             if (root.name == "HealthCanvas" || root.name == "HealthBarCanvas" || 
@@ -118,7 +114,6 @@ public class PauseMenuManager : MonoBehaviour
             }
         }
 
-        // 5. Cerca Tasto Pausa (anche dentro Canvas o gerarchia)
         GameObject b = GameObject.Find("BottonePausa");
         if (b == null) b = GameObject.Find("PauseButton");
         if (b != null)
@@ -131,7 +126,6 @@ public class PauseMenuManager : MonoBehaviour
             }
         }
 
-        // 6. Collega Tasto Salva
         if (pauseMenuPanel != null)
         {
             Button[] buttons = pauseMenuPanel.GetComponentsInChildren<Button>(true);
@@ -203,6 +197,11 @@ public class PauseMenuManager : MonoBehaviour
         if (pauseButton != null) pauseButton.gameObject.SetActive(true);
         if (healthCanvas != null) healthCanvas.SetActive(true);
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.RestoreBatGroupParam();
+        }
+
         Time.timeScale = 1f;
         isPaused = false;
     }
@@ -224,8 +223,6 @@ public class PauseMenuManager : MonoBehaviour
 
         if (AudioManager.Instance != null)
         {
-            // Ferma direttamente il suono della camminata tramite il manager audio se esiste un metodo apposito, 
-            // oppure azzera/ferma le sorgenti di effetti sonori.
             AudioManager.Instance.StopAllSFX(); 
         }
 
@@ -249,7 +246,7 @@ public class PauseMenuManager : MonoBehaviour
             if (sm == null) sm = settingsMenuPanel.GetComponentInChildren<SettingsManager>(true);
             if (sm != null)
             {
-                sm.ResetPanelsWithoutSound(); // Invece di CloseAllInfoPanels()
+                sm.ResetPanelsWithoutSound(); 
             }
         }
 

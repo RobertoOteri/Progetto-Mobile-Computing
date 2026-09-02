@@ -3762,6 +3762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45c56eba62dbaae4799cb6753533d10a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  audioMixer: {fileID: 24100000, guid: ef0c4ccd3b3e2134085c35e511300037, type: 2}
   sfxSource: {fileID: 1941723605}
   walkSource: {fileID: 1941723606}
   musicSource: {fileID: 1941723604}

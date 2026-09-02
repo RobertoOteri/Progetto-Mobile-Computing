@@ -174,6 +174,8 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: c29c7f6f4b48664489e9612751e518e6
+    name: BatGroupParam
   - guid: b167d9e74a7cac745aa16bac9905f132
     name: MusicVol
   - guid: a0ea7862a35e1374e9b1307cf05a6b53
@@ -245,7 +247,7 @@ AudioMixerSnapshotController:
     f58ce029c61a0dc49b06a3a33510e5cb: 4.648098
     3199d1597ea888342aacff4a126f0290: -11.762151
     996352cb49dc68743a8d072432530e06: 4.5253077
-    c29c7f6f4b48664489e9612751e518e6: 3.409315
+    c29c7f6f4b48664489e9612751e518e6: 3.1246183
   m_TransitionOverrides: {}
 --- !u!244 &810654066512080594
 AudioMixerEffectController:

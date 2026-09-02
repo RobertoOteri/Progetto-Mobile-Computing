@@ -81,7 +81,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: e348dd09c00864744943417db019e03f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -152,5 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fddd328a83bd2f4faa60d61500a0961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthPotion
+  itemID: 
   healAmount: 4
   healSFX: {fileID: 8300000, guid: d58897bde87d45e4d80dfa47b38f659b, type: 3}

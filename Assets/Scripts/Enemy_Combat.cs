@@ -21,15 +21,12 @@ public class Enemy_Combat : MonoBehaviour
             AudioManager.Instance.PlaySFXWithVolume(attackSFX, attackVolume);
         }
 
-        // Rileva gli oggetti nel raggio d'attacco
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, weaponRange, playerLayer);
 
         if (hits.Length > 0)
         {
-            // Recupera il PlayerHealth dall'oggetto colpito
             PlayerHealth playerHealth = hits[0].GetComponent<PlayerHealth>();
 
-            // Esegue l'attacco SOLO se il giocatore esiste e NON è morto
             if (playerHealth != null && !playerHealth.IsDead)
             {
                 playerHealth.ChangeHealth(-damage);

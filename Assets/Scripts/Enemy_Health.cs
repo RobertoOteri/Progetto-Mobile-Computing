@@ -20,7 +20,6 @@ public class Enemy_Health : MonoBehaviour
     public AudioClip deathSound; 
     public float deathSoundVolume = 0.5f; 
 
-    // Notifiche eventi per il Boss e per la UI
     public event Action OnDeath;
     public event Action<int, int> OnHealthChanged; // Parametri: currentHealth, maxHealth
 
@@ -48,7 +47,6 @@ public class Enemy_Health : MonoBehaviour
     {
         if (isDead) return;
 
-        // IMMUNITÀ TRASFORMAZIONE BOSS
         if (amount < 0)
         {
             DemonBoss_Movement bossMovement = GetComponent<DemonBoss_Movement>();
@@ -61,7 +59,6 @@ public class Enemy_Health : MonoBehaviour
 
         currentHealth += amount;
 
-        // Se ha subito danno ed è ancora vivo
         if (amount < 0 && currentHealth > 0)
         {
             if (anim != null)
@@ -86,7 +83,6 @@ public class Enemy_Health : MonoBehaviour
             currentHealth = maxHealth;
         }
 
-        // Notifica alla UI il nuovo valore della vita
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (currentHealth <= 0)
@@ -116,8 +112,6 @@ public class Enemy_Health : MonoBehaviour
 
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
         if (sr != null) sr.color = originalColor;
-
-        if (col != null) col.enabled = false;
 
         Enemy_Movement movement = GetComponent<Enemy_Movement>();
         if (movement != null) 

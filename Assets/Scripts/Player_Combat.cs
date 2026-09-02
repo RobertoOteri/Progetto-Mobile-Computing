@@ -21,6 +21,9 @@ public class Player_Combat : MonoBehaviour
     public LayerMask enemyLayer;
     public int damage = 1;
 
+    public int swordDamage = 1;
+    public int hammerDamage = 3;
+
     [Header("Durata Attacco Melee")]
     [Tooltip("Tempo totale dell'animazione d'attacco prima di tornare in Idle")]
     public float meleeAttackDuration = 0.55f;
@@ -203,7 +206,6 @@ public class Player_Combat : MonoBehaviour
         if (anim == null || IsThrowingBomb || !isWeaponDrawn) return;
         if (!hasSword && !hasHammer && !hasBomb) return;
 
-        // Evita di interrompere l'attacco corrente prima che sia completato
         if (anim.GetBool("isAttacking")) return;
 
         float vert = 0f;
@@ -317,8 +319,19 @@ public class Player_Combat : MonoBehaviour
         Collider2D[] enemies = Physics2D.OverlapCircleAll(attackPoint.position, weaponRange, enemyLayer);
         if (enemies.Length > 0)
         {
+            int currentDamage = 1;
+
+            if (hasSword)
+            {
+                currentDamage = swordDamage;
+            }
+            else if (hasHammer)
+            {
+                currentDamage = hammerDamage;
+            }
+
             Enemy_Health health = enemies[0].GetComponent<Enemy_Health>();
-            if (health != null) health.ChangeHealth(-damage);
+            if (health != null) health.ChangeHealth(-currentDamage);
 
             Enemy_Knockback kb = enemies[0].GetComponent<Enemy_Knockback>();
             if (kb != null) kb.Knockback(transform, knockbackForce, knockbackTime, stunTime);
