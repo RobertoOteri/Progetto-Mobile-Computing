@@ -47613,7 +47613,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1 &912092310
 GameObject:
@@ -56264,7 +56264,7 @@ MonoBehaviour:
   attackVolume: 0.609
   loopAudioSource: {fileID: 1551780285}
   soundTransform: {fileID: 8300000, guid: 4faf250372e2d0840a99f5f30b21b2a8, type: 3}
-  transformVolume: 0.5
+  transformVolume: 0.902
   soundPhase1Idle: {fileID: 8300000, guid: e043a87e3be5c534fa1fe00ded0b0dd3, type: 3}
   soundPhase1Walk: {fileID: 8300000, guid: e043a87e3be5c534fa1fe00ded0b0dd3, type: 3}
   soundPhase2Walk: {fileID: 0}
@@ -237162,21 +237162,21 @@ SceneRoots:
   m_Roots:
   - {fileID: 1475200705}
   - {fileID: 621454663}
-  - {fileID: 1955625965}
   - {fileID: 1227068895}
-  - {fileID: 913257801}
+  - {fileID: 1955625965}
   - {fileID: 415912833}
-  - {fileID: 1480173953}
-  - {fileID: 815320707}
+  - {fileID: 913257801}
   - {fileID: 1071148082}
+  - {fileID: 493669042}
+  - {fileID: 1480173953}
+  - {fileID: 802578340}
+  - {fileID: 815320707}
   - {fileID: 1552619825}
   - {fileID: 834438975}
   - {fileID: 415436339}
   - {fileID: 1551780276}
   - {fileID: 49426576}
   - {fileID: 1784120848}
-  - {fileID: 493669042}
   - {fileID: 303596137}
   - {fileID: 1411193242}
   - {fileID: 1264138877}
-  - {fileID: 802578340}

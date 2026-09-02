@@ -66,8 +66,6 @@ public class DemonBoss_Movement : Enemy_Movement
         if (enemyHealth != null)
         {
             previousHealth = enemyHealth.currentHealth;
-            Debug.Log($"[DEBUG] Start: Health iniziale = {previousHealth}");
-
             enemyHealth.OnDeath += HandleBossDeath;
         }
 
@@ -80,7 +78,6 @@ public class DemonBoss_Movement : Enemy_Movement
     private void HandleBossDeath()
     {
         NPCTriggerDialogue.IsBossDefeated = true;
-        Debug.Log("<color=green>[DEBUG] Evento OnDeath: Boss sconfitto! IsBossDefeated = true</color>");
 
         if (AudioManager.Instance != null)
         {
@@ -91,10 +88,6 @@ public class DemonBoss_Movement : Enemy_Movement
         if (DialogueManager.Instance != null && postBossDialogue.Count > 0)
         {
             DialogueManager.Instance.StartDialogueSequenceWithDelay(postBossDialogue, false, postDeathDelay);
-        }
-        else
-        {
-            Debug.LogWarning("[BOSS] DialogueManager non trovato o lista postBossDialogue vuota!");
         }
     }
 
@@ -183,7 +176,6 @@ public class DemonBoss_Movement : Enemy_Movement
     public void EnableBossChase()
     {
         canChase = true;
-        Debug.Log("[DEBUG] Dialogo terminato: il boss è sbloccato e può inseguire il player.");
         
         if (AudioManager.Instance != null)
         {
@@ -215,7 +207,6 @@ public class DemonBoss_Movement : Enemy_Movement
                     {
                         playerHealth.TakeDamage(1);
                         lastDamageTime = Time.time;
-                        Debug.Log("[DEBUG] Il boss ha urtato il player in Fase 1 infliggendo danno da collisione!");
                     }
                 }
             }
@@ -226,11 +217,6 @@ public class DemonBoss_Movement : Enemy_Movement
     {
         if (enemyHealth == null) return;
 
-        if (enemyHealth.currentHealth != previousHealth)
-        {
-            Debug.Log($"[DEBUG] Vita cambiata! Vecchia: {previousHealth}, Nuova: {enemyHealth.currentHealth}");
-        }
-
         if (enemyHealth.currentHealth < previousHealth)
         {
             previousHealth = enemyHealth.currentHealth;
@@ -239,12 +225,10 @@ public class DemonBoss_Movement : Enemy_Movement
             {
                 if (isFlamePhase)
                 {
-                    Debug.Log("[DEBUG] Trigger animazione 'hit' (Fase 1)");
                     anim.SetTrigger("hit");
                 }
                 else
                 {
-                    Debug.Log("[DEBUG] Trigger animazione 'demonHit' (Fase 2)");
                     anim.SetTrigger("demonHit");
                 }
             }
@@ -252,7 +236,6 @@ public class DemonBoss_Movement : Enemy_Movement
 
         if (isFlamePhase && !isTransforming && enemyHealth.currentHealth <= healthThresholdToTransform)
         {
-            Debug.Log("[DEBUG] Condizione di trasformazione raggiunta! Avvio StartTransformation()");
             StartTransformation();
         }
     }
@@ -323,7 +306,6 @@ public class DemonBoss_Movement : Enemy_Movement
         anim.SetBool("IsFlameIdle", false);
         anim.SetBool("IsChasing", false);
         anim.SetBool("IsTransforming", true);
-        Debug.Log("[DEBUG] Animazione di trasformazione avviata (IsTransforming = true)");
     }
 
     public void OnTransformationFinished()
@@ -338,8 +320,6 @@ public class DemonBoss_Movement : Enemy_Movement
         enemyState = EnemyState.Idle;
         anim.SetBool("IsDemonIdle", true);
         anim.SetBool("IsDemonChasing", false);
-        
-        Debug.Log("[DEBUG] Trasformazione completata! Passato a Fase 2 (Demon). IsDemonIdle = true");
     }
 
     public override void ChangeState(EnemyState newState)
@@ -417,7 +397,6 @@ public class DemonBoss_Movement : Enemy_Movement
                 loopAudioSource.loop = true;
                 loopAudioSource.volume = movementAudioVolume;
                 loopAudioSource.Play();
-                Debug.Log($"[DEBUG AUDIO] Avviato loop per: {targetClip.name}");
             }
         }
         else
@@ -445,19 +424,16 @@ public class DemonBoss_Movement : Enemy_Movement
         {
             case 1:
                 anim.SetTrigger("Attack1");
-                Debug.Log("[DEBUG] Attacco scelto: Fire Breath");
                 if (audioSource != null && soundAttack1 != null) 
                     audioSource.PlayOneShot(soundAttack1, attackVolume);
                 break;
             case 2:
                 anim.SetTrigger("Attack2");
-                Debug.Log("[DEBUG] Attacco scelto: Cleave");
                 if (audioSource != null && soundAttack2 != null) 
                     audioSource.PlayOneShot(soundAttack2, attackVolume);
                 break;
             case 3:
                 anim.SetTrigger("Attack3");
-                Debug.Log("[DEBUG] Attacco scelto: Smash");
                 if (audioSource != null && soundAttack3 != null) 
                     audioSource.PlayOneShot(soundAttack3, attackVolume);
                 break;
@@ -469,7 +445,6 @@ public class DemonBoss_Movement : Enemy_Movement
         if (!isFlamePhase)
         {
             ChangeState(EnemyState.Chasing);
-            Debug.Log("[DEBUG] Attacco terminato, il boss riprende a inseguire il player.");
         }
     }
 
