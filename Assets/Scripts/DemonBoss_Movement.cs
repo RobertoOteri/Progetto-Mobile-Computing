@@ -505,7 +505,7 @@ public class DemonBoss_Movement : Enemy_Movement
     public void LoadBossData(EnemySaveData data)
     {
         isFlamePhase = data.isFlamePhase;
-        data.isTransforming = isTransforming;
+        isTransforming = data.isTransforming; 
         canChase = data.canChase;
 
         if (data.isBossActive)
@@ -513,6 +513,11 @@ public class DemonBoss_Movement : Enemy_Movement
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlayBossMusic();
+            }
+
+            if (BossHealthBarUI.Instance != null && enemyHealth != null)
+            {
+                BossHealthBarUI.Instance.InitializeBossBar(enemyHealth);
             }
         }
 
