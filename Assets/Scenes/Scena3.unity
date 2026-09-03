@@ -49834,6 +49834,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   mobileControls: {fileID: 420174449}
+  pauseButton: {fileID: 1552619826}
   dialoguePanel: {fileID: 2117063172}
   dialogueText: {fileID: 1754380818}
   portraitBoxLeft: {fileID: 348497123}
@@ -56886,6 +56887,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adc31eafae65f5d40bad54810bc83dc6, type: 3}
+--- !u!1 &1552619826 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3980822029979183439, guid: adc31eafae65f5d40bad54810bc83dc6,
+    type: 3}
+  m_PrefabInstance: {fileID: 1552619825}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1556117230
 GameObject:
   m_ObjectHideFlags: 0

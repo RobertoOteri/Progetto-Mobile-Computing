@@ -2796,6 +2796,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adc31eafae65f5d40bad54810bc83dc6, type: 3}
+--- !u!1 &363748234 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3980822029979183439, guid: adc31eafae65f5d40bad54810bc83dc6,
+    type: 3}
+  m_PrefabInstance: {fileID: 363748233}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &389280084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4519,6 +4525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   mobileControls: {fileID: 0}
+  pauseButton: {fileID: 363748234}
   dialoguePanel: {fileID: 227830794}
   dialogueText: {fileID: 1824174910}
   portraitBoxLeft: {fileID: 873339620}

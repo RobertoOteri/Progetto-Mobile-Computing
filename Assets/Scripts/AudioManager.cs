@@ -40,6 +40,11 @@ public class AudioManager : MonoBehaviour
     private Coroutine dieSoundCoroutine; 
     private Coroutine musicFadeCoroutine;
 
+    private void Start()
+    {
+        RestoreBatGroupParam();
+    }
+
     private void Awake()
     {
         if (Instance == null)

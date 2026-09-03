@@ -23,6 +23,10 @@ public class DialogueManager : MonoBehaviour
     [Tooltip("Trascina qui il Canvas o il GameObject contenitore dei tasti mobile (MobileControls)")]
     public GameObject mobileControls;
 
+    [Header("Pulsante Pausa UI")]
+    [Tooltip("Trascina qui il GameObject del pulsante di pausa in alto a destra")]
+    public GameObject pauseButton;
+
     [Header("Riferimenti UI Generali")]
     public GameObject dialoguePanel;
     public TMP_Text dialogueText;
@@ -108,6 +112,10 @@ public class DialogueManager : MonoBehaviour
 
         if (dialoguePanel != null)
             dialoguePanel.SetActive(true);
+
+        // Nascondi il pulsante di pausa all'avvio del dialogo
+        if (pauseButton != null)
+            pauseButton.SetActive(false);
 
         ResetJoystickInput();
 
@@ -267,13 +275,16 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
-        // Se è la cutscene finale post-boss avvia EndGameManager
         if (isCurrentDialogueEndingCutscene && EndGameManager.Instance != null)
         {
             isCurrentDialogueEndingCutscene = false;
             EndGameManager.Instance.StartEndingSequence();
             return;
         }
+
+        // Riattiva il pulsante di pausa alla fine del dialogo (se non parte una sequenza finale)
+        if (pauseButton != null)
+            pauseButton.SetActive(true);
 
         if (mobileControls != null)
             mobileControls.SetActive(true);

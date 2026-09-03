@@ -263,6 +263,10 @@ public class PauseMenuManager : MonoBehaviour
     public void QuitToMainMenu()
     {
         PlayButtonSound();
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.RestoreBatGroupParam();
+        }
 
         Time.timeScale = 1f;
         isPaused = false;
