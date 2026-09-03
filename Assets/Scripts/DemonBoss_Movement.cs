@@ -499,14 +499,31 @@ public class DemonBoss_Movement : Enemy_Movement
         data.isFlamePhase = isFlamePhase;
         data.isTransforming = isTransforming;
         data.canChase = canChase;
-        data.isBossActive = canChase && (GetComponent<Enemy_Health>() != null && GetComponent<Enemy_Health>().currentHealth > 0);
+        data.isBossActive = canChase && enemyHealth != null && enemyHealth.currentHealth > 0;
+
+        NPCTriggerDialogue dialogueTrigger = GetComponent<NPCTriggerDialogue>();
+        if (dialogueTrigger != null)
+        {
+            data.hasHadFirstTalk = dialogueTrigger.HasHadFirstTalkSession;
+        }
     }
 
     public void LoadBossData(EnemySaveData data)
     {
         isFlamePhase = data.isFlamePhase;
-        isTransforming = data.isTransforming; 
+        isTransforming = data.isTransforming;
         canChase = data.canChase;
+
+        NPCTriggerDialogue dialogueTrigger = GetComponent<NPCTriggerDialogue>();
+        if (dialogueTrigger != null)
+        {
+            dialogueTrigger.HasHadFirstTalkSession = data.hasHadFirstTalk;
+            
+            if (dialogueTrigger.firstContactZone != null)
+            {
+                dialogueTrigger.firstContactZone.SetActive(!data.hasHadFirstTalk);
+            }
+        }
 
         if (data.isBossActive)
         {

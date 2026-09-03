@@ -13,6 +13,7 @@ public class EnemySaveData
     public bool isTransforming = false;
     public bool canChase = false;
     public bool isBossActive;
+    public bool hasHadFirstTalk;
 }
 
 [System.Serializable]
