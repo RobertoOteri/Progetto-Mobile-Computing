@@ -13,11 +13,15 @@ public struct DialogueLine
     public bool isRightSide;
     [TextArea(2, 4)]
     public string sentence;
+    
 }
 
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
+
+    [Header("Arena")]
+    [SerializeField] private ArenaBarricade arenaBarricade;
 
     [Header("Controlli Mobile da Nascondere")]
     [Tooltip("Trascina qui il Canvas o il GameObject contenitore dei tasti mobile (MobileControls)")]
@@ -304,6 +308,11 @@ public class DialogueManager : MonoBehaviour
                 TutorialHintUI.Instance.ShowHint("Premi [CAMBIA] per estrarre la pistola");
             }
             triggerGunHint = false;
+        }
+
+        if (arenaBarricade != null)
+        {
+            arenaBarricade.CloseBarricade();
         }
     }
 
