@@ -51,6 +51,7 @@ public class NPCTriggerDialogue : MonoBehaviour
 
     private bool playerInRepeatZone = false;
     private bool waitingForDialogueToEnd = false; 
+
     private void Start()
     {
         if (interactPrompt != null)
@@ -82,17 +83,25 @@ public class NPCTriggerDialogue : MonoBehaviour
         if (isBoss && waitingForDialogueToEnd)
         {
             bool isDialogueActive = DialogueManager.Instance != null && 
-                                     DialogueManager.Instance.dialoguePanel != null && 
-                                     DialogueManager.Instance.dialoguePanel.activeSelf;
+                                    DialogueManager.Instance.dialoguePanel != null && 
+                                    DialogueManager.Instance.dialoguePanel.activeSelf;
 
             if (!isDialogueActive)
             {
                 waitingForDialogueToEnd = false;
+
+                // 1. Avvia inseguimento del Boss
                 DemonBoss_Movement bossMovement = FindFirstObjectByType<DemonBoss_Movement>();
                 if (bossMovement != null)
                 {
                     bossMovement.EnableBossChase();
                     Debug.Log("[DEBUG] Dialogo del boss terminato: adesso parte l'inseguimento!");
+                }
+
+                // 2. Chiude l'arena qui: solo all'avvio effettivo del combattimento
+                if (ArenaBarricade.Instance != null)
+                {
+                    ArenaBarricade.Instance.CloseBarricade();
                 }
             }
         }

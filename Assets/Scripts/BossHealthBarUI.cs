@@ -6,6 +6,9 @@ public class BossHealthBarUI : MonoBehaviour
 {
     public static BossHealthBarUI Instance;
 
+    [Header("Riferimenti Arena")]
+    [SerializeField] private ArenaBarricade arenaBarricade;
+
     [Header("Riferimenti UI")]
     public GameObject healthBarContainer;
     public Image fillImage; 
@@ -71,6 +74,30 @@ public class BossHealthBarUI : MonoBehaviour
 
     public void HideHealthBar()
     {
+        // 1. Prova tramite singleton
+        if (ArenaBarricade.Instance != null)
+        {
+            ArenaBarricade.Instance.OpenBarricade();
+        }
+        // 2. Prova tramite riferimento diretto assegnato nell'Inspector
+        else if (arenaBarricade != null)
+        {
+            arenaBarricade.OpenBarricade();
+        }
+        // 3. Rete di sicurezza: cerca l'oggetto nella scena anche se disattivato
+        else
+        {
+            ArenaBarricade found = FindFirstObjectByType<ArenaBarricade>(FindObjectsInactive.Include);
+            if (found != null)
+            {
+                found.OpenBarricade();
+            }
+            else
+            {
+                Debug.LogWarning("[BossHealthBarUI] Impossibile trovare ArenaBarricade nella scena!");
+            }
+        }
+
         StartCoroutine(FadeOutBar());
     }
 

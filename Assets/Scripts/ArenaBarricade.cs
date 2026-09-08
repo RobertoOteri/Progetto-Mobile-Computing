@@ -2,27 +2,43 @@ using UnityEngine;
 
 public class ArenaBarricade : MonoBehaviour
 {
-    [Header("Riferimenti")]
-    [SerializeField] private GameObject visualsGroup; // Il contenitore con i 14 sprite
-    [SerializeField] private Collider2D barrierCollider;  // Il Box Collider 2D
+    public static ArenaBarricade Instance;
 
     private void Awake()
     {
-        // All'avvio della scena la strada deve essere aperta
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        // Se il boss è già stato sconfitto in precedenza, assicurati che la strada sia libera
+        if (NPCTriggerDialogue.IsBossDefeated)
+        {
+            OpenBarricade();
+            return;
+        }
+
         OpenBarricade();
     }
 
-    // Chiamato quando parte la boss fight
+    // Chiamato a inizio scontro dal Boss
     public void CloseBarricade()
     {
-        if (visualsGroup != null) visualsGroup.SetActive(true);
-        if (barrierCollider != null) barrierCollider.enabled = true;
+        // Se il boss è già stato sconfitto, la barriera non deve mai più chiudersi
+        if (NPCTriggerDialogue.IsBossDefeated)
+        {
+            Debug.Log("<color=orange>[BARRICATA] Chiusura ignorata: il boss è già sconfitto!</color>");
+            return;
+        }
+
+        gameObject.SetActive(true);
+        Debug.Log("<color=yellow>[BARRICATA] Chiusa: muro alzato e collider attivo!</color>");
     }
 
-    // Chiamato quando il boss muore
+    // Chiamato alla sconfitta del Boss (da BossHealthBarUI)
     public void OpenBarricade()
     {
-        if (visualsGroup != null) visualsGroup.SetActive(false);
-        if (barrierCollider != null) barrierCollider.enabled = false;
+        gameObject.SetActive(false);
+        Debug.Log("<color=green>[BARRICATA] Aperta: muro scomparso e passaggio libero!</color>");
     }
 }
