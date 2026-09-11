@@ -9,20 +9,17 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 6;
     public int currentHealth;
 
-    // Memoria statica per preservare i cuori tra le scene (porte/teleport)
+    // Memoria per preservare i cuori tra le scene (porte/teleport)
     public static int sessionHealth = -1;
 
     [Header("Impostazioni Audio")]
-    [Tooltip("Clip audio di morte (opzionale se gestito già in AudioManager)")]
     public AudioClip deathSound;
 
     [Header("Impostazioni Game Over & Morte")]
-    [Tooltip("Tempo di attesa per far finire l'animazione di morte prima del Game Over")]
     public float deathAnimationDuration = 1.5f;
-    [Tooltip("Ritardo prima di avviare il fade del Game Over")]
+  
     public float gameOverDelay = 0.5f;
 
-    // Proprietà per il controllo dei nemici (Enemy_Combat / Enemy_Movement)
     public bool IsDead => currentHealth <= 0;
     public bool isDead => currentHealth <= 0;
 
@@ -89,9 +86,8 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Player sconfitto.");
 
-        // 1. Suona l'effetto sonoro di morte
+        //Suona l'effetto sonoro di morte
         if (deathSound != null && AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySFXWithVolume(deathSound, 6f);
@@ -101,7 +97,7 @@ public class PlayerHealth : MonoBehaviour
             AudioManager.Instance.PlayDieSound();
         }
 
-        // 2. Ferma subito la fisica e i movimenti del Player
+        // Ferma i movimenti del Player
         if (movement != null)
         {
             movement.enabled = false;
@@ -112,13 +108,13 @@ public class PlayerHealth : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
         }
 
-        // 3. Riproduce l'animazione di morte
+        // Riproduce l'animazione di morte
         if (anim != null)
         {
             anim.SetTrigger("die");
         }
 
-        // 4. Avvia la sequenza con attesa per l'animazione e fade
+        // Avvia la sequenza con attesa per l'animazione e fade
         StartCoroutine(DeathSequenceRoutine());
     }
 

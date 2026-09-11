@@ -74,17 +74,16 @@ public class BossHealthBarUI : MonoBehaviour
 
     public void HideHealthBar()
     {
-        // 1. Prova tramite singleton
         if (ArenaBarricade.Instance != null)
         {
             ArenaBarricade.Instance.OpenBarricade();
         }
-        // 2. Prova tramite riferimento diretto assegnato nell'Inspector
+        
         else if (arenaBarricade != null)
         {
             arenaBarricade.OpenBarricade();
         }
-        // 3. Rete di sicurezza: cerca l'oggetto nella scena anche se disattivato
+        
         else
         {
             ArenaBarricade found = FindFirstObjectByType<ArenaBarricade>(FindObjectsInactive.Include);

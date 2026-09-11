@@ -21,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
     public Player_Rifle player_Rifle;
     public Player_Gun player_Gun;
 
-    // --- MEMORIA DIREZIONE ---
     [HideInInspector] public float lastVertical = 0f;
     [HideInInspector] public float lastHorizontal = 1f;
 
@@ -70,14 +69,12 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // === BLOCCO LANCIO BOMBA ===
         if (player_Combat != null && player_Combat.IsThrowingBomb)
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        // === BLOCCO ATTACCO CORPO A CORPO ===
         if (anim != null && anim.GetBool("isAttacking"))
         {
             rb.linearVelocity = Vector2.zero;
@@ -85,7 +82,6 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // === BLOCCO SPARO (Fucile o Pistola) ===
         bool isShootingRifle = player_Rifle != null && player_Rifle.IsShooting;
         bool isShootingGun = player_Gun != null && player_Gun.IsShooting;
 
@@ -128,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // === NORMALE MOVIMENTO ===
+        // === MOVIMENTO ===
         float horizontal = GetHorizontalInput();
         float vertical = GetVerticalInput();
 
@@ -145,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
 
-        // === GESTIONE SUONO PASSI ===
+        // === SUONO PASSI ===
         bool isMoving = (Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f);
         if (isMoving)
         {
@@ -159,13 +155,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdatePlayerAnimations(float h, float v)
     {
-        // Se stiamo attaccando con la spada o martello, non dobbiamo sovrascrivere l'animazione di colpo!
         if (anim != null && anim.GetBool("isAttacking")) return;
 
         float absH = Mathf.Abs(h);
         float absV = Mathf.Abs(v);
 
-        // 1. Invia sempre i float discretizzati
         if (absH > 0.15f || absV > 0.15f)
         {
             if (absH >= absV)
@@ -187,8 +181,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (player_Combat == null) return;
 
-        // 2. Determina se l'arma necessita del Play() diretto (armi da fuoco e bomba)
-        // NOTA: Spada e Martello usano le loro transizioni di Slash nell'Animator quando si attacca
         string prefix = "";
         bool useDirectPlay = false;
 

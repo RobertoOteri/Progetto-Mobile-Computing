@@ -69,7 +69,7 @@ public class DroppedItemSaver : MonoBehaviour
         SaveContainerForScene(sceneName, container);
     }
 
-    // Parte in automatico al cambio scena: legge le armi salvate e le ricrea nella mappa.
+    // Al cambio scena, le armi salvate e le ricrea nella mappa.
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneDroppedItemsContainer container = LoadContainerForScene(scene.name);
@@ -115,7 +115,7 @@ public class DroppedItemSaver : MonoBehaviour
         return new SceneDroppedItemsContainer();
     }
 
-    // Converte gli oggetti C# in stringa JSON e li salva su disco nei PlayerPrefs
+    // Converte gli oggetti in stringa JSON e li salva nei PlayerPrefs
     private void SaveContainerForScene(string sceneName, SceneDroppedItemsContainer container)
     {
         string key = "DroppedItems_" + sceneName;

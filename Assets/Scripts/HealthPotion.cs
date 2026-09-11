@@ -3,7 +3,6 @@ using UnityEngine;
 public class HealthPotion : MonoBehaviour
 {
     [Header("Identificativo Univoco")]
-    [Tooltip("Lascialo vuoto se vuoi che venga generato in automatico dalla posizione")]
     public string itemID;
 
     public int healAmount = 2; 
@@ -13,7 +12,6 @@ public class HealthPotion : MonoBehaviour
 
     private void Awake()
     {
-        // Se l'ID è vuoto, ne genera uno univoco con scena, nome e coordinate
         if (string.IsNullOrEmpty(itemID))
         {
             itemID = gameObject.scene.name + "_" + gameObject.name + "_" + transform.position.x.ToString("F2") + "_" + transform.position.y.ToString("F2");
@@ -22,7 +20,6 @@ public class HealthPotion : MonoBehaviour
 
     private void Start()
     {
-        // Se stiamo caricando una partita salvata e questo oggetto era già stato consumato, distruggilo subito
         if (SaveSystem.Instance != null && SaveSystem.Instance.IsItemConsumed(itemID))
         {
             Destroy(gameObject);
@@ -47,7 +44,7 @@ public class HealthPotion : MonoBehaviour
                         AudioManager.Instance.PlaySFX(healSFX);
                     }
 
-                    // Registra l'oggetto come consumato nel SaveSystem
+                    // Registra l'oggetto come consumato nel sistema di salvataggio
                     if (SaveSystem.Instance != null)
                     {
                         SaveSystem.Instance.RegisterConsumedItem(itemID);
