@@ -299,7 +299,7 @@ MonoBehaviour:
   speed: 2
   attackRange: 1.1
   attackCooldown: 1
-  playerDetectRange: 3.5
+  playerDetectRange: 5
   detectionPoint: {fileID: 5663500815170189521}
   playerLayer:
     serializedVersion: 2
@@ -339,7 +339,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.34127975
+  m_Radius: 0.6
 --- !u!114 &9219771301186535068
 MonoBehaviour:
   m_ObjectHideFlags: 0
