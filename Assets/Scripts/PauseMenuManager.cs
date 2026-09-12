@@ -73,7 +73,6 @@ public class PauseMenuManager : MonoBehaviour
                 Transform pauseCont = root.transform.Find("Pause_Container");
                 if (pauseCont != null) pauseMenuPanel = pauseCont.gameObject;
 
-                // Cerca SaveSuccess_TXT sia dentro PausaCanvas che dentro Pause_Container
                 Transform fb = root.transform.Find("SaveSuccess_TXT");
                 if (fb == null && pauseCont != null) fb = pauseCont.Find("SaveSuccess_TXT");
                 if (fb != null)

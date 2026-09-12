@@ -13,7 +13,6 @@ public class SaveSystem : MonoBehaviour
     private bool isContinuing = false;
 
     [Header("Prefab Armi a Terra (Pickups)")]
-    [Tooltip("Assegna i prefab dei pickup delle armi corrispondenti all'enum WeaponType")]
     public GameObject[] weaponPickupPrefabs;
 
     private void Awake()
@@ -84,12 +83,12 @@ public class SaveSystem : MonoBehaviour
     // --- SALVATAGGIO COMPLETO ---
     public void SaveGame()
     {
-        // 1. Forza la scrittura su disco dei PlayerPrefs (dialoghi, trigger, opzioni)
+        //Forza la scrittura su disco dei PlayerPrefs (dialoghi, trigger, opzioni)
         PlayerPrefs.Save();
 
         if (currentSaveData == null) currentSaveData = new SaveData();
 
-        // 2. Dati Player
+        // Dati Player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
@@ -113,7 +112,7 @@ public class SaveSystem : MonoBehaviour
 
         currentSaveData.sceneName = SceneManager.GetActiveScene().name;
 
-        // 3. Dati Nemici
+        // Dati Nemici
         currentSaveData.enemiesData.Clear();
         EnemySaveable[] allEnemies = Object.FindObjectsByType<EnemySaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (EnemySaveable enemy in allEnemies)
@@ -121,7 +120,7 @@ public class SaveSystem : MonoBehaviour
             currentSaveData.enemiesData.Add(enemy.GetSaveData());
         }
 
-        // 4. Dati Armi a Terra
+        // Dati Armi a Terra
         currentSaveData.droppedWeapons.Clear();
         WeaponPickupSaveable[] allGroundWeapons = Object.FindObjectsByType<WeaponPickupSaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (WeaponPickupSaveable w in allGroundWeapons)
@@ -132,10 +131,9 @@ public class SaveSystem : MonoBehaviour
             }
         }
 
-        // 5. Scrittura su file JSON
+        // Scrittura su file JSON
         string json = JsonUtility.ToJson(currentSaveData, true);
         File.WriteAllText(saveFilePath, json);
-        Debug.Log("Partita salvata con successo in: " + saveFilePath);
     }
 
     // --- CARICAMENTO DATI ---
@@ -204,7 +202,7 @@ public class SaveSystem : MonoBehaviour
 
         if (isContinuing && currentSaveData != null)
         {
-            // 1. Ripristino Player (Posizione, Fisica, Vita, Armi)
+            // Ripristino Player (Posizione, Fisica, Vita, Armi)
             if (player != null)
             {
                 Vector3 targetPos = new Vector3(currentSaveData.playerPosX, currentSaveData.playerPosY, player.transform.position.z);
@@ -231,7 +229,7 @@ public class SaveSystem : MonoBehaviour
                 }
             }
 
-            // 2. Ripristino dei Nemici
+            // Ripristino dei Nemici
             EnemySaveable[] currentEnemies = Object.FindObjectsByType<EnemySaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (EnemySaveable enemy in currentEnemies)
             {
@@ -242,7 +240,7 @@ public class SaveSystem : MonoBehaviour
                 }
             }
 
-            // 3. Ripristino Armi a Terra
+            // Ripristino Armi a Terra
             WeaponPickupSaveable[] existingWeapons = Object.FindObjectsByType<WeaponPickupSaveable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (WeaponPickupSaveable w in existingWeapons)
             {
@@ -282,7 +280,6 @@ public class SaveSystem : MonoBehaviour
     // Gestione automatica della musica durante il caricamento
     private void GestisciMusicaScena(string sceneName)
     {
-        // Ignora sia il Menu che la Intro, altrimenti la Intro sovrappone bgmMusic all'ambient!
         if (sceneName == "Menu" || sceneName == "Intro" || sceneName == "IntroSequence") return;
 
         if (AudioManager.Instance != null && !AudioManager.Instance.IsMusicPlaying())

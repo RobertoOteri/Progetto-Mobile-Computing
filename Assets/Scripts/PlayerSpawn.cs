@@ -37,11 +37,11 @@ public class PlayerSpawn : MonoBehaviour
         }
     }
 
-    [ContextMenu("Reset PlayerPrefs (Pulisci Salvataggi)")]
+    [ContextMenu("Pulisci Salvataggi -- PlayerPrefs")]
     public void ResetPrefs()
     {
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
-        Debug.Log("PlayerPrefs completamente cancellati!");
+
     }
 }

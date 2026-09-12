@@ -58521,6 +58521,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4844178342506338735, guid: 2e329a15209b8814cbef6d151c47b934,
+        type: 3}
+      propertyPath: itemID
+      value: elixir00
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -59920,7 +59925,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7bcc5ee808b3f4ab03bca88519c5d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_Bomb
-  bombProjectilePrefab: {fileID: 0}
+  bombProjectilePrefab: {fileID: 9063939800449896754, guid: e999d4447e759a94f9cab4d28fa06c10,
+    type: 3}
   throwPoint: {fileID: 0}
   throwForce: 7
   throwKey: 113
@@ -68619,7 +68625,7 @@ MonoBehaviour:
   canChase: 0
   damageCooldown: 1
   transformedSpeed: 4
-  healthThresholdToTransform: 30
+  healthThresholdToTransform: 60
   postDeathDelay: 2.7
   postBossDialogue:
   - speakerName: Jack Orbit
@@ -68688,8 +68694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2022e0a9cdbb134480e5abeb5a0980e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
-  currentHealth: 40
-  maxHealth: 40
+  currentHealth: 80
+  maxHealth: 80
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.12
   hitSound: {fileID: 8300000, guid: 0bda6b4969403c24795f31f1d17860ab, type: 3}

@@ -24,14 +24,13 @@ public class SongPopupUI : MonoBehaviour
 
     private void Start()
     {
-        // Se non assegnato a mano, prendi il CanvasGroup da questo stesso oggetto
         if (canvasGroup == null)
             canvasGroup = GetComponent<CanvasGroup>();
 
         if (popupImage == null)
             popupImage = GetComponent<Image>();
 
-        // Nasconde l'immagine all'avvio impostando l'alpha a 0 (senza disattivare il GameObject)
+        // Nasconde l'immagine all'avvio impostando l'alpha a 0 
         if (canvasGroup != null)
         {
             canvasGroup.alpha = 0f;
@@ -41,7 +40,6 @@ public class SongPopupUI : MonoBehaviour
 
     public void ShowSongPopup()
     {
-        Debug.Log("<color=magenta>[POPUP] Avvio visualizzazione canzone...</color>");
 
         if (canvasGroup == null)
         {
@@ -62,7 +60,7 @@ public class SongPopupUI : MonoBehaviour
 
     private IEnumerator DoFadeRoutine()
     {
-        // 1. Fade In
+        // Fade In
         float timer = 0f;
         while (timer < fadeInTime)
         {
@@ -72,10 +70,10 @@ public class SongPopupUI : MonoBehaviour
         }
         canvasGroup.alpha = 1f;
 
-        // 2. Rimane visibile a schermo
+        // Rimane visibile a schermo
         yield return new WaitForSeconds(displayDuration);
 
-        // 3. Fade Out
+        // Fade Out
         timer = 0f;
         while (timer < fadeOutTime)
         {

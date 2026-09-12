@@ -8,15 +8,13 @@ public class AutoLuminosita : MonoBehaviour
 
     void Start()
     {
-        // Prende in automatico il componente Image attaccato a questo oggetto
+        // Prende il componente Image attaccato a questo oggetto
         Image filtro = GetComponent<Image>();
 
         if (filtro != null)
         {
-            // Legge il valore salvato (se non lo trova, usa il valore massimo)
             float luminositaSalvata = PlayerPrefs.GetFloat("Luminosita", valoreMassimoSlider);
 
-            // Calcola e applica l'opacità (stessa formula del tuo SettingsManager)
             float luminositaNormalizzata = luminositaSalvata / valoreMassimoSlider;
             Color coloreFiltro = filtro.color;
             coloreFiltro.a = 1f - luminositaNormalizzata; 

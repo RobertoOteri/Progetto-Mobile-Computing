@@ -114,7 +114,7 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    // --- GESTIONE POP-UP (APERTURA) ---
+    // --- APERTURA POP-UP ---
     public void OpenRate()
     {
         PlayButtonSound();
@@ -151,7 +151,7 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // --- GESTIONE POP-UP (CHIUSURA) ---
+    // --- CHIUSURA POP-UP ---
     public void CloseAllInfoPanels()
     {
         PlayButtonSound();

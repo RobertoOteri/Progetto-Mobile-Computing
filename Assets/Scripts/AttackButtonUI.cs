@@ -61,16 +61,15 @@ public class AttackButtonUI : MonoBehaviour, IPointerDownHandler, IPointerUpHand
             if (playerCombat == null) return;
         }
 
-        // L'arma è effettivamente in mano se isWeaponDrawn è true E almeno un boolean dell'arma è attivo
+        // L'arma è effettivamente in mano se isWeaponDrawn è true e almeno un boolean dell'arma è attivo
         bool isWeaponEquippedInHand = playerCombat.isWeaponDrawn && 
             (playerCombat.hasSword || playerCombat.hasHammer || playerCombat.hasGun || playerCombat.hasRifle || playerCombat.hasBomb);
 
         SetInteractable(isWeaponEquippedInHand);
 
-        // Aggiorna l'icona e il testo in base all'arma posseduta/selezionata
+        // Aggiorna la foto e la scritta del pulsante in base all'arma
         UpdateIconAndText();
 
-        // GESTIONE RAFFICA FUCILE: se il tasto è tenuto premuto
         if (isPressed && isWeaponEquippedInHand)
         {
             if (playerCombat.hasRifle)
@@ -85,7 +84,6 @@ public class AttackButtonUI : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         }
     }
 
-    // Viene chiamato appena tocchi lo schermo sul pulsante
     public void OnPointerDown(PointerEventData eventData)
     {
         if (playerCombat == null || playerMovement == null)
@@ -106,7 +104,6 @@ public class AttackButtonUI : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         }
     }
 
-    // Viene chiamato appena alzi il dito dal pulsante
     public void OnPointerUp(PointerEventData eventData)
     {
         isPressed = false;

@@ -4,11 +4,26 @@ using UnityEngine;
 public class NPCTriggerDialogue : MonoBehaviour
 {
     [Header("Configurazione Tipo")]
-    [Tooltip("Spunta se questo script è attaccato al Boss")]
     public bool isBoss = false;
 
     [Header("Identificativo NPC")]
     public string npcID = "NPC_Alieno_1";
+
+    [Header("Riferimenti Zone & UI")]
+    public GameObject firstContactZone;
+    public GameObject interactPrompt;
+
+    [Header("1. Primo Dialogo (Automatico - Trigger Largo)")]
+    public List<DialogueLine> firstConversation = new List<DialogueLine>();
+
+    [Header("2. Dialogo Ripetibile (Tasto E / Talk - Prima del Boss)")]
+    public List<DialogueLine> repeatConversation = new List<DialogueLine>();
+
+    [Header("3. Dialogo Finale (Tasto E / Talk - Dopo la sconfitta del Boss)")]
+    public List<DialogueLine> bossDefeatedConversation = new List<DialogueLine>();
+
+    private bool playerInRepeatZone = false;
+    private bool waitingForDialogueToEnd = false; 
 
     public bool HasHadFirstTalkSession
     {
@@ -31,26 +46,10 @@ public class NPCTriggerDialogue : MonoBehaviour
         set
         {
             PlayerPrefs.SetInt("BossDefeatedState", value ? 1 : 0);
-            PlayerPrefs.Save(); // Forza la scrittura immediata su disco
-            Debug.Log($"[DEBUG SALVATAGGIO] IsBossDefeated salvato come: {value}");
+            PlayerPrefs.Save(); 
         }
     }
 
-    [Header("Riferimenti Zone & UI")]
-    public GameObject firstContactZone;
-    public GameObject interactPrompt;
-
-    [Header("1. Primo Dialogo (Automatico - Trigger Largo)")]
-    public List<DialogueLine> firstConversation = new List<DialogueLine>();
-
-    [Header("2. Dialogo Ripetibile (Tasto E / Talk - Prima del Boss)")]
-    public List<DialogueLine> repeatConversation = new List<DialogueLine>();
-
-    [Header("3. Dialogo Finale (Tasto E / Talk - Dopo la sconfitta del Boss)")]
-    public List<DialogueLine> bossDefeatedConversation = new List<DialogueLine>();
-
-    private bool playerInRepeatZone = false;
-    private bool waitingForDialogueToEnd = false; 
 
     private void Start()
     {
@@ -69,14 +68,14 @@ public class NPCTriggerDialogue : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B))
         {
             IsBossDefeated = !IsBossDefeated;
-            Debug.Log($"<color=yellow>[TEST BOSS] Boss sconfitto impostato a: {IsBossDefeated}</color>");
+
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
-            Debug.Log("<color=cyan>[RESET] PlayerPrefs resettati! Partita nuova.</color>");
+            
         }
         #endif
 
@@ -90,15 +89,13 @@ public class NPCTriggerDialogue : MonoBehaviour
             {
                 waitingForDialogueToEnd = false;
 
-                // 1. Avvia inseguimento del Boss
                 DemonBoss_Movement bossMovement = FindFirstObjectByType<DemonBoss_Movement>();
                 if (bossMovement != null)
                 {
                     bossMovement.EnableBossChase();
-                    Debug.Log("[DEBUG] Dialogo del boss terminato: adesso parte l'inseguimento!");
+                
                 }
 
-                // 2. Chiude l'arena qui: solo all'avvio effettivo del combattimento
                 if (ArenaBarricade.Instance != null)
                 {
                     ArenaBarricade.Instance.CloseBarricade();

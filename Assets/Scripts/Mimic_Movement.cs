@@ -16,8 +16,7 @@ public class Mimic_Movement : Enemy_Movement
 
         isSleeping = true;
         isTransforming = false;
-
-        // Se non viene assegnato manuale, prova a prenderlo dallo stesso GameObject
+        
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
         anim.SetBool("IsSleeping", true);

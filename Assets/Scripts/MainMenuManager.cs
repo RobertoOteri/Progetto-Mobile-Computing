@@ -11,8 +11,8 @@ public class MainMenuManager : MonoBehaviour
     [Header("Navigazione Pannelli / Canvas")]
     public GameObject pannelloPrincipale;
     public GameObject pannelloSelezionePartita;
-    public GameObject pannelloImpostazioni; // Trascina qui 'SettingsCanvas'
-    public GameObject pannelloConfermaNuovaPartita; // Pop-up di avviso
+    public GameObject pannelloImpostazioni; 
+    public GameObject pannelloConfermaNuovaPartita; // Pop-up 
     
     [Header("Pulsanti Partita")]
     public Button bottoneContinua;
@@ -30,7 +30,6 @@ public class MainMenuManager : MonoBehaviour
 
     private void Awake()
     {
-        // Sblocca il frame rate fin dall'avvio del gioco
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
 
@@ -42,13 +41,13 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
-        // 1. Assicura lo stato visivo iniziale corretto
+
         if (pannelloPrincipale != null) pannelloPrincipale.SetActive(true);
         if (pannelloImpostazioni != null) pannelloImpostazioni.SetActive(false);
         if (pannelloSelezionePartita != null) pannelloSelezionePartita.SetActive(false);
         if (pannelloConfermaNuovaPartita != null) pannelloConfermaNuovaPartita.SetActive(false);
 
-        // 2. Inizializzazione Slider e Preferenze
+
         if (sliderMusica != null) sliderMusica.value = PlayerPrefs.GetFloat("VolumeMusica", sliderMusica.value);
         if (sliderSuoni != null) sliderSuoni.value = PlayerPrefs.GetFloat("VolumeSuoni", sliderSuoni.value);
         if (sliderLuminosita != null) sliderLuminosita.value = PlayerPrefs.GetFloat("Luminosita", sliderLuminosita.value);
@@ -57,7 +56,7 @@ public class MainMenuManager : MonoBehaviour
         if (sliderSuoni != null) CambiaSuoni(sliderSuoni.value);
         if (sliderLuminosita != null) CambiaLuminosita(sliderLuminosita.value);
 
-        // 3. Avvio musica Menu
+
         if (AudioManager.Instance != null && menuBGM != null)
         {
             AudioManager.Instance.PlayMusic(menuBGM, 25f);
@@ -72,7 +71,6 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // --- NAVIGAZIONE SOTTOMENU PARTITA ---
 
     public void ApriSelezionePartita()
     {
@@ -95,8 +93,7 @@ public class MainMenuManager : MonoBehaviour
         if (pannelloPrincipale != null) pannelloPrincipale.SetActive(true);
     }
 
-    // --- LOGICA NUOVA PARTITA CON POPUP DI CONFERMA ---
-
+    // -- Nuova Partita --
     public void ClickNuovaPartita()
     {
         PlayButtonSound();
@@ -111,7 +108,6 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            // Se non c'è nessun salvataggio, avvia subito
             EseguiNuovaPartita();
         }
     }
@@ -167,7 +163,7 @@ public class MainMenuManager : MonoBehaviour
         Application.Quit(); 
     }
 
-    // --- NAVIGAZIONE IMPOSTAZIONI ---
+    // ---  IMPOSTAZIONI ---
 
     public void ApriImpostazioni() 
     { 

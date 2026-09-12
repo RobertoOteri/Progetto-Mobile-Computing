@@ -20,11 +20,9 @@ public class DialogueManager : MonoBehaviour
     public static DialogueManager Instance;
 
     [Header("Controlli Mobile da Nascondere")]
-    [Tooltip("Trascina qui il Canvas o il GameObject contenitore dei tasti mobile (MobileControls)")]
     public GameObject mobileControls;
 
     [Header("Pulsante Pausa UI")]
-    [Tooltip("Trascina qui il GameObject del pulsante di pausa in alto a destra")]
     public GameObject pauseButton;
 
     [Header("Riferimenti UI Generali")]

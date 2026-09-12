@@ -42,7 +42,7 @@ public class IntroSequence : MonoBehaviour
 
     private void Update()
     {
-        // Premere Spazio, Invio o Mouse per saltare direttamente al gioco
+        // Skip intro con spazio, invio o mouse 
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)) && !isSkipping)
         {
             SkipIntro();
@@ -51,7 +51,6 @@ public class IntroSequence : MonoBehaviour
 
     private IEnumerator PlayIntro()
     {
-        // Mostra lo sfondo e prepara il testo
         if (imageCanvasGroup != null) imageCanvasGroup.alpha = 1f;
         textCanvasGroup.alpha = 1f;
         introText.text = "";
@@ -61,23 +60,18 @@ public class IntroSequence : MonoBehaviour
             textCanvasGroup.alpha = 1f;
             introText.text = "";
 
-            // Effetto visivo lettera per lettera (senza suono)
             yield return StartCoroutine(TypeSentence(sentences[i]));
 
-            // Pausa di lettura a fine frase
             yield return new WaitForSeconds(displayDuration);
 
-            // Sfumatura in uscita (Fade Out) del testo prima della prossima frase
             yield return StartCoroutine(FadeCanvasGroup(textCanvasGroup, 1f, 0f, fadeDuration));
         }
 
-        // Quando le frasi finiscono, fa sfumare il suono ambientale
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.FadeOutIntroAmbient(ambientFadeDuration);
         }
 
-        // Attende la conclusione della sfumatura audio
         yield return new WaitForSeconds(ambientFadeDuration);
 
         LoadGameScene();
@@ -114,7 +108,6 @@ public class IntroSequence : MonoBehaviour
 
         if (currentRoutine != null) StopCoroutine(currentRoutine);
 
-        // Fa sfumare rapidamente l'audio d'ambiente (es. 0.5 secondi) in caso di skip
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.FadeOutIntroAmbient(0.5f);
@@ -125,7 +118,6 @@ public class IntroSequence : MonoBehaviour
 
     private void LoadGameScene()
     {
-        // Fai partire la BGM solo adesso che l'intro è finita
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayMusic(AudioManager.Instance.bgmMusic);

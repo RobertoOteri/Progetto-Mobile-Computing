@@ -3,8 +3,8 @@ using UnityEngine;
 public class Player_Bomb : MonoBehaviour
 {
     [Header("Riferimenti")]
-    public GameObject bombProjectilePrefab; // Il prefab della bomba che vola
-    public Transform throwPoint;           // Punto da cui parte la bomba (opzionale, o transform del Player)
+    public GameObject bombProjectilePrefab; 
+    public Transform throwPoint;           
 
     [Header("Impostazioni Lancio")]
     public float throwForce = 7f;
@@ -23,7 +23,6 @@ public class Player_Bomb : MonoBehaviour
 
     private void Update()
     {
-        // Tracciamento direzione dello sguardo in base agli assi
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
