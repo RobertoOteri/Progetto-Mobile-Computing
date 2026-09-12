@@ -3,7 +3,6 @@ using UnityEngine;
 public class EnemySaveable : MonoBehaviour
 {
     [Header("ID Univoco Nemico")]
-    [Tooltip("Deve essere univoco per ogni nemico nella scena (es: Scena2_Nemico_01)")]
     public string enemyID;
 
     private Rigidbody2D rb;
@@ -12,11 +11,28 @@ public class EnemySaveable : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         
-        // Se lasci l'ID vuoto, usa automaticamente il nome dell'oggetto
         if (string.IsNullOrEmpty(enemyID))
         {
             enemyID = gameObject.name + "_" + transform.GetSiblingIndex();
         }
+
+        // CONTROLLO PERSISTENZA: se il nemico è già stato eliminato in precedenza, disattivalo subito
+        if (PlayerPrefs.GetInt("EnemyDead_" + enemyID, 0) == 1)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+    }
+
+    public void MarkAsPermanentlyDead()
+    {
+        if (string.IsNullOrEmpty(enemyID))
+        {
+            enemyID = gameObject.name + "_" + transform.GetSiblingIndex();
+        }
+
+        PlayerPrefs.SetInt("EnemyDead_" + enemyID, 1);
+        PlayerPrefs.Save();
     }
 
     public EnemySaveData GetSaveData()
@@ -25,13 +41,13 @@ public class EnemySaveable : MonoBehaviour
         data.enemyID = enemyID;
         data.posX = transform.position.x;
         data.posY = transform.position.y;
-        data.isDead = !gameObject.activeSelf;
+        data.isDead = !gameObject.activeSelf || PlayerPrefs.GetInt("EnemyDead_" + enemyID, 0) == 1;
 
-        // Salva la vita corrente se ha il componente Enemy_Health
+        // Nemici
         Enemy_Health hp = GetComponent<Enemy_Health>();
         if (hp != null) data.currentHealth = hp.currentHealth;
 
-        // Se questo script appartiene al Boss, salva anche i suoi dati specifici
+        // Boss
         DemonBoss_Movement boss = GetComponent<DemonBoss_Movement>();
         if (boss != null)
         {
@@ -43,8 +59,9 @@ public class EnemySaveable : MonoBehaviour
 
     public void LoadData(EnemySaveData data)
     {
-        if (data.isDead)
+        if (data.isDead || PlayerPrefs.GetInt("EnemyDead_" + enemyID, 0) == 1)
         {
+            MarkAsPermanentlyDead();
             gameObject.SetActive(false);
             return;
         }
@@ -62,7 +79,7 @@ public class EnemySaveable : MonoBehaviour
         Enemy_Health hp = GetComponent<Enemy_Health>();
         if (hp != null) hp.currentHealth = data.currentHealth;
 
-        // Se è il boss, ripristina la fase e lo stato di movimento
+        // Ripristina la fase e lo stato di movimento del boss
         DemonBoss_Movement boss = GetComponent<DemonBoss_Movement>();
         if (boss != null)
         {

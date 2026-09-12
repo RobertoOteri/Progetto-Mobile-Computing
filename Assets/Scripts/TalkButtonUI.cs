@@ -51,7 +51,7 @@ public class TalkButtonUI : MonoBehaviour
 
     private bool CheckIfCanInteract()
     {
-        // 1. Se il dialogo è aperto a schermo, il tasto è sempre attivo (serve per andare avanti)
+        // Se il dialogo è aperto a schermo, il tasto è sempre attivo 
         if (DialogueManager.Instance != null && 
             DialogueManager.Instance.dialoguePanel != null && 
             DialogueManager.Instance.dialoguePanel.activeSelf)
@@ -59,13 +59,11 @@ public class TalkButtonUI : MonoBehaviour
             return true;
         }
 
-        // 2. Se il dialogo è chiuso, controlla se c'è un NPC o la Navicella vicini al Player
         Collider2D[] colliders = Physics2D.OverlapCircleAll(playerTransform.position, interactionRadius, interactableLayers);
         foreach (Collider2D col in colliders)
         {
             if (col.CompareTag("Player")) continue;
 
-            // Se l'oggetto vicino ha uno script di dialogo o interazione
             if (col.GetComponent<NPCTriggerDialogue>() != null || 
                 col.GetComponent<SpaceshipInteract>() != null ||
                 col.GetComponentInParent<NPCTriggerDialogue>() != null ||

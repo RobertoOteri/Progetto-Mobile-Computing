@@ -18,7 +18,6 @@ public class UIGradient : BaseMeshEffect
         for (int i = 0; i < count; i++)
         {
             vh.PopulateUIVertex(ref vertex, i);
-            // I vertici superiori (0 e 1 o 1 e 2 a seconda del quad) prendono il top color
             vertex.color = (vertex.position.y > 0) ? colorTop : colorBottom;
             vh.SetUIVertex(vertex, i);
         }

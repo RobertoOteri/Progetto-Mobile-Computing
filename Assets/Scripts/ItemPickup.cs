@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 public class ItemPickup : MonoBehaviour
 {
     [Header("Identificatore Unico")]
-    [Tooltip("Scrivi un nome unico per le armi piazzate da te nella mappa (es: Scena2_Martello).")]
     public string weaponID;
 
     [Header("Tipo di questa arma a terra")]
@@ -23,7 +22,6 @@ public class ItemPickup : MonoBehaviour
 
     private void Start()
     {
-        // Se è un'arma originale della mappa e risulta già raccolta, la distrugge
         if (!isRuntimeDropped && !string.IsNullOrEmpty(weaponID) && PlayerPrefs.GetInt("WeaponPicked_" + weaponID, 0) == 1)
         {
             Destroy(gameObject);
@@ -42,7 +40,7 @@ public class ItemPickup : MonoBehaviour
             {
                 Vector3 dropPosition = other.transform.position + new Vector3(0.8f, 0f, 0f);
 
-                // 1. Lascia cadere l'arma precedente del Player
+                // Lascia cadere l'arma precedente del Player
                 switch (combat.storedWeapon)
                 {
                     case WeaponType.Sword:
@@ -62,7 +60,7 @@ public class ItemPickup : MonoBehaviour
                         break;
                 }
 
-                // 2. Se stiamo raccogliendo un'arma creata a runtime, la rimuoviamo dal salvataggio
+                // Se stiamo raccogliendo un'arma creata a runtime, la rimuoviamo dal salvataggio
                 if (isRuntimeDropped && DroppedItemSaver.Instance != null)
                 {
                     DroppedItemSaver.Instance.UnregisterDroppedItem(SceneManager.GetActiveScene().name, weaponToEquip, transform.position);
@@ -74,7 +72,7 @@ public class ItemPickup : MonoBehaviour
                     PlayerPrefs.Save();
                 }
 
-                // 3. Equipaggia la nuova arma
+                // Equipaggia la nuova arma
                 combat.EquipNewWeapon(weaponToEquip);
 
                 if (AudioManager.Instance != null && AudioManager.Instance.pickupSFX != null)

@@ -68,7 +68,7 @@ public class EndGameManager : MonoBehaviour
             }
         }
 
-        // 1. Dissolvenza a scuro (FadeOverlay)
+        // FadeOverlay
         float timer = 0f;
         while (timer < fadeDuration)
         {
@@ -81,7 +81,6 @@ public class EndGameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.4f);
 
-        // 2. Comparsa del contenuto (ContentPanel)
         timer = 0f;
         while (timer < 1.2f)
         {

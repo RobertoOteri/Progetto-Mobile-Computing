@@ -8,16 +8,12 @@ public class GameOverManager : MonoBehaviour
     public static GameOverManager Instance;
 
     [Header("Riferimenti UI")]
-    [Tooltip("Il pannello principale del Game Over con l'immagine")]
     public GameObject gameOverPanel;
 
-    [Tooltip("Trascina qui il Canvas o il pannello dell'HUD (cuori, munizioni, ecc.) per nasconderlo")]
     public GameObject hudCanvasOrPanel;
 
-    [Tooltip("Trascina qui il Canvas o il contenitore dei comandi mobile (MobileControls / MobileButtonsCanvas)")]
     public GameObject mobileControlsCanvasOrPanel;
 
-    [Tooltip("Trascina qui il pulsante di pausa o l'oggetto del menu di pausa")]
     public GameObject pauseButtonOrCanvas;
 
     public AudioMixerGroup outputAudioGroup;
@@ -53,7 +49,6 @@ public class GameOverManager : MonoBehaviour
                 canvasGroup = gameOverPanel.AddComponent<CanvasGroup>();
             }
 
-            // Porta il Canvas del GameOver al massimo livello visivo (sopra a tutto il resto)
             Canvas parentCanvas = gameOverPanel.GetComponentInParent<Canvas>();
             if (parentCanvas != null)
             {
@@ -92,32 +87,31 @@ public class GameOverManager : MonoBehaviour
 
     public void TriggerGameOver()
     {
-        // 1. Spegne l'HUD dei cuori
+        // Rimuove la visione dei cuori
         if (hudCanvasOrPanel != null)
         {
             hudCanvasOrPanel.SetActive(false);
         }
 
-        // 2. Spegne i comandi touch/mobile
+        // Rimuove i comandi touch/mobile
         if (mobileControlsCanvasOrPanel != null)
         {
             mobileControlsCanvasOrPanel.SetActive(false);
         }
 
-        // 3. Spegne il tasto pausa assegnato
+        // Rimuove il tasto pausa 
         if (pauseButtonOrCanvas != null)
         {
             pauseButtonOrCanvas.SetActive(false);
         }
 
-        // 4. Cerca e spegne direttamente PauseMenuManager e tutti i suoi bottoni/canvas
         PauseMenuManager pauseManager = Object.FindAnyObjectByType<PauseMenuManager>();
         if (pauseManager != null)
         {
             pauseManager.gameObject.SetActive(false);
         }
 
-        // 5. Cerca eventuali oggetti con nome 'Pausa' o simili nella scena e li spegne
+        // 5. Rimuove eventuali oggetti con nome 'Pausa' o simili nella scena 
         string[] possibleNames = { "PauseButton", "BtnPause", "PauseCanvas", "Pause_Btn", "ButtonPause", "Pause" };
         foreach (string n in possibleNames)
         {
@@ -128,13 +122,13 @@ public class GameOverManager : MonoBehaviour
             }
         }
 
-        // 6. Ferma l'audio del mondo di gioco
+        // Ferma l'audio del mondo di gioco
         SilenceWorldAudio();
 
-        // 7. Musica GameOver
+        // Musica GameOver
         PlayGameOverMusic();
 
-        // 8. Dissolvenza pannello
+        //Dissolvenza 
         if (gameOverPanel != null)
         {
             gameOverPanel.transform.SetAsLastSibling();
@@ -205,8 +199,6 @@ public class GameOverManager : MonoBehaviour
             Time.timeScale = 0f;
         }
     }
-
-    // --- PULSANTI UI GAME OVER ---
 
     public void RestartLevel()
     {

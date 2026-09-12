@@ -11,7 +11,7 @@ public class Enemy_Health : MonoBehaviour
     public Color flashColor = Color.red;
     public float flashDuration = 0.12f;
 
-    [Header("Audio Personalizzato Nemico")]
+    [Header("Audio Nemico")]
     public AudioClip hitSound; 
     public float hitSoundVolume = 0.5f;
 
@@ -52,7 +52,6 @@ public class Enemy_Health : MonoBehaviour
             DemonBoss_Movement bossMovement = GetComponent<DemonBoss_Movement>();
             if (bossMovement != null && bossMovement.IsTransforming)
             {
-                Debug.Log("[DEBUG] Il boss è in fase di trasformazione ed è immune ai colpi!");
                 return;
             }
         }
@@ -103,6 +102,13 @@ public class Enemy_Health : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
+        // Salva la morte persistente per non farlo ricomparire al cambio scena
+        EnemySaveable saveable = GetComponent<EnemySaveable>();
+        if (saveable != null)
+        {
+            saveable.MarkAsPermanentlyDead();
+        }
+
         if (GetComponent<DemonBoss_Movement>() != null)
         {
             NPCTriggerDialogue.IsBossDefeated = true;
@@ -112,6 +118,8 @@ public class Enemy_Health : MonoBehaviour
 
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
         if (sr != null) sr.color = originalColor;
+
+        if (col != null) col.enabled = false;
 
         Enemy_Movement movement = GetComponent<Enemy_Movement>();
         if (movement != null) 
@@ -129,6 +137,12 @@ public class Enemy_Health : MonoBehaviour
             AudioManager.Instance.PlaySFXWithVolume(deathSound, deathSoundVolume);
         }
 
-        Destroy(gameObject, deathDelay);
+        StartCoroutine(DisableAfterDelay(deathDelay));
+    }
+    
+    private IEnumerator DisableAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gameObject.SetActive(false);
     }
 }

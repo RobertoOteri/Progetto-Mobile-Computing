@@ -88,10 +88,9 @@ public class HealthDisplay : MonoBehaviour
             {
                 if (hearts[i] != null && hearts[i].enabled)
                 {
-                    // Genera uno spostamento casuale
+
                     float offsetX = Random.Range(-1f, 1f) * shakeAmount;
                     float offsetY = Random.Range(-1f, 1f) * shakeAmount;
-
                     hearts[i].rectTransform.anchoredPosition = startPositions[i] + new Vector2(offsetX, offsetY);
                 }
             }
