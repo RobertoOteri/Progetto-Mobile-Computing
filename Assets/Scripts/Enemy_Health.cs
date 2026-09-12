@@ -102,6 +102,13 @@ public class Enemy_Health : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
+        // Salva la morte persistente per non farlo ricomparire al cambio scena
+        EnemySaveable saveable = GetComponent<EnemySaveable>();
+        if (saveable != null)
+        {
+            saveable.MarkAsPermanentlyDead();
+        }
+
         if (GetComponent<DemonBoss_Movement>() != null)
         {
             NPCTriggerDialogue.IsBossDefeated = true;
@@ -111,6 +118,8 @@ public class Enemy_Health : MonoBehaviour
 
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
         if (sr != null) sr.color = originalColor;
+
+        if (col != null) col.enabled = false;
 
         Enemy_Movement movement = GetComponent<Enemy_Movement>();
         if (movement != null) 
@@ -136,5 +145,4 @@ public class Enemy_Health : MonoBehaviour
         yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
     }
-    
 }

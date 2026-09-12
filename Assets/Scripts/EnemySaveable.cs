@@ -15,6 +15,24 @@ public class EnemySaveable : MonoBehaviour
         {
             enemyID = gameObject.name + "_" + transform.GetSiblingIndex();
         }
+
+        // CONTROLLO PERSISTENZA: se il nemico è già stato eliminato in precedenza, disattivalo subito
+        if (PlayerPrefs.GetInt("EnemyDead_" + enemyID, 0) == 1)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+    }
+
+    public void MarkAsPermanentlyDead()
+    {
+        if (string.IsNullOrEmpty(enemyID))
+        {
+            enemyID = gameObject.name + "_" + transform.GetSiblingIndex();
+        }
+
+        PlayerPrefs.SetInt("EnemyDead_" + enemyID, 1);
+        PlayerPrefs.Save();
     }
 
     public EnemySaveData GetSaveData()
@@ -23,7 +41,7 @@ public class EnemySaveable : MonoBehaviour
         data.enemyID = enemyID;
         data.posX = transform.position.x;
         data.posY = transform.position.y;
-        data.isDead = !gameObject.activeSelf;
+        data.isDead = !gameObject.activeSelf || PlayerPrefs.GetInt("EnemyDead_" + enemyID, 0) == 1;
 
         // Nemici
         Enemy_Health hp = GetComponent<Enemy_Health>();
@@ -41,8 +59,9 @@ public class EnemySaveable : MonoBehaviour
 
     public void LoadData(EnemySaveData data)
     {
-        if (data.isDead)
+        if (data.isDead || PlayerPrefs.GetInt("EnemyDead_" + enemyID, 0) == 1)
         {
+            MarkAsPermanentlyDead();
             gameObject.SetActive(false);
             return;
         }
