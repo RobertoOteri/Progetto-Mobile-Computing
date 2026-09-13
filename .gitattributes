@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.framework/* filter=lfs diff=lfs merge=lfs -text
+UnityRuntime filter=lfs diff=lfs merge=lfs -text
+ios-build/Frameworks/UnityRuntime.framework/UnityRuntime filter=lfs diff=lfs merge=lfs -text
